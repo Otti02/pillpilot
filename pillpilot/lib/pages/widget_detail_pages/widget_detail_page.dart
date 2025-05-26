@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_card.dart';
-import '../../widgets/custom_dialog.dart';
-import '../../widgets/custom_text_field.dart';
-import '../../widgets/custom_image.dart';
-import '../../widgets/custom_calendar.dart';
+import '../../../theme/app_theme.dart';
+import '../../../widgets/custom_button.dart';
+import '../../../widgets/custom_card.dart';
+import '../../../widgets/custom_dialog.dart';
+import '../../../widgets/custom_text_field.dart';
+import '../../../widgets/custom_image.dart';
+import '../../../widgets/custom_calendar.dart';
 
-/// A generic page that displays examples of a specific widget category.
 class WidgetDetailPage extends StatelessWidget {
   final String title;
   final List<Map<String, dynamic>> examples;
@@ -34,12 +33,19 @@ class WidgetDetailPage extends StatelessWidget {
             children: [
               Text(
                 '$title Examples',
-                style: AppTheme.headingStyle,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.primaryTextColor,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Explore different variations of $title',
-                style: AppTheme.bodyStyle,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppTheme.secondaryTextColor,
+                ),
               ),
               const SizedBox(height: 24),
               Expanded(
@@ -59,8 +65,8 @@ class WidgetDetailPage extends StatelessWidget {
   }
 
   Widget _buildExampleCard(BuildContext context, Map<String, dynamic> example) {
-    final exampleTitle = example['title'] as String;
-    final description = example['description'] as String;
+    final exampleTitle = example['title'] as String? ?? 'Example';
+    final description = example['description'] as String? ?? 'No description';
 
     return CustomCard(
       margin: const EdgeInsets.only(bottom: 16),
@@ -69,12 +75,19 @@ class WidgetDetailPage extends StatelessWidget {
         children: [
           Text(
             exampleTitle,
-            style: AppTheme.titleStyle,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.primaryTextColor,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             description,
-            style: AppTheme.bodyStyle,
+            style: TextStyle(
+              fontSize: 14,
+              color: AppTheme.secondaryTextColor,
+            ),
           ),
           const SizedBox(height: 24),
           _buildWidgetExample(context, example),
@@ -84,7 +97,6 @@ class WidgetDetailPage extends StatelessWidget {
   }
 
   Widget _buildWidgetExample(BuildContext context, Map<String, dynamic> example) {
-    // Determine which widget to display based on the category title
     switch (title.toLowerCase()) {
       case 'buttons':
         return _buildButtonExample(context, example);
@@ -104,21 +116,17 @@ class WidgetDetailPage extends StatelessWidget {
   }
 
   Widget _buildButtonExample(BuildContext context, Map<String, dynamic> example) {
-    final isOutlined = example['isOutlined'] as bool;
-    final IconData? icon = example['icon'] as IconData?;
-    final isLoading = example['isLoading'] as bool;
-    final isDisabled = example['isDisabled'] as bool;
+    final isOutlined = example['isOutlined'] as bool? ?? false;
+    final isLoading = example['isLoading'] as bool? ?? false;
 
     return CustomButton(
-      text: example['title'] as String,
+      text: example['title'] as String? ?? 'Button',
       isOutlined: isOutlined,
-      icon: icon,
       isLoading: isLoading,
-      isDisabled: isDisabled,
       onPressed: () {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${example['title']} pressed'),
+            content: Text('${example['title'] ?? 'Button'} pressed'),
             duration: const Duration(seconds: 1),
           ),
         );
@@ -127,70 +135,49 @@ class WidgetDetailPage extends StatelessWidget {
   }
 
   Widget _buildCardExample(BuildContext context, Map<String, dynamic> example) {
-    final type = example['type'] as String;
-    final content = example['content'] as Map<String, dynamic>;
+    final content = example['content'] as Map<String, dynamic>? ?? {};
 
-    switch (type) {
-      case 'basic':
-        return CustomCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                content['title'] as String,
-                style: AppTheme.titleStyle,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                content['description'] as String,
-                style: AppTheme.bodyStyle,
-              ),
-            ],
+    return CustomCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            content['title'] as String? ?? 'Example Title',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.primaryTextColor,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            content['description'] as String? ?? 'Example description',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppTheme.secondaryTextColor,
+            ),
+          ),
+        ],
+      ),
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${content['title'] ?? 'Card'} tapped'),
+            duration: const Duration(seconds: 1),
           ),
         );
-      case 'info':
-        return InfoCard(
-          title: content['title'] as String,
-          subtitle: content['subtitle'] as String?,
-          icon: content['icon'] as IconData?,
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${content['title']} card tapped'),
-                duration: const Duration(seconds: 1),
-              ),
-            );
-          },
-        );
-      case 'image':
-        return ImageCard(
-          title: content['title'] as String,
-          description: content['description'] as String?,
-          imageUrl: content['imageUrl'] as String?,
-          onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${content['title']} card tapped'),
-                duration: const Duration(seconds: 1),
-              ),
-            );
-          },
-        );
-      default:
-        return const Text('Unknown card type');
-    }
+      },
+    );
   }
 
   Widget _buildDialogExample(BuildContext context, Map<String, dynamic> example) {
-    final dialogTitle = example['dialogTitle'] as String;
-    final dialogMessage = example['dialogMessage'] as String;
+    final dialogTitle = example['dialogTitle'] as String? ?? 'Dialog';
+    final dialogMessage = example['dialogMessage'] as String? ?? 'This is a dialog message';
     final confirmText = example['confirmText'] as String?;
     final cancelText = example['cancelText'] as String?;
-    final IconData? icon = example['icon'] as IconData?;
-    final isDestructive = example['isDestructive'] as bool;
 
     return CustomButton(
-      text: 'Show ${example['title']}',
+      text: 'Show ${example['title'] ?? 'Dialog'}',
       onPressed: () {
         showCustomDialog(
           context: context,
@@ -198,27 +185,25 @@ class WidgetDetailPage extends StatelessWidget {
           message: dialogMessage,
           confirmText: confirmText,
           cancelText: cancelText,
-          icon: icon,
-          isDestructive: isDestructive,
           onConfirm: () {
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('${example['title']} confirmed'),
+                content: Text('${example['title'] ?? 'Dialog'} confirmed'),
                 duration: const Duration(seconds: 1),
               ),
             );
           },
           onCancel: cancelText != null
               ? () {
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${example['title']} cancelled'),
-                      duration: const Duration(seconds: 1),
-                    ),
-                  );
-                }
+            Navigator.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${example['title'] ?? 'Dialog'} cancelled'),
+                duration: const Duration(seconds: 1),
+              ),
+            );
+          }
               : null,
         );
       },
@@ -226,103 +211,75 @@ class WidgetDetailPage extends StatelessWidget {
   }
 
   Widget _buildTextFieldExample(BuildContext context, Map<String, dynamic> example) {
-    final type = example['type'] as String;
+    final type = example['type'] as String? ?? 'basic';
     final label = example['label'] as String?;
     final hint = example['hint'] as String?;
-    final errorText = example['errorText'] as String?;
-    final maxLines = example.containsKey('maxLines') ? example['maxLines'] as int : 1;
 
     switch (type) {
       case 'basic':
+      default:
         return CustomTextField(
           label: label,
           hint: hint,
-          errorText: errorText,
-          maxLines: maxLines,
+          obscureText: type == 'password',
         );
-      case 'password':
-        return PasswordField(
-          label: label,
-          hint: hint,
-          errorText: errorText,
-        );
-      case 'search':
-        return SearchField(
-          hint: hint ?? 'Search',
-        );
-      default:
-        return const Text('Unknown text field type');
     }
   }
 
   Widget _buildImageExample(BuildContext context, Map<String, dynamic> example) {
-    final type = example['type'] as String;
+    final type = example['type'] as String? ?? 'standard';
 
-    switch (type) {
-      case 'standard':
-        return CustomImage(
+    if (type == 'avatar') {
+      return Center(
+        child: CircularAvatar(
           imageUrl: example['imageUrl'] as String?,
-          assetPath: example['assetPath'] as String?,
-          width: example['width'] as double?,
-          height: example['height'] as double?,
-          errorText: example.containsKey('errorText') ? example['errorText'] as String? : null,
-        );
-      case 'avatar':
-        return Center(
-          child: CircularAvatar(
-            imageUrl: example['imageUrl'] as String?,
-            size: example['size'] as double? ?? 48,
-            initials: example.containsKey('initials') ? example['initials'] as String? : null,
-          ),
-        );
-      default:
-        return const Text('Unknown image type');
+          size: example['size'] as double? ?? 48,
+          initials: example['initials'] as String?,
+        ),
+      );
     }
+
+    return CustomImage(
+      imageUrl: example['imageUrl'] as String?,
+      assetPath: example['assetPath'] as String?,
+      width: example['width'] as double?,
+      height: example['height'] as double?,
+    );
   }
 
   Widget _buildCalendarExample(BuildContext context, Map<String, dynamic> example) {
-    final type = example['type'] as String;
+    final type = example['type'] as String? ?? 'calendar';
 
-    switch (type) {
-      case 'calendar':
-        final showTodayButton = example['showTodayButton'] as bool;
-        final showNavigationArrows = example['showNavigationArrows'] as bool;
+    if (type == 'datePicker') {
+      return CustomButton(
+        text: 'Show Date Picker',
+        onPressed: () async {
+          final selectedDate = await showDatePickerDialog(
+            context: context,
+            initialDate: DateTime.now(),
+          );
 
-        return CustomCalendar(
-          showTodayButton: showTodayButton,
-          showNavigationArrows: showNavigationArrows,
-          onDateSelected: (date) {
+          if (selectedDate != null && context.mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Selected date: ${date.toString().split(' ')[0]}'),
+                content: Text('Selected date: ${selectedDate.toString().split(' ')[0]}'),
                 duration: const Duration(seconds: 1),
               ),
             );
-          },
-        );
-      case 'datePicker':
-        return CustomButton(
-          text: 'Show Date Picker',
-          onPressed: () async {
-            final selectedDate = await showDatePickerDialog(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now().subtract(const Duration(days: 365)),
-              lastDate: DateTime.now().add(const Duration(days: 365)),
-            );
-
-            if (selectedDate != null && context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Selected date: ${selectedDate.toString().split(' ')[0]}'),
-                  duration: const Duration(seconds: 1),
-                ),
-              );
-            }
-          },
-        );
-      default:
-        return const Text('Unknown calendar type');
+          }
+        },
+      );
     }
+
+    return CustomCalendar(
+      onDateSelected: (date) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Selected date: ${date.toString().split(' ')[0]}'),
+            duration: const Duration(seconds: 1),
+          ),
+        );
+      },
+    );
   }
 }

@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
 
-/// A custom image widget that can be styled in different ways.
 class CustomImage extends StatelessWidget {
   final String? imageUrl;
   final String? assetPath;
   final double? width;
   final double? height;
   final BoxFit fit;
-  final BorderRadius? borderRadius;
-  final Color? backgroundColor;
-  final bool showBorder;
-  final IconData? placeholderIcon;
-  final String? errorText;
 
   const CustomImage({
     Key? key,
@@ -21,25 +14,16 @@ class CustomImage extends StatelessWidget {
     this.width,
     this.height,
     this.fit = BoxFit.cover,
-    this.borderRadius,
-    this.backgroundColor,
-    this.showBorder = false,
-    this.placeholderIcon,
-    this.errorText,
-  })  : assert(imageUrl != null || assetPath != null, 'Either imageUrl or assetPath must be provided'),
-        super(key: key);
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final borderRadiusValue = borderRadius ?? BorderRadius.circular(12);
-    
     return Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppTheme.secondaryColor.withOpacity(0.1),
-        borderRadius: borderRadiusValue,
-        border: showBorder ? Border.all(color: AppTheme.borderColor) : null,
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey[200],
       ),
       clipBehavior: Clip.antiAlias,
       child: _buildImage(),
@@ -63,73 +47,33 @@ class CustomImage extends StatelessWidget {
         fit: fit,
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
-          return _buildLoadingWidget(loadingProgress);
+          return Center(child: CircularProgressIndicator());
         },
         errorBuilder: (context, error, stackTrace) => _buildErrorWidget(),
       );
-    } else {
-      return _buildErrorWidget();
     }
-  }
-
-  Widget _buildLoadingWidget(ImageChunkEvent loadingProgress) {
-    return Center(
-      child: CircularProgressIndicator(
-        value: loadingProgress.expectedTotalBytes != null
-            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-            : null,
-        color: AppTheme.primaryColor,
-        strokeWidth: 2,
-      ),
-    );
+    return _buildErrorWidget();
   }
 
   Widget _buildErrorWidget() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            placeholderIcon ?? Icons.image_not_supported_outlined,
-            color: AppTheme.secondaryTextColor,
-            size: 32,
-          ),
-          if (errorText != null) ...[
-            const SizedBox(height: 8),
-            Text(
-              errorText!,
-              style: AppTheme.bodyStyle.copyWith(
-                color: AppTheme.secondaryTextColor,
-                fontSize: 12,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ],
-      ),
+      child: Icon(Icons.image_not_supported, color: Colors.grey),
     );
   }
 }
 
-/// A circular avatar image widget.
 class CircularAvatar extends StatelessWidget {
   final String? imageUrl;
   final String? assetPath;
   final double size;
-  final Color? backgroundColor;
-  final IconData? placeholderIcon;
   final String? initials;
-  final Color? textColor;
 
   const CircularAvatar({
     Key? key,
     this.imageUrl,
     this.assetPath,
     this.size = 48,
-    this.backgroundColor,
-    this.placeholderIcon,
     this.initials,
-    this.textColor,
   }) : super(key: key);
 
   @override
@@ -138,8 +82,8 @@ class CircularAvatar extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppTheme.secondaryColor.withOpacity(0.2),
         shape: BoxShape.circle,
+        color: Colors.grey[200],
       ),
       clipBehavior: Clip.antiAlias,
       child: _buildContent(),
@@ -150,44 +94,33 @@ class CircularAvatar extends StatelessWidget {
     if (imageUrl != null) {
       return Image.network(
         imageUrl!,
-        width: size,
-        height: size,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
       );
     } else if (assetPath != null) {
       return Image.asset(
         assetPath!,
-        width: size,
-        height: size,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
       );
-    } else {
-      return _buildPlaceholder();
     }
+    return _buildPlaceholder();
   }
 
   Widget _buildPlaceholder() {
     if (initials != null) {
       return Center(
         child: Text(
-          initials!.length > 2 ? initials!.substring(0, 2).toUpperCase() : initials!.toUpperCase(),
+          initials!.substring(0, 2).toUpperCase(),
           style: TextStyle(
-            color: textColor ?? AppTheme.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: size / 2.5,
           ),
         ),
       );
-    } else {
-      return Center(
-        child: Icon(
-          placeholderIcon ?? Icons.person,
-          color: AppTheme.primaryColor,
-          size: size / 2,
-        ),
-      );
     }
+    return Center(
+      child: Icon(Icons.person, size: size / 2),
+    );
   }
 }

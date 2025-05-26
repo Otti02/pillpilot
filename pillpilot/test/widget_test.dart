@@ -9,22 +9,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:pillpilot/main.dart';
+import 'package:pillpilot/pages/medications_page.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('App smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Verify that the app builds without errors
+    expect(find.byType(MaterialApp), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('MedicationsPage builds without errors', (WidgetTester tester) async {
+    // Build the MedicationsPage and trigger a frame.
+    await tester.pumpWidget(
+      MaterialApp(
+        home: MedicationsPage(),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that the page builds without errors
+    expect(find.byType(MedicationsPage), findsOneWidget);
+
+    // Verify that the page contains text elements
+    expect(find.text('Deine Einnahmen Heute'), findsOneWidget);
+    expect(find.text('Übersicht aller heutigen Einnahmen'), findsOneWidget);
+
+    // Verify that medication items are displayed
+    expect(find.text('Ibuprofen'), findsOneWidget);
+    expect(find.text('Aspirin'), findsOneWidget);
+    expect(find.text('Paracetamol'), findsOneWidget);
   });
 }

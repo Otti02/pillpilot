@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import '../widgets/custom_button.dart';
-import '../widgets/custom_card.dart';
-import '../main_dummy.dart';
+import 'package:pillpilot/pages/widget_detail_pages/widget_detail_page.dart';
+import '../../theme/app_theme.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/custom_card.dart';
+import '../../main_dummy.dart';
 
-/// A page that displays all available widgets with buttons to navigate to their detail pages.
 class WidgetsOverviewPage extends StatelessWidget {
   const WidgetsOverviewPage({Key? key}) : super(key: key);
 
@@ -24,12 +24,19 @@ class WidgetsOverviewPage extends StatelessWidget {
             children: [
               Text(
                 'UI Components',
-                style: AppTheme.headingStyle,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.primaryTextColor,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Explore our collection of reusable UI components',
-                style: AppTheme.bodyStyle,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppTheme.secondaryTextColor,
+                ),
               ),
               const SizedBox(height: 24),
               Expanded(
@@ -80,12 +87,19 @@ class WidgetsOverviewPage extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: AppTheme.titleStyle,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.primaryTextColor,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       description,
-                      style: AppTheme.bodyStyle,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppTheme.secondaryTextColor,
+                      ),
                     ),
                   ],
                 ),
@@ -95,7 +109,8 @@ class WidgetsOverviewPage extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             '${examples.length} examples',
-            style: AppTheme.subtitleStyle.copyWith(
+            style: TextStyle(
+              fontSize: 12,
               color: AppTheme.secondaryTextColor,
             ),
           ),
@@ -103,13 +118,14 @@ class WidgetsOverviewPage extends StatelessWidget {
           CustomButton(
             text: 'View Examples',
             onPressed: () {
-              Navigator.pushNamed(
+              Navigator.push(
                 context,
-                '/widget_detail/${title.toLowerCase().replaceAll(' ', '_')}',
-                arguments: {
-                  'title': title,
-                  'examples': examples,
-                },
+                MaterialPageRoute(
+                  builder: (context) => WidgetDetailPage(
+                    title: title,
+                    examples: examples,
+                  ),
+                ),
               );
             },
           ),
