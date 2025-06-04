@@ -6,7 +6,7 @@ import '../../widgets/custom_card.dart';
 import '../../main_dummy.dart';
 
 class WidgetsOverviewPage extends StatelessWidget {
-  const WidgetsOverviewPage({Key? key}) : super(key: key);
+  const WidgetsOverviewPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +71,7 @@ class WidgetsOverviewPage extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withOpacity(0.1),
+                  color: AppTheme.primaryColor.withAlpha(25), // Equivalent to 0.1 opacity
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(

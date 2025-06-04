@@ -8,6 +8,7 @@ class MedicationItem extends StatefulWidget {
   final String timeOfDay;
   final bool isCompleted;
   final VoidCallback? onToggle;
+  final bool showStrikethrough;
 
   const MedicationItem({
     Key? key,
@@ -16,6 +17,7 @@ class MedicationItem extends StatefulWidget {
     required this.timeOfDay,
     this.isCompleted = false,
     this.onToggle,
+    this.showStrikethrough = true,
   }) : super(key: key);
 
   @override
@@ -79,12 +81,12 @@ class _MedicationItemState extends State<MedicationItem> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: AppTheme.medicationIconBackgroundColor,
+                color: AppTheme.iconBackgroundColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(
                 Icons.medication,
-                color: AppTheme.medicationIconColor,
+                color: AppTheme.primaryColor,
                 size: 24,
               ),
             ),
@@ -101,7 +103,6 @@ class _MedicationItemState extends State<MedicationItem> {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: _isCompleted ? AppTheme.completedTextColor : AppTheme.primaryTextColor,
-                      decoration: _isCompleted ? TextDecoration.lineThrough : null,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -110,7 +111,6 @@ class _MedicationItemState extends State<MedicationItem> {
                     style: TextStyle(
                       fontSize: 14,
                       color: _isCompleted ? AppTheme.completedTextColor : AppTheme.secondaryTextColor,
-                      decoration: _isCompleted ? TextDecoration.lineThrough : null,
                     ),
                   ),
                 ],

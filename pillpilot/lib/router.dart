@@ -1,25 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'pages/Login.dart';
-import 'pages/Register.dart';
 import 'pages/main_screen.dart';
-import 'pages/home_page.dart';
+import 'views/home/home_view.dart';
 import 'pages/medications_page.dart';
 import 'pages/diary_page.dart';
 import 'pages/calendar_page.dart';
 import 'pages/widgets_overview_page.dart';
 import 'pages/widget_detail_pages/widget_detail_page.dart';
+import 'pages/login_page.dart';
+import 'pages/register_page.dart';
 
 class AppRoute {
-  static const login = '/';
-  static const register = '/register';
-  static const home = '/home';
+  static const home = '/';
   static const medications = '/medications';
   static const diary = '/diary';
   static const calendar = '/calendar';
   static const widgets = '/widgets';
   static const widgetDetail = '/widget_detail';
+  static const login = '/login';
+  static const register = '/register';
 
   AppRoute._();
 }
@@ -31,7 +30,7 @@ class AppRouter {
   AppRouter._();
 
    final router = GoRouter(
-    initialLocation: AppRoute.login,
+    initialLocation: AppRoute.home,
     routes: [
       // Auth routes
       GoRoute(
@@ -91,7 +90,8 @@ class AppRouter {
       GoRoute(
         path: '${AppRoute.widgetDetail}/:id',
         builder: (context, state) {
-          final id = state.pathParameters['id'];
+          // Using the id parameter from the path
+          // final id = state.pathParameters['id'];
           final arguments = state.extra as Map<String, dynamic>?;
           final title = arguments?['title'] as String? ?? 'Widget Detail';
           final examples = arguments?['examples'] as List<Map<String, dynamic>>? ?? [];
@@ -106,13 +106,13 @@ class AppRouter {
   );
 
   // Navigation methods
-  void goToLogin() => router.go(AppRoute.login);
-  void goToRegister() => router.go(AppRoute.register);
   void goToHome() => router.go(AppRoute.home);
   void goToMedications() => router.go(AppRoute.medications);
   void goToDiary() => router.go(AppRoute.diary);
   void goToCalendar() => router.go(AppRoute.calendar);
   void goToWidgets() => router.go(AppRoute.widgets);
+  void goToLogin() => router.go(AppRoute.login);
+  void goToRegister() => router.go(AppRoute.register);
 
   void goToWidgetDetail({
     required String id,

@@ -6,16 +6,16 @@ class MedicationDetailPage extends StatefulWidget {
   final String dosage;
   final String timeOfDay;
   final bool isCompleted;
-  final Function(bool) onToggle;
+  final void Function(bool) onToggle;
 
   const MedicationDetailPage({
-    Key? key,
+    super.key,
     required this.medicationName,
     required this.dosage,
     required this.timeOfDay,
     required this.isCompleted,
     required this.onToggle,
-  }) : super(key: key);
+  });
 
   @override
   State<MedicationDetailPage> createState() => _MedicationDetailPageState();
