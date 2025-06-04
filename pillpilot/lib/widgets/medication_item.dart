@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../pages/medication_detail_page.dart';
+import '../theme/app_theme.dart';
 
 class MedicationItem extends StatefulWidget {
   final String medicationName;
@@ -60,11 +61,11 @@ class _MedicationItemState extends State<MedicationItem> {
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.cardBackgroundColor,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: AppTheme.shadowColor,
               spreadRadius: 1,
               blurRadius: 4,
               offset: const Offset(0, 2),
@@ -78,12 +79,12 @@ class _MedicationItemState extends State<MedicationItem> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: AppTheme.medicationIconBackgroundColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Icon(
                 Icons.medication,
-                color: Colors.blue,
+                color: AppTheme.medicationIconColor,
                 size: 24,
               ),
             ),
@@ -99,7 +100,7 @@ class _MedicationItemState extends State<MedicationItem> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: _isCompleted ? Colors.grey : Colors.black87,
+                      color: _isCompleted ? AppTheme.completedTextColor : AppTheme.primaryTextColor,
                       decoration: _isCompleted ? TextDecoration.lineThrough : null,
                     ),
                   ),
@@ -108,7 +109,7 @@ class _MedicationItemState extends State<MedicationItem> {
                     '${widget.dosage}, ${widget.timeOfDay}',
                     style: TextStyle(
                       fontSize: 14,
-                      color: _isCompleted ? Colors.grey : Colors.grey.shade600,
+                      color: _isCompleted ? AppTheme.completedTextColor : AppTheme.secondaryTextColor,
                       decoration: _isCompleted ? TextDecoration.lineThrough : null,
                     ),
                   ),
@@ -123,15 +124,15 @@ class _MedicationItemState extends State<MedicationItem> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: _isCompleted ? Colors.green : Colors.grey.shade400,
+                  color: _isCompleted ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
                   width: 2,
                 ),
-                color: _isCompleted ? Colors.green : Colors.transparent,
+                color: _isCompleted ? AppTheme.completedColor : Colors.transparent,
               ),
               child: _isCompleted
                   ? const Icon(
                       Icons.check,
-                      color: Colors.white,
+                      color: AppTheme.cardBackgroundColor,
                       size: 16,
                     )
                   : null,

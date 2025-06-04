@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../theme/app_theme.dart';
+import '../router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,15 +16,18 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   void _login() {
-    Navigator.pushReplacementNamed(context, '/home');
+    // Use the centralized router for navigation
+    AppRouter.instance.goToHome();
   }
 
   void _startWithPillPilot() {
-    Navigator.pushReplacementNamed(context, '/home');
+    // Use the centralized router for navigation
+    AppRouter.instance.goToHome();
   }
 
   void _goToRegister() {
-    Navigator.pushReplacementNamed(context, '/register');
+    // Use the centralized router for navigation
+    AppRouter.instance.goToRegister();
   }
 
   @override
@@ -47,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Icon(
                   Icons.medication,
                   size: 50,
-                  color: Colors.white,
+                  color: AppTheme.cardBackgroundColor,
                 ),
               ),
 
@@ -58,7 +62,9 @@ class _LoginPageState extends State<LoginPage> {
                 'Login',
                 style: TextStyle(
                   fontSize: 24,
-                  fontWeight: FontWeight.bold,),
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.primaryTextColor,
+                ),
               ),
 
               const SizedBox(height: 32),
@@ -99,6 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: const Text(
                   "Don't have an account? Register",
                   style: TextStyle(
+                    color: AppTheme.primaryColor,
                     decoration: TextDecoration.underline,
                   ),
                 ),

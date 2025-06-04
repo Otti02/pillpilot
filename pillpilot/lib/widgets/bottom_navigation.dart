@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 
 class BottomNavigation extends StatefulWidget {
   final int currentIndex;
@@ -21,8 +22,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
       type: BottomNavigationBarType.fixed,
       currentIndex: widget.currentIndex,
       onTap: widget.onTap,
-      selectedItemColor: Theme.of(context).primaryColor,
-      unselectedItemColor: Colors.grey,
+      selectedItemColor: AppTheme.primaryColor,
+      unselectedItemColor: AppTheme.disabledTextColor,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),

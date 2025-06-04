@@ -23,7 +23,13 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
-          Text(label!, style: TextStyle(fontWeight: FontWeight.w500)),
+          Text(
+            label!,
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: AppTheme.primaryTextColor,
+            ),
+          ),
           SizedBox(height: 8),
         ],
         TextField(
@@ -32,7 +38,19 @@ class CustomTextField extends StatelessWidget {
           onChanged: onChanged,
           decoration: InputDecoration(
             hintText: hint,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            hintStyle: TextStyle(color: AppTheme.secondaryTextColor),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppTheme.borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: AppTheme.borderColor),
+            ),
           ),
         ),
       ],

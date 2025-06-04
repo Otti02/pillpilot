@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_text_field.dart';
 import '../widgets/custom_button.dart';
 import '../theme/app_theme.dart';
+import '../router.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,11 +18,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _register() {
     // TODO: Implement registration logic
-    Navigator.pushReplacementNamed(context, '/home');
+    AppRouter.instance.goToHome();
   }
 
   void _goToLogin() {
-    Navigator.pushReplacementNamed(context, '/');
+    AppRouter.instance.goToLogin();
   }
 
   @override

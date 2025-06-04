@@ -47,6 +47,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
         title: Text('Medikament Details'),
         backgroundColor: AppTheme.primaryColor,

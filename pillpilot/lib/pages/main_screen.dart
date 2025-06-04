@@ -1,39 +1,28 @@
 import 'package:flutter/material.dart';
 import '../widgets/bottom_navigation.dart';
-import 'home_page.dart';
-import 'medications_page.dart';
-import 'diary_page.dart';
-import 'calendar_page.dart';
+import '../router.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
+class MainScreen extends StatelessWidget {
+  final int currentIndex;
+  final Widget child;
 
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  int _currentIndex = 0;
-
-  final List<Widget> _pages = [
-    const HomePage(),
-    const MedicationsPage(),
-    const DiaryPage(),
-    const CalendarPage(),
-  ];
+  const MainScreen({
+    Key? key,
+    required this.currentIndex,
+    required this.child,
+  }) : super(key: key);
 
   void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    // Use the centralized router to navigate to the selected tab
+    AppRouter.instance.goToTab(index);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: child,
       bottomNavigationBar: BottomNavigation(
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         onTap: _onTabTapped,
       ),
     );
