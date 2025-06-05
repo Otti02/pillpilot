@@ -27,9 +27,6 @@ class MedicationDetailPage extends StatefulWidget {
 class _MedicationDetailPageState extends State<MedicationDetailPage> {
   late bool _isCompleted;
 
-  // A slightly more pink color than the primary color
-  static const Color textColor = Color(0xFF7A5AA6);
-
   @override
   void initState() {
     super.initState();
