@@ -7,6 +7,7 @@ class MedicationItem extends StatefulWidget {
   final String dosage;
   final String timeOfDay;
   final bool isCompleted;
+  final String notes;
   final VoidCallback? onToggle;
   final bool showStrikethrough;
 
@@ -16,6 +17,7 @@ class MedicationItem extends StatefulWidget {
     required this.dosage,
     required this.timeOfDay,
     this.isCompleted = false,
+    this.notes = '',
     this.onToggle,
     this.showStrikethrough = true,
   }) : super(key: key);
@@ -42,6 +44,7 @@ class _MedicationItemState extends State<MedicationItem> {
           dosage: widget.dosage,
           timeOfDay: widget.timeOfDay,
           isCompleted: _isCompleted,
+          notes: widget.notes,
           onToggle: (bool newValue) {
             setState(() {
               _isCompleted = newValue;

@@ -15,7 +15,7 @@ abstract class MedicationService extends BaseService {
   Future<Medication> getMedicationById(String id);
 
   /// Creates a new medication with the given details.
-  Future<Medication> createMedication(String name, String dosage, String timeOfDay);
+  Future<Medication> createMedication(String name, String dosage, String timeOfDay, {String notes = ''});
 
   /// Updates an existing medication.
   ///
@@ -91,7 +91,7 @@ class MedicationServiceImpl extends BaseService implements MedicationService {
   }
 
   @override
-  Future<Medication> createMedication(String name, String dosage, String timeOfDay) async {
+  Future<Medication> createMedication(String name, String dosage, String timeOfDay, {String notes = ''}) async {
     final medications = await getMedications();
 
     // Generate a new ID for the medication
@@ -107,6 +107,7 @@ class MedicationServiceImpl extends BaseService implements MedicationService {
       name: name,
       dosage: dosage,
       timeOfDay: timeOfDay,
+      notes: notes,
     );
 
     // Add to the list and save

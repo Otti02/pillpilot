@@ -157,6 +157,7 @@ class _HomePageState extends State<HomePage> {
                           dosage: medication.dosage,
                           timeOfDay: medication.timeOfDay,
                           isCompleted: medication.isCompleted,
+                          notes: medication.notes,
                           onToggle: () => _toggleMedicationCompletion(medication),
                         );
                       },

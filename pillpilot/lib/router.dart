@@ -32,7 +32,6 @@ class AppRouter {
    final router = GoRouter(
     initialLocation: AppRoute.home,
     routes: [
-      // Auth routes
       GoRoute(
         path: AppRoute.login,
         builder: (context, state) => const LoginPage(),

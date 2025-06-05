@@ -36,8 +36,8 @@ class MedicationController {
     }
   }
 
-  Future<Medication> createMedication(String name, String dosage, String timeOfDay) async {
-    final medication = await _medicationService.createMedication(name, dosage, timeOfDay);
+  Future<Medication> createMedication(String name, String dosage, String timeOfDay, {String notes = ''}) async {
+    final medication = await _medicationService.createMedication(name, dosage, timeOfDay, notes: notes);
     await loadMedications();
     return medication;
   }

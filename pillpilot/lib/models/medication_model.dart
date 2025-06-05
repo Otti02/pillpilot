@@ -3,7 +3,7 @@ import 'base_model.dart';
 /// Model representing a medication in the application.
 ///
 /// Contains information about a medication including its name,
-/// dosage, and time of day to be taken.
+/// dosage, time of day to be taken, and optional notes.
 class Medication extends BaseModel implements Persistable {
   /// Unique identifier for the medication.
   @override
@@ -21,6 +21,9 @@ class Medication extends BaseModel implements Persistable {
   /// Whether the medication has been taken.
   final bool isCompleted;
 
+  /// Optional notes about the medication.
+  final String notes;
+
   /// Creates a new medication instance.
   Medication({
     required this.id,
@@ -28,6 +31,7 @@ class Medication extends BaseModel implements Persistable {
     required this.dosage,
     required this.timeOfDay,
     this.isCompleted = false,
+    this.notes = '',
   });
 
   /// Creates a medication from a JSON map.
@@ -38,6 +42,7 @@ class Medication extends BaseModel implements Persistable {
       dosage: json['dosage'] as String,
       timeOfDay: json['timeOfDay'] as String,
       isCompleted: json['isCompleted'] as bool? ?? false,
+      notes: json['notes'] as String? ?? '',
     );
   }
 
@@ -50,6 +55,7 @@ class Medication extends BaseModel implements Persistable {
       'dosage': dosage,
       'timeOfDay': timeOfDay,
       'isCompleted': isCompleted,
+      'notes': notes,
     };
   }
 
@@ -62,6 +68,7 @@ class Medication extends BaseModel implements Persistable {
     String? dosage,
     String? timeOfDay,
     bool? isCompleted,
+    String? notes,
   }) {
     return Medication(
       id: id ?? this.id,
@@ -69,6 +76,7 @@ class Medication extends BaseModel implements Persistable {
       dosage: dosage ?? this.dosage,
       timeOfDay: timeOfDay ?? this.timeOfDay,
       isCompleted: isCompleted ?? this.isCompleted,
+      notes: notes ?? this.notes,
     );
   }
 }
