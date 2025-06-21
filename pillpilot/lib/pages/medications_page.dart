@@ -161,7 +161,7 @@ class _MedicationsPageState extends State<MedicationsPage> {
                 ],
               ),
             ),
-            Expanded(
+            Expanded( //TODO DIESE LISTE AUCH ALS WIDGET
               child: _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : _medications.isEmpty
@@ -221,7 +221,7 @@ class _MedicationsPageState extends State<MedicationsPage> {
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
-                                            color: medication.isCompleted ? AppTheme.completedTextColor : AppTheme.primaryTextColor,
+                                            color: AppTheme.primaryTextColor,
                                           ),
                                         ),
                                         const SizedBox(height: 4),
@@ -229,7 +229,7 @@ class _MedicationsPageState extends State<MedicationsPage> {
                                           '${medication.dosage}, ${medication.timeOfDay}',
                                           style: TextStyle(
                                             fontSize: 14,
-                                            color: medication.isCompleted ? AppTheme.completedTextColor : AppTheme.secondaryTextColor,
+                                            color: AppTheme.secondaryTextColor,
                                           ),
                                         ),
                                       ],

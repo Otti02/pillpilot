@@ -1,6 +1,7 @@
 import 'auth_service.dart';
 import 'base_service.dart';
 import 'medication_service.dart';
+import 'lexicon_service.dart';
 
 /// Service provider for dependency injection.
 ///
@@ -26,6 +27,9 @@ class ServiceProvider {
   /// Medication service instance.
   late final MedicationService _medicationService;
 
+  /// Lexicon service instance.
+  late final LexiconService _lexiconService;
+
   /// Initializes all services.
   ///
   /// Must be called before using any services.
@@ -41,6 +45,7 @@ class ServiceProvider {
     // Initialize other services
     _authService = AuthServiceImpl();
     _medicationService = MedicationServiceImpl();
+    _lexiconService = LexiconServiceImpl();
   }
 
   /// Returns the authentication service.
@@ -51,4 +56,7 @@ class ServiceProvider {
 
   /// Returns the medication service.
   MedicationService get medicationService => _medicationService;
+
+  /// Returns the lexicon service.
+  LexiconService get lexiconService => _lexiconService;
 }

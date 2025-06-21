@@ -35,7 +35,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.book),
-          label: 'Tagebuch',
+          label: 'Lexikon',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
