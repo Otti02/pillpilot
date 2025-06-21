@@ -27,7 +27,16 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # Enable strict rules for better code quality
+
+    public_member_api_docs: false  # Keine API-Dokumentation
+    comment_references: false  # Keine speziellen Kommentar-Referenzen
+    flutter_style_todos: false  # TODOs ohne spezielle Formatierung
+
+    avoid_print: false  # print() für Debugging während der Entwicklung erlaubt
+
+    prefer_const_declarations: true  # const für unveränderliche Variablen
+    unnecessary_null_comparison: true  # Warnung bei unnötigen null-Checks
+    use_build_context_synchronously: true  # BuildContext nach async sicher verwenden
 
 
 # Additional information about this file can be found at
