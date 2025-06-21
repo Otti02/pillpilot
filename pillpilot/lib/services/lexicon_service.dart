@@ -88,43 +88,56 @@ class LexiconServiceImpl extends BaseService implements LexiconService {
 
   /// Creates initial lexicon entries if none exist.
   Future<List<LexiconEntry>> _createInitialEntries() async {
+    // Create entries directly to avoid circular dependency
     final entries = <LexiconEntry>[
-      await createLexiconEntry(
-        'Ibuprofen',
-        'Schmerzmittel',
-        'Medikament',
-        'Ibuprofen ist ein schmerzlinderndes, fiebersenkendes und entzündungshemmendes Medikament aus der Gruppe der nicht-steroidalen Antirheumatika (NSAR).',
-        'Übliche Dosierung: 200-400mg alle 4-6 Stunden. Maximale Tagesdosis: 1200mg. Mit ausreichend Flüssigkeit einnehmen. Nicht länger als 3 Tage ohne ärztliche Rücksprache einnehmen.',
+      LexiconEntry(
+        id: '1',
+        name: 'Ibuprofen',
+        type: 'Schmerzmittel',
+        category: 'Medikament',
+        description: 'Ibuprofen ist ein schmerzlinderndes, fiebersenkendes und entzündungshemmendes Medikament aus der Gruppe der nicht-steroidalen Antirheumatika (NSAR).',
+        usageInfo: 'Übliche Dosierung: 200-400mg alle 4-6 Stunden. Maximale Tagesdosis: 1200mg. Mit ausreichend Flüssigkeit einnehmen. Nicht länger als 3 Tage ohne ärztliche Rücksprache einnehmen.',
       ),
-      await createLexiconEntry(
-        'Vitamin B12',
-        'Vitamin',
-        'Nahrungsergänzung',
-        'Vitamin B12 ist ein wasserlösliches Vitamin, das für die Blutbildung, Nervenfunktion und DNA-Synthese wichtig ist.',
-        'Übliche Dosierung: 2,5-100µg täglich. Mit einer Mahlzeit einnehmen für bessere Aufnahme.',
+      LexiconEntry(
+        id: '2',
+        name: 'Vitamin B12',
+        type: 'Vitamin',
+        category: 'Nahrungsergänzung',
+        description: 'Vitamin B12 ist ein wasserlösliches Vitamin, das für die Blutbildung, Nervenfunktion und DNA-Synthese wichtig ist.',
+        usageInfo: 'Übliche Dosierung: 2,5-100µg täglich. Mit einer Mahlzeit einnehmen für bessere Aufnahme.',
       ),
-      await createLexiconEntry(
-        'Selen',
-        'Spurenelement',
-        'Nahrungsergänzung',
-        'Selen ist ein essentielles Spurenelement, das als Antioxidans wirkt und für die Funktion des Immunsystems wichtig ist.',
-        'Übliche Dosierung: 50-200µg täglich. Die Einnahme sollte nicht die empfohlene Tagesdosis überschreiten.',
+      LexiconEntry(
+        id: '3',
+        name: 'Selen',
+        type: 'Spurenelement',
+        category: 'Nahrungsergänzung',
+        description: 'Selen ist ein essentielles Spurenelement, das als Antioxidans wirkt und für die Funktion des Immunsystems wichtig ist.',
+        usageInfo: 'Übliche Dosierung: 50-200µg täglich. Die Einnahme sollte nicht die empfohlene Tagesdosis überschreiten.',
       ),
-      await createLexiconEntry(
-        'Novalgin',
-        'Schmerzmittel',
-        'Medikament',
-        'Novalgin (Metamizol) ist ein starkes Schmerzmittel mit fiebersenkender und krampflösender Wirkung.',
-        'Übliche Dosierung: 500-1000mg bis zu 4x täglich. Maximale Tagesdosis: 4000mg. Mit ausreichend Flüssigkeit einnehmen. Nur nach ärztlicher Verschreibung anwenden.',
+      LexiconEntry(
+        id: '4',
+        name: 'Novalgin',
+        type: 'Schmerzmittel',
+        category: 'Medikament',
+        description: 'Novalgin (Metamizol) ist ein starkes Schmerzmittel mit fiebersenkender und krampflösender Wirkung.',
+        usageInfo: 'Übliche Dosierung: 500-1000mg bis zu 4x täglich. Maximale Tagesdosis: 4000mg. Mit ausreichend Flüssigkeit einnehmen. Nur nach ärztlicher Verschreibung anwenden.',
       ),
-      await createLexiconEntry(
-        'Kreatin',
-        'Aminosäure',
-        'Nahrungsergänzung',
-        'Kreatin ist eine körpereigene Substanz, die zur Energieversorgung der Muskeln beiträgt und in der Sportnahrung verwendet wird.',
-        'Übliche Dosierung: 3-5g täglich. Mit ausreichend Wasser einnehmen. Kann in Ladephasen (20g/Tag für 5-7 Tage) und Erhaltungsphasen (3-5g/Tag) eingenommen werden.',
+      LexiconEntry(
+        id: '5',
+        name: 'Kreatin',
+        type: 'Aminosäure',
+        category: 'Nahrungsergänzung',
+        description: 'Kreatin ist eine körpereigene Substanz, die zur Energieversorgung der Muskeln beiträgt und in der Sportnahrung verwendet wird.',
+        usageInfo: 'Übliche Dosierung: 3-5g täglich. Mit ausreichend Wasser einnehmen. Kann in Ladephasen (20g/Tag für 5-7 Tage) und Erhaltungsphasen (3-5g/Tag) eingenommen werden.',
       ),
     ];
+
+    // Update the next ID to be after our manually created entries
+    _nextId = 6;
+    await _saveNextId();
+
+    // Save the entries to storage
+    await _saveEntries(entries);
 
     return entries;
   }
