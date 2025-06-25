@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
 class DiaryPage extends StatelessWidget {
-  const DiaryPage({Key? key}) : super(key: key);
+  const DiaryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
