@@ -1,21 +1,15 @@
-import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/medication_model.dart';
+import '../../models/medication_state_model.dart';
 import '../../services/medication_service.dart';
 import '../../services/service_provider.dart';
 
-class MedicationController {
-  final MedicationService _medicationService;
-
-  // Callbacks
-  void Function(List<Medication>)? onMedicationsLoaded;
-  void Function(String)? onError;
-
-  // Stream controller for medications
-  final _medicationsController = StreamController<List<Medication>>();
-  Stream<List<Medication>> get medicationsStream => _medicationsController.stream;
+class MedicationController extends Cubit<MedicationModel> {
+  final MedicationService medicationService;
 
   MedicationController({MedicationService? medicationService})
-      : _medicationService = medicationService ?? ServiceProvider().medicationService;
+      : medicationService = medicationService ?? ServiceProvider().medicationService,
+        super(MedicationModel(medications: []));
 
   void initialize() {
     loadMedications();
@@ -23,43 +17,39 @@ class MedicationController {
 
   Future<void> loadMedications() async {
     try {
-      final medications = await _medicationService.getMedications();
-      _medicationsController.add(medications);
-
-      if (onMedicationsLoaded != null) {
-        onMedicationsLoaded!(medications);
-      }
+      emit(state.copyWith(isLoading: true));
+      final medications = await medicationService.getMedications();
+      emit(state.copyWith(medications: medications, isLoading: false));
     } catch (e) {
-      if (onError != null) {
-        onError!(e.toString());
-      }
+      emit(state.copyWith(isLoading: false));
+      // Error handling could be improved here
     }
   }
 
   Future<Medication> createMedication(String name, String dosage, String timeOfDay, {String notes = ''}) async {
-    final medication = await _medicationService.createMedication(name, dosage, timeOfDay, notes: notes);
+    emit(state.copyWith(isLoading: true));
+    final medication = await medicationService.createMedication(name, dosage, timeOfDay, notes: notes);
     await loadMedications();
     return medication;
   }
 
   Future<Medication> updateMedication(Medication medication) async {
-    final updatedMedication = await _medicationService.updateMedication(medication);
+    emit(state.copyWith(isLoading: true));
+    final updatedMedication = await medicationService.updateMedication(medication);
     await loadMedications();
     return updatedMedication;
   }
 
   Future<void> deleteMedication(String id) async {
-    await _medicationService.deleteMedication(id);
+    emit(state.copyWith(isLoading: true));
+    await medicationService.deleteMedication(id);
     await loadMedications();
   }
 
   Future<void> toggleMedicationCompletion(String id, bool isCompleted) async {
-    final medication = await _medicationService.getMedicationById(id);
+    emit(state.copyWith(isLoading: true));
+    final medication = await medicationService.getMedicationById(id);
     final updatedMedication = medication.copyWith(isCompleted: isCompleted);
     await updateMedication(updatedMedication);
-  }
-
-  void dispose() {
-    _medicationsController.close();
   }
 }

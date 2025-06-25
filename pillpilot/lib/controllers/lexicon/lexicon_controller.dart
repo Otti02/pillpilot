@@ -1,21 +1,15 @@
-import 'dart:async';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/lexicon_entry_model.dart';
+import '../../models/lexicon_state_model.dart';
 import '../../services/lexicon_service.dart';
 import '../../services/service_provider.dart';
 
-class LexiconController {
-  final LexiconService _lexiconService;
-
-  // Callbacks
-  void Function(List<LexiconEntry>)? onEntriesLoaded;
-  void Function(String)? onError;
-
-  // Stream controller for lexicon entries
-  final _entriesController = StreamController<List<LexiconEntry>>();
-  Stream<List<LexiconEntry>> get entriesStream => _entriesController.stream;
+class LexiconController extends Cubit<LexiconModel> {
+  final LexiconService lexiconService;
 
   LexiconController({LexiconService? lexiconService})
-      : _lexiconService = lexiconService ?? ServiceProvider().lexiconService;
+      : lexiconService = lexiconService ?? ServiceProvider().lexiconService,
+        super(LexiconModel(entries: []));
 
   void initialize() {
     loadEntries();
@@ -23,26 +17,20 @@ class LexiconController {
 
   Future<void> loadEntries() async {
     try {
-      final entries = await _lexiconService.getLexiconEntries();
-      _entriesController.add(entries);
-
-      if (onEntriesLoaded != null) {
-        onEntriesLoaded!(entries);
-      }
+      emit(state.copyWith(isLoading: true));
+      final entries = await lexiconService.getLexiconEntries();
+      emit(state.copyWith(entries: entries, isLoading: false));
     } catch (e) {
-      if (onError != null) {
-        onError!(e.toString());
-      }
+      emit(state.copyWith(isLoading: false));
+      // Error handling could be improved here
     }
   }
 
   Future<LexiconEntry> getEntryById(String id) async {
     try {
-      return await _lexiconService.getLexiconEntryById(id);
+      return await lexiconService.getLexiconEntryById(id);
     } catch (e) {
-      if (onError != null) {
-        onError!(e.toString());
-      }
+      // Error handling could be improved here
       rethrow;
     }
   }
@@ -54,7 +42,8 @@ class LexiconController {
     String description,
     String usageInfo,
   ) async {
-    final entry = await _lexiconService.createLexiconEntry(
+    emit(state.copyWith(isLoading: true));
+    final entry = await lexiconService.createLexiconEntry(
       name,
       type,
       category,
@@ -66,17 +55,15 @@ class LexiconController {
   }
 
   Future<LexiconEntry> updateEntry(LexiconEntry entry) async {
-    final updatedEntry = await _lexiconService.updateLexiconEntry(entry);
+    emit(state.copyWith(isLoading: true));
+    final updatedEntry = await lexiconService.updateLexiconEntry(entry);
     await loadEntries();
     return updatedEntry;
   }
 
   Future<void> deleteEntry(String id) async {
-    await _lexiconService.deleteLexiconEntry(id);
+    emit(state.copyWith(isLoading: true));
+    await lexiconService.deleteLexiconEntry(id);
     await loadEntries();
-  }
-
-  void dispose() {
-    _entriesController.close();
   }
 }

@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'dart:math';
+import '../controllers/appointment/appointment_controller.dart';
 import '../models/appointment_model.dart';
-import '../services/appointment_service.dart';
-import '../services/service_provider.dart';
+import '../models/appointment_state_model.dart';
 import '../theme/app_theme.dart';
 
-class CalendarPage extends StatefulWidget {
+class CalendarPage extends StatelessWidget {
   const CalendarPage({Key? key}) : super(key: key);
 
   @override
-  State<CalendarPage> createState() => _CalendarPageState();
+  Widget build(BuildContext context) {
+    return _CalendarPageContent();
+  }
 }
 
-class _CalendarPageState extends State<CalendarPage> {
-  late final AppointmentService _appointmentService;
-  DateTime _selectedDate = DateTime.now();
-  List<Appointment> _appointments = [];
-  bool _isLoading = true;
+class _CalendarPageContent extends StatefulWidget {
+  @override
+  State<_CalendarPageContent> createState() => _CalendarPageContentState();
+}
 
+class _CalendarPageContentState extends State<_CalendarPageContent> {
+  DateTime _selectedDate = DateTime.now();
   final _titleController = TextEditingController();
   final _notesController = TextEditingController();
   TimeOfDay _selectedTime = TimeOfDay.now();
@@ -26,7 +30,6 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   void initState() {
     super.initState();
-    _appointmentService = ServiceProvider().appointmentService;
     _loadAppointments();
   }
 
@@ -37,33 +40,9 @@ class _CalendarPageState extends State<CalendarPage> {
     super.dispose();
   }
 
-  Future<void> _loadAppointments() async {
-    if (!mounted) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final appointments = await _appointmentService.getAppointmentsForDate(_selectedDate);
-
-      if (!mounted) return;
-
-      setState(() {
-        _appointments = appointments;
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-
-      setState(() {
-        _isLoading = false;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fehler beim Laden der Termine: $e')),
-      );
-    }
+  void _loadAppointments() {
+    final controller = BlocProvider.of<AppointmentController>(context);
+    controller.loadAppointmentsForDate(_selectedDate);
   }
 
   Future<void> _addAppointment(BuildContext context) async {
@@ -75,7 +54,8 @@ class _CalendarPageState extends State<CalendarPage> {
     }
 
     try {
-      await _appointmentService.createAppointment(
+      final controller = BlocProvider.of<AppointmentController>(context);
+      await controller.createAppointment(
         _titleController.text,
         _selectedDate,
         _selectedTime,
@@ -88,9 +68,7 @@ class _CalendarPageState extends State<CalendarPage> {
       if (!mounted) return;
 
       Navigator.of(context).pop();
-
-      await _loadAppointments();
-
+      
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Termin erfolgreich erstellt')),
       );
@@ -105,11 +83,10 @@ class _CalendarPageState extends State<CalendarPage> {
 
   Future<void> _deleteAppointment(String id) async {
     try {
-      await _appointmentService.deleteAppointment(id);
+      final controller = BlocProvider.of<AppointmentController>(context);
+      await controller.deleteAppointment(id);
 
       if (!mounted) return;
-
-      await _loadAppointments();
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Termin erfolgreich gelöscht')),
@@ -416,57 +393,6 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  Widget _buildDayButton(BuildContext context, int dayOffset) {
-    final day = DateTime(
-      _selectedDate.year,
-      _selectedDate.month,
-      _selectedDate.day + dayOffset,
-    );
-
-    final isSelected = day.day == _selectedDate.day && 
-                       day.month == _selectedDate.month && 
-                       day.year == _selectedDate.year;
-
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedDate = day;
-        });
-        _loadAppointments();
-      },
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isSelected ? AppTheme.primaryColor : Colors.transparent,
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                DateFormat('E').format(day).substring(0, 1),
-                style: TextStyle(
-                  fontSize: 10,
-                  color: isSelected ? Colors.white : AppTheme.secondaryTextColor,
-                ),
-              ),
-              Text(
-                day.day.toString(),
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                  color: isSelected ? Colors.white : AppTheme.primaryTextColor,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildMonthDayButton(BuildContext context, int row, int col, int firstWeekdayOfMonth, int daysInMonth) {
     // Calculate the day number (1-based)
     final int dayNumber = row * 7 + col + 1 - firstWeekdayOfMonth;
@@ -550,25 +476,33 @@ class _CalendarPageState extends State<CalendarPage> {
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : _appointments.isEmpty
-                    ? const Center(child: Text('Keine Termine an diesem Tag'))
-                    : ListView.builder(
-                        itemCount: _appointments.length,
-                        itemBuilder: (context, index) {
-                          final appointment = _appointments[index];
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 8),
-                            child: ListTile(
-                              title: Text(appointment.title),
-                              subtitle: Text(appointment.time.format(context)),
-                              trailing: const Icon(Icons.chevron_right),
-                              onTap: () => _showAppointmentDetails(context, appointment),
-                            ),
-                          );
-                        },
+            child: BlocBuilder<AppointmentController, AppointmentModel>(
+              builder: (context, model) {
+                if (model.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                
+                if (model.appointments.isEmpty) {
+                  return const Center(child: Text('Keine Termine an diesem Tag'));
+                }
+                
+                return ListView.builder(
+                  itemCount: model.appointments.length,
+                  itemBuilder: (context, index) {
+                    final appointment = model.appointments[index];
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      child: ListTile(
+                        title: Text(appointment.title),
+                        subtitle: Text(appointment.time.format(context)),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _showAppointmentDetails(context, appointment),
                       ),
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),

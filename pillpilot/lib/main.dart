@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'theme/app_theme.dart';
 import 'router.dart';
 import 'services/service_provider.dart';
+import 'controllers/medication/medication_controller.dart';
+import 'controllers/appointment/appointment_controller.dart';
+import 'controllers/lexicon/lexicon_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +23,29 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = AppRouter.instance.router;
 
-    return MaterialApp.router(
-      title: 'Pill Pilot',
-      theme: AppTheme.themeData,
-      routerConfig: router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<MedicationController>(
+          create: (context) => MedicationController(
+            medicationService: ServiceProvider().medicationService,
+          )..initialize(),
+        ),
+        BlocProvider<AppointmentController>(
+          create: (context) => AppointmentController(
+            appointmentService: ServiceProvider().appointmentService,
+          )..initialize(),
+        ),
+        BlocProvider<LexiconController>(
+          create: (context) => LexiconController(
+            lexiconService: ServiceProvider().lexiconService,
+          )..initialize(),
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'Pill Pilot',
+        theme: AppTheme.themeData,
+        routerConfig: router,
+      ),
     );
   }
 }

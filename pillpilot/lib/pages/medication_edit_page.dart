@@ -44,7 +44,6 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
     _dosageController.dispose();
     _timeOfDayController.dispose();
     _notesController.dispose();
-    _controller.dispose();
     super.dispose();
   }
 
