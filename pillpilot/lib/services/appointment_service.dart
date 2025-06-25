@@ -5,68 +5,44 @@ import 'package:pillpilot/models/appointment_model.dart';
 import 'package:pillpilot/services/base_service.dart';
 import 'package:pillpilot/services/service_provider.dart';
 
-/// Service for managing appointments in the application.
-abstract class AppointmentService extends BaseService {
-  /// Retrieves all appointments.
+abstract class AppointmentService {
   Future<List<Appointment>> getAppointments();
 
-  /// Retrieves an appointment by its ID.
-  ///
-  /// Throws an exception if the appointment is not found.
   Future<Appointment> getAppointmentById(String id);
 
-  /// Creates a new appointment with the given details.
   Future<Appointment> createAppointment(String title, DateTime date, TimeOfDay time, {String notes = ''});
 
-  /// Updates an existing appointment.
-  ///
-  /// Throws an exception if the appointment is not found.
   Future<Appointment> updateAppointment(Appointment appointment);
 
-  /// Deletes an appointment by its ID.
-  ///
-  /// Throws an exception if the appointment is not found.
   Future<void> deleteAppointment(String id);
   
-  /// Retrieves all appointments for a specific date.
   Future<List<Appointment>> getAppointmentsForDate(DateTime date);
   
-  /// Retrieves all dates that have appointments.
   Future<List<DateTime>> getDatesWithAppointments();
 }
 
 /// Implementation of the [AppointmentService] using local storage.
-class AppointmentServiceImpl extends BaseService implements AppointmentService {
-  /// Key used to store appointments in persistent storage.
+class AppointmentServiceImpl  implements AppointmentService {
   static const String _appointmentsKey = 'appointments';
 
-  /// Key used to store the next appointment ID in persistent storage.
   static const String _nextIdKey = 'next_appointment_id';
 
-  /// Service used for data persistence.
   final PersistenceService _persistenceService;
 
-  /// Next ID to be used for a new appointment.
   int _nextId = 1;
 
-  /// Singleton instance of the service.
   static final AppointmentServiceImpl _instance = AppointmentServiceImpl._internal(
     ServiceProvider().persistenceService,
   );
 
-  /// Factory constructor that returns the singleton instance.
   factory AppointmentServiceImpl() {
     return _instance;
   }
 
-  /// Internal constructor that initializes the service.
-  ///
-  /// Initializes the next ID from storage or uses default value 1.
   AppointmentServiceImpl._internal(this._persistenceService) {
     _initNextId();
   }
 
-  /// Initializes the next ID from persistent storage.
   Future<void> _initNextId() async {
     final nextIdStr = await _persistenceService.getData(_nextIdKey);
     if (nextIdStr != null) {
@@ -124,7 +100,6 @@ class AppointmentServiceImpl extends BaseService implements AppointmentService {
     return newAppointment;
   }
 
-  /// Saves the next ID to persistent storage.
   Future<void> _saveNextId() async {
     await _persistenceService.saveData(_nextIdKey, _nextId.toString());
   }
@@ -190,9 +165,6 @@ class AppointmentServiceImpl extends BaseService implements AppointmentService {
     }).toList();
   }
 
-  /// Saves the list of appointments to persistent storage.
-  ///
-  /// Converts each appointment to JSON format before saving.
   Future<void> _saveAppointments(List<Appointment> appointments) async {
     final appointmentsJson = appointments.map((a) => a.toJson()).toList();
     await _persistenceService.saveData(_appointmentsKey, jsonEncode(appointmentsJson));

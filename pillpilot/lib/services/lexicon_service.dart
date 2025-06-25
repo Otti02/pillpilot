@@ -4,17 +4,11 @@ import '../models/lexicon_entry_model.dart';
 import 'base_service.dart';
 import 'service_provider.dart';
 
-/// Service for managing lexicon entries in the application.
-abstract class LexiconService extends BaseService {
-  /// Retrieves all lexicon entries.
+abstract class LexiconService {
   Future<List<LexiconEntry>> getLexiconEntries();
 
-  /// Retrieves a lexicon entry by its ID.
-  ///
-  /// Throws an exception if the entry is not found.
   Future<LexiconEntry> getLexiconEntryById(String id);
 
-  /// Creates a new lexicon entry with the given details.
   Future<LexiconEntry> createLexiconEntry(
       String name,
       String type,
@@ -23,49 +17,34 @@ abstract class LexiconService extends BaseService {
       String usageInfo,
       );
 
-  /// Updates an existing lexicon entry.
-  ///
-  /// Throws an exception if the entry is not found.
   Future<LexiconEntry> updateLexiconEntry(LexiconEntry entry);
 
-  /// Deletes a lexicon entry by its ID.
-  ///
-  /// Throws an exception if the entry is not found.
   Future<void> deleteLexiconEntry(String id);
 }
 
-/// Implementation of the [LexiconService] using local storage.
-class LexiconServiceImpl extends BaseService implements LexiconService {
-  /// Key used to store lexicon entries in persistent storage.
+/// Implementation of the [LexiconService]
+class LexiconServiceImpl implements LexiconService {
+
   static const String _entriesKey = 'lexicon_entries';
 
-  /// Key used to store the next entry ID in persistent storage.
   static const String _nextIdKey = 'next_lexicon_entry_id';
 
-  /// Service used for data persistence.
   final PersistenceService _persistenceService;
 
-  /// Next ID to be used for a new entry.
   int _nextId = 1;
 
-  /// Singleton instance of the service.
   static final LexiconServiceImpl _instance = LexiconServiceImpl._internal(
     ServiceProvider().persistenceService,
   );
 
-  /// Factory constructor that returns the singleton instance.
   factory LexiconServiceImpl() {
     return _instance;
   }
 
-  /// Internal constructor that initializes the service.
-  ///
-  /// Initializes the next ID from storage or uses default value 1.
   LexiconServiceImpl._internal(this._persistenceService) {
     _initNextId();
   }
 
-  /// Initializes the next ID from persistent storage.
   Future<void> _initNextId() async {
     final nextIdStr = await _persistenceService.getData(_nextIdKey);
     if (nextIdStr != null) {
@@ -266,11 +245,9 @@ class LexiconServiceImpl extends BaseService implements LexiconService {
       ),
     ];
 
-    // Update the next ID to be after our manually created entries
     _nextId = 19;
     await _saveNextId();
 
-    // Save the entries to storage
     await _saveEntries(entries);
 
     return entries;
@@ -296,14 +273,11 @@ class LexiconServiceImpl extends BaseService implements LexiconService {
       ) async {
     final entries = await getLexiconEntries();
 
-    // Generate a new ID for the entry
     final String id = _nextId.toString();
     _nextId++;
 
-    // Persist the updated ID counter
     await _saveNextId();
 
-    // Create the new entry object
     final LexiconEntry newEntry = LexiconEntry(
       id: id,
       name: name,
@@ -320,7 +294,6 @@ class LexiconServiceImpl extends BaseService implements LexiconService {
     return newEntry;
   }
 
-  /// Saves the next ID to persistent storage.
   Future<void> _saveNextId() async {
     await _persistenceService.saveData(_nextIdKey, _nextId.toString());
   }
@@ -353,9 +326,6 @@ class LexiconServiceImpl extends BaseService implements LexiconService {
     await _saveEntries(entries);
   }
 
-  /// Saves the list of entries to persistent storage.
-  ///
-  /// Converts each entry to JSON format before saving.
   Future<void> _saveEntries(List<LexiconEntry> entries) async {
     final entriesJson = entries.map((e) => e.toJson()).toList();
     await _persistenceService.saveData(_entriesKey, jsonEncode(entriesJson));

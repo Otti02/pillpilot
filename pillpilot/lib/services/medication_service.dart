@@ -3,63 +3,41 @@ import 'dart:convert';
 import 'package:pillpilot/models/medication_model.dart';
 import 'package:pillpilot/services/base_service.dart';
 import 'package:pillpilot/services/service_provider.dart';
+abstract class MedicationService {
 
-/// Service for managing medications in the application.
-abstract class MedicationService extends BaseService {
-  /// Retrieves all medications.
   Future<List<Medication>> getMedications();
 
-  /// Retrieves a medication by its ID.
-  ///
-  /// Throws an exception if the medication is not found.
   Future<Medication> getMedicationById(String id);
 
-  /// Creates a new medication with the given details.
   Future<Medication> createMedication(String name, String dosage, String timeOfDay, {String notes = ''});
 
-  /// Updates an existing medication.
-  ///
-  /// Throws an exception if the medication is not found.
   Future<Medication> updateMedication(Medication medication);
 
-  /// Deletes a medication by its ID.
-  ///
-  /// Throws an exception if the medication is not found.
+
   Future<void> deleteMedication(String id);
 }
 
-/// Implementation of the [MedicationService] using local storage.
-class MedicationServiceImpl extends BaseService implements MedicationService {
-  /// Key used to store medications in persistent storage.
+class MedicationServiceImpl implements MedicationService {
   static const String _medicationsKey = 'medications';
 
-  /// Key used to store the next medication ID in persistent storage.
   static const String _nextIdKey = 'next_medication_id';
 
-  /// Service used for data persistence.
   final PersistenceService _persistenceService;
 
-  /// Next ID to be used for a new medication.
   int _nextId = 1;
 
-  /// Singleton instance of the service.
   static final MedicationServiceImpl _instance = MedicationServiceImpl._internal(
     ServiceProvider().persistenceService,
   );
 
-  /// Factory constructor that returns the singleton instance.
   factory MedicationServiceImpl() {
     return _instance;
   }
 
-  /// Internal constructor that initializes the service.
-  ///
-  /// Initializes the next ID from storage or uses default value 1.
   MedicationServiceImpl._internal(this._persistenceService) {
     _initNextId();
   }
 
-  /// Initializes the next ID from persistent storage.
   Future<void> _initNextId() async {
     final nextIdStr = await _persistenceService.getData(_nextIdKey);
     if (nextIdStr != null) {
@@ -117,7 +95,6 @@ class MedicationServiceImpl extends BaseService implements MedicationService {
     return newMedication;
   }
 
-  /// Saves the next ID to persistent storage.
   Future<void> _saveNextId() async {
     await _persistenceService.saveData(_nextIdKey, _nextId.toString());
   }
@@ -150,9 +127,6 @@ class MedicationServiceImpl extends BaseService implements MedicationService {
     await _saveMedications(medications);
   }
 
-  /// Saves the list of medications to persistent storage.
-  ///
-  /// Converts each medication to JSON format before saving.
   Future<void> _saveMedications(List<Medication> medications) async {
     final medicationsJson = medications.map((m) => m.toJson()).toList();
     await _persistenceService.saveData(_medicationsKey, jsonEncode(medicationsJson));
