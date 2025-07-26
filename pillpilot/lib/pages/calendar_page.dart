@@ -6,9 +6,10 @@ import '../controllers/appointment/appointment_controller.dart';
 import '../models/appointment_model.dart';
 import '../models/appointment_state_model.dart';
 import '../theme/app_theme.dart';
+import '../widgets/custom_calendar.dart';
 
 class CalendarPage extends StatelessWidget {
-  const CalendarPage({Key? key}) : super(key: key);
+  const CalendarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +69,8 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
       if (!mounted) return;
 
       Navigator.of(context).pop();
+
+      _loadAppointments();
       
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Termin erfolgreich erstellt')),
@@ -129,6 +132,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
               final TimeOfDay? time = await showTimePicker(
                 context: dialogContext,
                 initialTime: _selectedTime,
+                initialEntryMode: TimePickerEntryMode.input,
                 builder: (context, child) {
                   return MediaQuery(
                     data: MediaQuery.of(context).copyWith(
@@ -136,7 +140,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                     ),
                     child: child!,
                   );
-                },
+                  },
               );
               if (time != null && mounted) {
                 setState(() {
@@ -236,22 +240,6 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
     );
   }
 
-  void _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-    );
-
-    if (picked != null && picked != _selectedDate && mounted) {
-      setState(() {
-        _selectedDate = picked;
-      });
-      _loadAppointments();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -278,7 +266,21 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                 ),
               ),
               const SizedBox(height: 24),
-              _buildSimpleCalendar(context),
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomCalendar(
+                    initialDate: _selectedDate,
+                    onDateSelected: (date) {
+                      setState(() {
+                        _selectedDate = date;
+                      });
+                      _loadAppointments();
+                    },
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
               _buildAppointmentsList(context),
             ],
@@ -289,175 +291,6 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
         onPressed: () => _showAddAppointmentDialog(context),
         backgroundColor: AppTheme.primaryColor,
         child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  Widget _buildSimpleCalendar(BuildContext context) {
-    final DateTime firstDayOfMonth = DateTime(_selectedDate.year, _selectedDate.month, 1);
-
-    final DateTime lastDayOfMonth = DateTime(_selectedDate.year, _selectedDate.month + 1, 0);
-
-    int firstWeekdayOfMonth = firstDayOfMonth.weekday - 1;
-    if (firstWeekdayOfMonth == -1) firstWeekdayOfMonth = 6;
-
-    final int daysInMonth = lastDayOfMonth.day;
-
-    final int totalDays = firstWeekdayOfMonth + daysInMonth;
-    final int numberOfRows = (totalDays / 7).ceil();
-
-    return Card(
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    setState(() {
-                      // Move to previous month
-                      _selectedDate = DateTime(
-                        _selectedDate.year,
-                        _selectedDate.month - 1,
-                        min(_selectedDate.day, DateTime(_selectedDate.year, _selectedDate.month, 0).day),
-                      );
-                    });
-                    _loadAppointments();
-                  },
-                ),
-                GestureDetector(
-                  onTap: () => _selectDate(context),
-                  child: Text(
-                    DateFormat('MMMM yyyy').format(_selectedDate),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.arrow_forward),
-                  onPressed: () {
-                    setState(() {
-                      // Move to next month
-                      _selectedDate = DateTime(
-                        _selectedDate.year,
-                        _selectedDate.month + 1,
-                        min(_selectedDate.day, DateTime(_selectedDate.year, _selectedDate.month + 2, 0).day),
-                      );
-                    });
-                    _loadAppointments();
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Day of week headers
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                for (String day in ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'])
-                  SizedBox(
-                    width: 30,
-                    child: Text(
-                      day,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.secondaryTextColor,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            // Calendar grid
-            for (int row = 0; row < numberOfRows; row++)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    for (int col = 0; col < 7; col++) 
-                      _buildMonthDayButton(context, row, col, firstWeekdayOfMonth, daysInMonth),
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMonthDayButton(BuildContext context, int row, int col, int firstWeekdayOfMonth, int daysInMonth) {
-    // Calculate the day number (1-based)
-    final int dayNumber = row * 7 + col + 1 - firstWeekdayOfMonth;
-
-    // Check if the day is within the current month
-    final bool isCurrentMonth = dayNumber > 0 && dayNumber <= daysInMonth;
-
-    if (!isCurrentMonth) {
-      // Return an empty container for days outside the current month
-      return Container(
-        width: 30,
-        height: 30,
-      );
-    }
-
-    // Create a DateTime for this day
-    final DateTime day = DateTime(
-      _selectedDate.year,
-      _selectedDate.month,
-      dayNumber,
-    );
-
-    // Check if this is the selected day
-    final bool isSelected = day.day == _selectedDate.day && 
-                           day.month == _selectedDate.month && 
-                           day.year == _selectedDate.year;
-
-    // Check if this is today
-    final DateTime now = DateTime.now();
-    final bool isToday = day.day == now.day && 
-                         day.month == now.month && 
-                         day.year == now.year;
-
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedDate = day;
-        });
-        _loadAppointments();
-      },
-      child: Container(
-        width: 30,
-        height: 30,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isSelected 
-              ? AppTheme.primaryColor 
-              : isToday 
-                  ? AppTheme.primaryColor.withOpacity(0.3) 
-                  : Colors.transparent,
-        ),
-        child: Center(
-          child: Text(
-            dayNumber.toString(),
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: isSelected || isToday ? FontWeight.bold : FontWeight.normal,
-              color: isSelected 
-                  ? Colors.white 
-                  : isToday 
-                      ? AppTheme.primaryColor 
-                      : AppTheme.primaryTextColor,
-            ),
-          ),
-        ),
       ),
     );
   }

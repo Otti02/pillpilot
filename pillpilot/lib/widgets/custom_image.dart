@@ -8,13 +8,13 @@ class CustomImage extends StatelessWidget {
   final BoxFit fit;
 
   const CustomImage({
-    Key? key,
+    super.key,
     this.imageUrl,
     this.assetPath,
     this.width,
     this.height,
     this.fit = BoxFit.cover,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -69,12 +69,12 @@ class CircularAvatar extends StatelessWidget {
   final String? initials;
 
   const CircularAvatar({
-    Key? key,
+    super.key,
     this.imageUrl,
     this.assetPath,
     this.size = 48,
     this.initials,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

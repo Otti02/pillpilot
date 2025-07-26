@@ -7,11 +7,11 @@ class CustomCard extends StatelessWidget {
   final EdgeInsetsGeometry? margin;
 
   const CustomCard({
-    Key? key,
+    super.key,
     required this.child,
     this.onTap,
     this.margin,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

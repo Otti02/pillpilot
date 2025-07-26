@@ -9,13 +9,13 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     this.label,
     this.hint,
     this.controller,
     this.obscureText = false,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

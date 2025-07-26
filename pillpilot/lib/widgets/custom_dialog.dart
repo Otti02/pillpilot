@@ -9,14 +9,14 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback? onCancel;
 
   const CustomDialog({
-    Key? key,
+    super.key,
     required this.title,
     required this.message,
     this.confirmText,
     this.cancelText,
     this.onConfirm,
     this.onCancel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

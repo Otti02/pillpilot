@@ -6,6 +6,8 @@ import 'services/service_provider.dart';
 import 'controllers/medication/medication_controller.dart';
 import 'controllers/appointment/appointment_controller.dart';
 import 'controllers/lexicon/lexicon_controller.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +47,16 @@ class MyApp extends StatelessWidget {
         title: 'Pill Pilot',
         theme: AppTheme.themeData,
         routerConfig: router,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('de', ''),
+          Locale('en', ''),
+        ],
+        locale: const Locale('de'),
       ),
     );
   }

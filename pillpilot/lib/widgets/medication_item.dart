@@ -12,7 +12,7 @@ class MedicationItem extends StatefulWidget {
   final bool showStrikethrough;
 
   const MedicationItem({
-    Key? key,
+    super.key,
     required this.medicationName,
     required this.dosage,
     required this.timeOfDay,
@@ -20,7 +20,7 @@ class MedicationItem extends StatefulWidget {
     this.notes = '',
     this.onToggle,
     this.showStrikethrough = true,
-  }) : super(key: key);
+  });
 
   @override
   State<MedicationItem> createState() => _MedicationItemState();

@@ -6,9 +6,9 @@ class LexiconDetailPage extends StatelessWidget {
   final LexiconEntry entry;
 
   const LexiconDetailPage({
-    Key? key,
+    super.key,
     required this.entry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

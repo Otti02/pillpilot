@@ -8,7 +8,7 @@ import '../widgets/custom_text_field.dart';
 class MedicationEditPage extends StatefulWidget {
   final Medication? medication;
 
-  const MedicationEditPage({Key? key, this.medication}) : super(key: key);
+  const MedicationEditPage({super.key, this.medication});
 
   @override
   State<MedicationEditPage> createState() => _MedicationEditPageState();

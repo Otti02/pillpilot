@@ -3,10 +3,9 @@ import '../theme/app_theme.dart';
 import '../models/appointment_model.dart';
 import '../services/appointment_service.dart';
 import '../services/service_provider.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();

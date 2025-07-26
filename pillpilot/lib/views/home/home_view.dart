@@ -9,7 +9,7 @@ import '../../services/appointment_service.dart';
 import '../../services/service_provider.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
                           color: AppTheme.primaryColor,
                         ),
                       ),
-                      if (appointment.notes != null && appointment.notes!.isNotEmpty) ...[
+                      if (appointment.notes.isNotEmpty) ...[
                         Text(
                           ' | ',
                           style: TextStyle(
@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Flexible(
                           child: Text(
-                            appointment.notes!,
+                            appointment.notes,
                             style: TextStyle(
                               fontSize: 14,
                               color: AppTheme.secondaryTextColor,
@@ -193,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            if (appointment.notes != null && appointment.notes!.isNotEmpty)
+            if (appointment.notes.isNotEmpty)
               Icon(
                 Icons.info_outline,
                 color: AppTheme.secondaryTextColor,
@@ -252,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              if (appointment.notes != null && appointment.notes!.isNotEmpty) ...[
+              if (appointment.notes.isNotEmpty) ...[
                 const SizedBox(height: 16),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        appointment.notes!,
+                        appointment.notes,
                         style: TextStyle(
                           fontSize: 14,
                           color: AppTheme.secondaryTextColor,
@@ -377,7 +377,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     )
-                        : Container(
+                        : SizedBox(
                       height: 200, // Fixed height for medications list
                       child: ListView.builder(
                         itemCount: _medications.length,
@@ -428,7 +428,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     )
-                        : Container(
+                        : SizedBox(
                       height: 200, // Fixed height for appointments list
                       child: ListView.builder(
                         itemCount: _todayAppointments.length,

@@ -7,10 +7,10 @@ class MainScreen extends StatelessWidget {
   final Widget child;
 
   const MainScreen({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.child,
-  }) : super(key: key);
+  });
 
   void _onTabTapped(int index) {
     // Use the centralized router to navigate to the selected tab
