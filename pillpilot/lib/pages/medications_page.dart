@@ -5,6 +5,7 @@ import '../models/medication_model.dart';
 import '../models/medication_state_model.dart';
 import '../theme/app_theme.dart';
 import 'package:intl/intl.dart';
+import '../widgets/medication_item.dart';
 import 'medication_edit_page.dart';
 
 class MedicationsPage extends StatelessWidget {
@@ -12,7 +13,6 @@ class MedicationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the controller if needed
     final controller = BlocProvider.of<MedicationController>(context);
     if (controller.state.medications.isEmpty) {
       controller.loadMedications();
@@ -155,78 +155,14 @@ class _MedicationsPageContent extends StatelessWidget {
                     itemCount: model.medications.length,
                     itemBuilder: (context, index) {
                       final medication = model.medications[index];
-                      return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppTheme.cardBackgroundColor,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.shadowColor,
-                              spreadRadius: 1,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            // Medication Icon
-                            Container(
-                              width: 48,
-                              height: 48,
-                              decoration: BoxDecoration(
-                                color: AppTheme.iconBackgroundColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Icons.medication,
-                                color: AppTheme.primaryColor,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-
-                            // Medication Info
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    medication.name,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppTheme.primaryTextColor,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    '${medication.dosage}, ${medication.timeOfDay}',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: AppTheme.secondaryTextColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            // Action Buttons
-                            Row(
-                              children: [
-                                IconButton(
-                                  icon: Icon(Icons.edit, color: AppTheme.primaryColor),
-                                  onPressed: () => _navigateToEditMedication(context, medication),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                  onPressed: () => _deleteMedication(context, medication),
-                                ),
-                              ],
-                            ),
-                          ],
+                      return MedicationItem(
+                          medicationName: medication.name,
+                          dosage: medication.dosage,
+                          timeOfDay: medication.timeOfDay,
+                          onTap: () => _navigateToEditMedication(context, medication),
+                        trailingWidget: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _deleteMedication(context, medication),
                         ),
                       );
                     },

@@ -6,6 +6,7 @@ import '../controllers/appointment/appointment_controller.dart';
 import '../models/appointment_model.dart';
 import '../models/appointment_state_model.dart';
 import '../theme/app_theme.dart';
+import '../widgets/appointment_item.dart';
 import '../widgets/custom_calendar.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -323,14 +324,9 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                   itemCount: model.appointments.length,
                   itemBuilder: (context, index) {
                     final appointment = model.appointments[index];
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 8),
-                      child: ListTile(
-                        title: Text(appointment.title),
-                        subtitle: Text(appointment.time.format(context)),
-                        trailing: const Icon(Icons.chevron_right),
-                        onTap: () => _showAppointmentDetails(context, appointment),
-                      ),
+                    return AppointmentItem(
+                      appointment: appointment,
+                      onTap: () => _showAppointmentDetails(context, appointment),
                     );
                   },
                 );

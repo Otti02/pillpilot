@@ -7,6 +7,8 @@ class MedicationItem extends StatefulWidget {
   final String dosage;
   final String timeOfDay;
   final bool isCompleted;
+  final Widget? trailingWidget; // Ein Widget für die rechte Seite
+  final VoidCallback? onTap;
   final String notes;
   final VoidCallback? onToggle;
   final bool showStrikethrough;
@@ -16,6 +18,8 @@ class MedicationItem extends StatefulWidget {
     required this.medicationName,
     required this.dosage,
     required this.timeOfDay,
+    this.trailingWidget,
+    this.onTap,
     this.isCompleted = false,
     this.notes = '',
     this.onToggle,
@@ -95,7 +99,6 @@ class _MedicationItemState extends State<MedicationItem> {
             ),
             const SizedBox(width: 16),
 
-            // Medication Info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,26 +123,28 @@ class _MedicationItemState extends State<MedicationItem> {
               ),
             ),
 
-            // Checkbox (display only, not clickable)
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: _isCompleted ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
-                  width: 2,
+            if (widget.trailingWidget != null)
+              widget.trailingWidget!
+            else
+              Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: _isCompleted ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
+                    width: 2,
+                  ),
+                  color: _isCompleted ? AppTheme.completedColor : Colors.transparent,
                 ),
-                color: _isCompleted ? AppTheme.completedColor : Colors.transparent,
+                child: _isCompleted
+                    ? const Icon(
+                  Icons.check,
+                  color: AppTheme.cardBackgroundColor,
+                  size: 16,
+                )
+                    : null,
               ),
-              child: _isCompleted
-                  ? const Icon(
-                      Icons.check,
-                      color: AppTheme.cardBackgroundColor,
-                      size: 16,
-                    )
-                  : null,
-            ),
           ],
         ),
       ),

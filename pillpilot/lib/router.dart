@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
 
 import 'pages/main_screen.dart';
-import 'views/home/home_view.dart';
+import 'pages/home_page.dart';
 import 'pages/medications_page.dart';
 import 'pages/lexicon_page.dart';
 import 'pages/calendar_page.dart';
