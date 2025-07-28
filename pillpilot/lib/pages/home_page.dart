@@ -62,6 +62,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _reloadData() {
+    _controller.loadMedications();
+  }
+
   String _getCurrentTime() {
     return DateFormat('HH:mm').format(DateTime.now());
   }
@@ -231,6 +235,7 @@ class _HomePageState extends State<HomePage> {
                         return MedicationItem(
                           medication: medication,
                           onToggle: () => _toggleMedicationCompletion(medication),
+                          onDataChanged: _reloadData,
                         );
                       },
                     ),

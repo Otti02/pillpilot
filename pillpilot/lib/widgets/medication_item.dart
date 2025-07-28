@@ -8,10 +8,12 @@ class MedicationItem extends StatefulWidget {
   final Widget? trailingWidget;
   final VoidCallback? onTap;
   final VoidCallback? onToggle; // Für isCompleted
+  final VoidCallback? onDataChanged;
 
   const MedicationItem({
     super.key,
     required this.medication, // <--- HIER: Required Medication-Objekt
+    this.onDataChanged,
     this.trailingWidget,
     this.onTap,
     this.onToggle,
@@ -30,6 +32,16 @@ class _MedicationItemState extends State<MedicationItem> {
     _isCompleted = widget.medication.isCompleted; // <--- An Medication-Objekt anpassen
   }
 
+  @override
+  void didUpdateWidget(covariant MedicationItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.medication.isCompleted != _isCompleted) {
+      setState(() {
+        _isCompleted = widget.medication.isCompleted;
+      });
+    }
+  }
+
   String _formatDaysOfWeek(List<int> days) {
     if (days.length == 7) return 'Täglich';
     if (days.isEmpty) return 'Keine Tage';
@@ -39,22 +51,22 @@ class _MedicationItemState extends State<MedicationItem> {
     return days.map((d) => dayMap[d] ?? '').join(', ');
   }
 
-  void _navigateToDetailPage() {
-    Navigator.push(
+  Future<void> _navigateToDetailPage() async {
+    final result = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
         builder: (context) => MedicationDetailPage(
           medication: widget.medication,
-          onToggle: (bool newValue) {
-            setState(() {
-              _isCompleted = newValue;
-            });
-            widget.onToggle?.call();
-          },
+          onToggle: (bool newValue) {},
         ),
       ),
     );
+
+    if (result == true) {
+      widget.onDataChanged!();
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -117,28 +129,34 @@ class _MedicationItemState extends State<MedicationItem> {
                 ],
               ),
             ),
-            if (widget.trailingWidget != null)
-              widget.trailingWidget!
-            else
-              Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: _isCompleted ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
-                    width: 2,
+            GestureDetector(
+              onTap: widget.onToggle,
+              child: Container(
+                width: 40,
+                height: 40,
+                color: Colors.transparent,
+                alignment: Alignment.center,
+                child: Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: _isCompleted ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
+                      width: 2,
+                    ),
+                    color: _isCompleted ? AppTheme.completedColor : Colors.transparent,
                   ),
-                  color: _isCompleted ? AppTheme.completedColor : Colors.transparent,
+                  child: _isCompleted
+                      ? const Icon(
+                    Icons.check,
+                    color: AppTheme.cardBackgroundColor,
+                    size: 16,
+                  )
+                      : null,
                 ),
-                child: _isCompleted
-                    ? const Icon(
-                  Icons.check,
-                  color: AppTheme.cardBackgroundColor,
-                  size: 16,
-                )
-                    : null,
               ),
+            ),
           ],
         ),
       ),

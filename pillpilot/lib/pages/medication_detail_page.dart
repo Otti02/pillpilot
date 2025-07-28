@@ -7,6 +7,7 @@ import '../theme/app_theme.dart';
 import '../widgets/custom_button.dart';
 import '../models/medication_model.dart';
 import '../controllers/medication/medication_controller.dart';
+import '../widgets/large_checkbox_tile.dart';
 import 'medication_edit_page.dart';
 
 class MedicationDetailPage extends StatefulWidget {
@@ -43,8 +44,6 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
     setState(() {
       _enableReminders = newValue;
     });
-
-    final Medication updatedMedication = widget.medication.copyWith(enableReminders: newValue);
   }
 
   void _toggleCompletion(bool value) {
@@ -53,9 +52,17 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
     });
   }
 
-  void _saveAndGoBack() {
-    widget.onToggle(_isCompleted);
-    Navigator.pop(context);
+  Future<void> _saveAndGoBack() async {
+    final updatedMedication = widget.medication.copyWith(
+      isCompleted: _isCompleted,
+      enableReminders: _enableReminders,
+    );
+
+    await _medicationController.updateMedication(updatedMedication);
+
+    if (mounted) {
+      Navigator.pop(context, true);
+    }
   }
 
   String _formatDaysOfWeek(List<int> days) {
@@ -92,18 +99,26 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
               const SizedBox(height: 16),
               _buildDetailCard('Notizen', widget.medication.notes.isNotEmpty ? widget.medication.notes : 'Keine Notizen vorhanden.', isNote: true),
               const SizedBox(height: 32),
-              SwitchListTile(
-                title: const Text('Erinnerungen aktivieren'),
+              LargeCheckboxListTile(
+                title: 'Erinnerungen aktivieren',
                 value: _enableReminders,
-                onChanged: _toggleEnableReminders,
-                activeColor: AppTheme.primaryColor,
+                onChanged: (bool? newValue) {
+                  if (newValue != null) {
+                    _toggleEnableReminders(newValue);
+                  }
+                },
+                scale: 1.5,
               ),
-              const SizedBox(height: 32),
-              SwitchListTile(
-                title: const Text('Als eingenommen markieren'),
+              const SizedBox(height: 16),
+              LargeCheckboxListTile(
+                title: 'Eingenommen',
                 value: _isCompleted,
-                onChanged: _toggleCompletion,
-                activeColor: AppTheme.primaryColor,
+                onChanged: (bool? newValue) {
+                  if (newValue != null) {
+                    _toggleCompletion(newValue);
+                  }
+                },
+                scale: 1.5,
               ),
               const SizedBox(height: 32),
               Row(

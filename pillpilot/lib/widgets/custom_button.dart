@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart'; // Stelle sicher, dass der Pfad zu deinem Theme korrekt ist
+import '../theme/app_theme.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final bool isOutlined;
   final bool isLoading;
-  final Color? color; // Optional: für spezielle Farben wie Rot beim Löschen
+  final Color? color;
 
   const CustomButton({
     super.key,
