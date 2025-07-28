@@ -198,13 +198,6 @@ class _HomePageState extends State<HomePage> {
                       color: AppTheme.primaryTextColor,
                     ),
                   ),
-                  Text(
-                    'Übersicht aller heutigen Einnahmen',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                  ),
                   if (_welcomeMessage.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
@@ -227,7 +220,6 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildSectionTitle('Deine Medikamente'),
                     _medications.isEmpty
                         ? _buildEmptyState('Keine Medikamente vorhanden')
                         : ListView.builder(
@@ -239,7 +231,8 @@ class _HomePageState extends State<HomePage> {
                         return MedicationItem(
                           medicationName: medication.name,
                           dosage: medication.dosage,
-                          timeOfDay: medication.timeOfDay,
+                          time: medication.time,
+                          daysOfWeek: medication.daysOfWeek,
                           isCompleted: medication.isCompleted,
                           notes: medication.notes,
                           onToggle: () => _toggleMedicationCompletion(medication),

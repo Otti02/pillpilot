@@ -5,24 +5,14 @@ import '../models/medication_model.dart';
 import '../models/medication_state_model.dart';
 import '../theme/app_theme.dart';
 import 'package:intl/intl.dart';
+import '../widgets/custom_button.dart'; // Import für den CustomButton
 import '../widgets/medication_item.dart';
 import 'medication_edit_page.dart';
+
 
 class MedicationsPage extends StatelessWidget {
   const MedicationsPage({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final controller = BlocProvider.of<MedicationController>(context);
-    if (controller.state.medications.isEmpty) {
-      controller.loadMedications();
-    }
-    
-    return _MedicationsPageContent();
-  }
-}
-
-class _MedicationsPageContent extends StatelessWidget {
   String _getCurrentTime() {
     return DateFormat('HH:mm').format(DateTime.now());
   }
@@ -34,9 +24,7 @@ class _MedicationsPageContent extends StatelessWidget {
         builder: (context) => MedicationEditPage(),
       ),
     );
-
     if (result == true) {
-      // Medication was created, refresh the list
       BlocProvider.of<MedicationController>(context).loadMedications();
     }
   }
@@ -48,9 +36,7 @@ class _MedicationsPageContent extends StatelessWidget {
         builder: (context) => MedicationEditPage(medication: medication),
       ),
     );
-
     if (result == true) {
-      // Medication was updated, refresh the list
       BlocProvider.of<MedicationController>(context).loadMedications();
     }
   }
@@ -58,30 +44,39 @@ class _MedicationsPageContent extends StatelessWidget {
   void _deleteMedication(BuildContext context, Medication medication) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text('Medikament löschen'),
         content: Text('Möchtest du "${medication.name}" wirklich löschen?'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Abbrechen'),
-          ),
-          TextButton(
-            onPressed: () async {
-              // Store medication name before async operation
-              final medicationName = medication.name;
-              Navigator.pop(context);
-              await BlocProvider.of<MedicationController>(context).deleteMedication(medication.id);
-
-              // Check if the widget is still mounted before using context
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('$medicationName wurde gelöscht'),
+          Row(
+            children: [
+              Expanded(
+                child: CustomButton(
+                  text: 'Abbrechen',
+                  isOutlined: true,
+                  onPressed: () => Navigator.of(dialogContext).pop(),
                 ),
-              );
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: Text('Löschen'),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: CustomButton(
+                  text: 'Löschen',
+                  color: Colors.red,
+                  onPressed: () async {
+                    final medicationName = medication.name;
+                    Navigator.of(dialogContext).pop();
+                    await BlocProvider.of<MedicationController>(context)
+                        .deleteMedication(medication.id);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('$medicationName wurde gelöscht')),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -106,29 +101,9 @@ class _MedicationsPageContent extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _getCurrentTime(),
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryTextColor,
-                    ),
-                  ),
-                  Text(
-                    'Deine Medikamente',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.primaryTextColor,
-                    ),
-                  ),
-                  Text(
-                    'Übersicht aller Medikamente',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppTheme.secondaryTextColor,
-                    ),
-                  ),
+                  Text(_getCurrentTime(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  const Text('Deine Medikamente', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                  Text('Übersicht aller Medikamente', style: TextStyle(fontSize: 14, color: AppTheme.secondaryTextColor)),
                 ],
               ),
             ),
@@ -138,30 +113,23 @@ class _MedicationsPageContent extends StatelessWidget {
                   if (model.isLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  
+
                   if (model.medications.isEmpty) {
-                    return Center(
-                      child: Text(
-                        'Keine Medikamente vorhanden',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: AppTheme.secondaryTextColor,
-                        ),
-                      ),
-                    );
+                    return Center(child: Text('Keine Medikamente vorhanden', style: TextStyle(fontSize: 16, color: AppTheme.secondaryTextColor)));
                   }
-                  
+
                   return ListView.builder(
                     itemCount: model.medications.length,
                     itemBuilder: (context, index) {
                       final medication = model.medications[index];
                       return MedicationItem(
-                          medicationName: medication.name,
-                          dosage: medication.dosage,
-                          timeOfDay: medication.timeOfDay,
-                          onTap: () => _navigateToEditMedication(context, medication),
+                        medicationName: medication.name,
+                        dosage: medication.dosage,
+                        time: medication.time,
+                        daysOfWeek: medication.daysOfWeek,
+                        onTap: () => _navigateToEditMedication(context, medication),
                         trailingWidget: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () => _deleteMedication(context, medication),
                         ),
                       );

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import '../models/medication_model.dart';
 import '../pages/medication_detail_page.dart';
 import '../theme/app_theme.dart';
 
 class MedicationItem extends StatefulWidget {
   final String medicationName;
   final String dosage;
-  final String timeOfDay;
+  final TimeOfDay time;
+  final List<int> daysOfWeek;
   final bool isCompleted;
-  final Widget? trailingWidget; // Ein Widget für die rechte Seite
+  final Widget? trailingWidget;
   final VoidCallback? onTap;
   final String notes;
   final VoidCallback? onToggle;
@@ -17,7 +19,8 @@ class MedicationItem extends StatefulWidget {
     super.key,
     required this.medicationName,
     required this.dosage,
-    required this.timeOfDay,
+    required this.time,
+    required this.daysOfWeek,
     this.trailingWidget,
     this.onTap,
     this.isCompleted = false,
@@ -39,6 +42,15 @@ class _MedicationItemState extends State<MedicationItem> {
     _isCompleted = widget.isCompleted;
   }
 
+  String _formatDaysOfWeek(List<int> days) {
+    if (days.length == 7) return 'Täglich';
+    if (days.isEmpty) return 'Keine Tage';
+
+    const dayMap = {1: 'Mo', 2: 'Di', 3: 'Mi', 4: 'Do', 5: 'Fr', 6: 'Sa', 7: 'So'};
+    days.sort();
+    return days.map((d) => dayMap[d] ?? '').join(', ');
+  }
+
   void _navigateToDetailPage() {
     Navigator.push(
       context,
@@ -46,7 +58,8 @@ class _MedicationItemState extends State<MedicationItem> {
         builder: (context) => MedicationDetailPage(
           medicationName: widget.medicationName,
           dosage: widget.dosage,
-          timeOfDay: widget.timeOfDay,
+          time: widget.time,
+          daysOfWeek: widget.daysOfWeek,
           isCompleted: _isCompleted,
           notes: widget.notes,
           onToggle: (bool newValue) {
@@ -62,8 +75,11 @@ class _MedicationItemState extends State<MedicationItem> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
+    final effectiveOnTap = widget.onTap ?? _navigateToDetailPage;
+
     return GestureDetector(
       onTap: _navigateToDetailPage,
       child: Container(
@@ -83,7 +99,6 @@ class _MedicationItemState extends State<MedicationItem> {
         ),
         child: Row(
           children: [
-            // Medication Icon
             Container(
               width: 48,
               height: 48,
@@ -98,7 +113,6 @@ class _MedicationItemState extends State<MedicationItem> {
               ),
             ),
             const SizedBox(width: 16),
-
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,16 +127,16 @@ class _MedicationItemState extends State<MedicationItem> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${widget.dosage}, ${widget.timeOfDay}',
+                    '${widget.dosage} · ${widget.time.format(context)} · ${_formatDaysOfWeek(widget.daysOfWeek)}',
                     style: TextStyle(
                       fontSize: 14,
                       color: _isCompleted ? AppTheme.completedTextColor : AppTheme.secondaryTextColor,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
-
             if (widget.trailingWidget != null)
               widget.trailingWidget!
             else

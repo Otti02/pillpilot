@@ -7,6 +7,7 @@ import '../models/appointment_model.dart';
 import '../models/appointment_state_model.dart';
 import '../theme/app_theme.dart';
 import '../widgets/appointment_item.dart';
+import '../widgets/custom_button.dart';
 import '../widgets/custom_calendar.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -92,6 +93,8 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
 
       if (!mounted) return;
 
+      _loadAppointments();
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Termin erfolgreich gelöscht')),
       );
@@ -176,14 +179,14 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(
+              CustomButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('Abbrechen'),
+                text: 'Abbrechen',
               ),
               const SizedBox(width: 8),
-              ElevatedButton(
+              CustomButton(
                 onPressed: () => _addAppointment(dialogContext),
-                child: const Text('Speichern'),
+                text: 'Speichern',
               ),
             ],
           ),
@@ -221,18 +224,18 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(
+              CustomButton(
+                text: 'Löschen',
+                color: Colors.red,
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                   _deleteAppointment(appointment.id);
                 },
-                style: TextButton.styleFrom(foregroundColor: Colors.red),
-                child: const Text('Löschen'),
               ),
               const SizedBox(width: 8),
-              ElevatedButton(
+              CustomButton(
+                text: 'Schließen',
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('Schließen'),
               ),
             ],
           ),

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/medication_model.dart';
 import '../../models/medication_state_model.dart';
@@ -22,13 +23,24 @@ class MedicationController extends Cubit<MedicationModel> {
       emit(state.copyWith(medications: medications, isLoading: false));
     } catch (e) {
       emit(state.copyWith(isLoading: false));
-      // Error handling could be improved here
     }
   }
 
-  Future<Medication> createMedication(String name, String dosage, String timeOfDay, {String notes = ''}) async {
+  Future<Medication> createMedication(
+      String name,
+      String dosage,
+      TimeOfDay time,
+      List<int> daysOfWeek, {
+        String notes = '',
+      }) async {
     emit(state.copyWith(isLoading: true));
-    final medication = await medicationService.createMedication(name, dosage, timeOfDay, notes: notes);
+    final medication = await medicationService.createMedication(
+      name,
+      dosage,
+      time,
+      daysOfWeek,
+      notes: notes,
+    );
     await loadMedications();
     return medication;
   }

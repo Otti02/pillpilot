@@ -126,5 +126,14 @@ class AppTheme {
         borderRadius: BorderRadius.circular(12),
       ),
     ),
+
+    dialogTheme: DialogTheme(
+      backgroundColor: cardBackgroundColor,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+    ),
   );
+
 }

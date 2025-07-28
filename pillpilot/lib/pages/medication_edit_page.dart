@@ -15,11 +15,13 @@ class MedicationEditPage extends StatefulWidget {
 }
 
 class _MedicationEditPageState extends State<MedicationEditPage> {
-  // No form key needed for manual validation
   final _nameController = TextEditingController();
   final _dosageController = TextEditingController();
-  final _timeOfDayController = TextEditingController();
   final _notesController = TextEditingController();
+
+
+  late TimeOfDay _selectedTime;
+  final Set<int> _selectedDays = {};
 
   late final MedicationController _controller;
   bool _isLoading = false;
@@ -29,12 +31,14 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
     super.initState();
     _controller = MedicationController();
 
-    // If editing an existing medication, populate the form
     if (widget.medication != null) {
       _nameController.text = widget.medication!.name;
       _dosageController.text = widget.medication!.dosage;
-      _timeOfDayController.text = widget.medication!.timeOfDay;
       _notesController.text = widget.medication!.notes;
+      _selectedTime = widget.medication!.time;
+      _selectedDays.addAll(widget.medication!.daysOfWeek);
+    } else {
+      _selectedTime = TimeOfDay.now();
     }
   }
 
@@ -42,95 +46,127 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
   void dispose() {
     _nameController.dispose();
     _dosageController.dispose();
-    _timeOfDayController.dispose();
     _notesController.dispose();
     super.dispose();
   }
 
-  String _getCurrentTime() {
-    return DateFormat('HH:mm').format(DateTime.now());
-  }
-
   Future<void> _saveMedication() async {
-    // Manual validation
-    bool isValid = true;
-    String errorMessage = '';
-
     if (_nameController.text.isEmpty) {
-      isValid = false;
-      errorMessage = 'Bitte gib einen Namen ein';
-    } else if (_dosageController.text.isEmpty) {
-      isValid = false;
-      errorMessage = 'Bitte gib eine Dosierung ein';
-    } else if (_timeOfDayController.text.isEmpty) {
-      isValid = false;
-      errorMessage = 'Bitte gib eine Einnahmezeit ein';
+      _showError('Bitte gib einen Namen ein.');
+      return;
     }
-
-    if (!isValid) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-        ),
-      );
+    if (_dosageController.text.isEmpty) {
+      _showError('Bitte gib eine Dosierung ein.');
+      return;
+    }
+    if (_selectedDays.isEmpty) {
+      _showError('Bitte wähle mindestens einen Wochentag aus.');
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
 
     try {
       if (widget.medication == null) {
-        // Create new medication
         await _controller.createMedication(
           _nameController.text,
           _dosageController.text,
-          _timeOfDayController.text,
+          _selectedTime,
+          _selectedDays.toList(),
           notes: _notesController.text,
         );
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Medikament erstellt')),
-          );
-          Navigator.pop(context, true);
-        }
       } else {
-        // Update existing medication
         final updatedMedication = widget.medication!.copyWith(
           name: _nameController.text,
           dosage: _dosageController.text,
-          timeOfDay: _timeOfDayController.text,
+          time: _selectedTime,
+          daysOfWeek: _selectedDays.toList(),
           notes: _notesController.text,
         );
-
         await _controller.updateMedication(updatedMedication);
+      }
 
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Medikament aktualisiert')),
-          );
-          Navigator.pop(context, true);
-        }
+      if (mounted) {
+        final message = widget.medication == null ? 'Medikament erstellt' : 'Medikament aktualisiert';
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+        Navigator.pop(context, true);
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Fehler: ${e.toString()}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      _showError('Fehler: ${e.toString()}');
     } finally {
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
       }
     }
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
+
+  Widget _buildTimePicker() {
+    return InkWell(
+      onTap: () async {
+        final pickedTime = await showTimePicker(
+          context: context,
+          initialTime: _selectedTime,
+          initialEntryMode: TimePickerEntryMode.input,
+        );
+        if (pickedTime != null) {
+          setState(() => _selectedTime = pickedTime);
+        }
+      },
+      child: InputDecorator(
+        decoration: const InputDecoration(
+          labelText: 'Uhrzeit',
+          border: OutlineInputBorder(),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(_selectedTime.format(context)),
+            const Icon(Icons.access_time),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWeekdaySelector() {
+    final weekdays = {1: 'Mo', 2: 'Di', 3: 'Mi', 4: 'Do', 5: 'Fr', 6: 'Sa', 7: 'So'};
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('Einnahmetage', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: weekdays.entries.map((entry) {
+            final isSelected = _selectedDays.contains(entry.key);
+            return FilterChip(
+              label: Text(entry.value),
+              selected: isSelected,
+              onSelected: (selected) {
+                setState(() {
+                  if (selected) {
+                    _selectedDays.add(entry.key);
+                  } else {
+                    _selectedDays.remove(entry.key);
+                  }
+                });
+              },
+              selectedColor: AppTheme.primaryColor,
+              checkmarkColor: Colors.white,
+              labelStyle: TextStyle(color: isSelected ? Colors.white : AppTheme.primaryTextColor),
+            );
+          }).toList(),
+        ),
+      ],
+    );
   }
 
   @override
@@ -139,144 +175,81 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      // Add a back button at the top
       appBar: AppBar(
+        title: Text(isEditing ? 'Medikament bearbeiten' : 'Neues Medikament'),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppTheme.primaryColor),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header section with time, title, and subtitle
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          _getCurrentTime(),
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.primaryTextColor,
-                          ),
-                        ),
-                        Text(
-                          isEditing ? 'Medikament bearbeiten' : 'Neues Medikament',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.primaryTextColor,
-                          ),
-                        ),
-                        Text(
-                          isEditing ? 'Aktualisiere die Medikamentendetails' : 'Füge ein neues Medikament hinzu',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: AppTheme.secondaryTextColor,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // Form fields
-                  Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Name Field
-                          CustomTextField(
-                            label: 'Name',
-                            hint: 'z.B. Ibuprofen',
-                            controller: _nameController,
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Dosage Field
-                          CustomTextField(
-                            label: 'Dosierung',
-                            hint: 'z.B. 200mg',
-                            controller: _dosageController,
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Time of Day Field
-                          CustomTextField(
-                            label: 'Einnahmezeit',
-                            hint: 'z.B. Morgens',
-                            controller: _timeOfDayController,
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Notes Field
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Notizen',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppTheme.primaryTextColor,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(color: Colors.grey.shade300),
-                                ),
-                                child: TextField(
-                                  controller: _notesController,
-                                  maxLines: 5,
-                                  decoration: InputDecoration(
-                                    hintText: 'Zusätzliche Informationen zum Medikament',
-                                    hintStyle: TextStyle(color: Colors.grey.shade500),
-                                    contentPadding: const EdgeInsets.all(16),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 32),
-
-                          // Save Button
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _saveMedication,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppTheme.primaryColor,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              child: Text(
-                                isEditing ? 'Aktualisieren' : 'Erstellen',
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextField(
+                label: 'Name',
+                hint: 'z.B. Ibuprofen',
+                controller: _nameController,
               ),
-            ));
+              const SizedBox(height: 16),
+              CustomTextField(
+                label: 'Dosierung',
+                hint: 'z.B. 200mg',
+                controller: _dosageController,
+              ),
+              const SizedBox(height: 16),
+
+              _buildTimePicker(),
+              const SizedBox(height: 24),
+              _buildWeekdaySelector(),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      if (_selectedDays.length == 7) {
+                        _selectedDays.clear();
+                      } else {
+                        _selectedDays.clear();
+                        _selectedDays.addAll([1, 2, 3, 4, 5, 6, 7]);
+                      }
+                    });
+                  },
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppTheme.primaryColor,
+                    side: BorderSide(color: AppTheme.primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Alle Tage auswählen'),
+                ),
+              ),
+              const SizedBox(height: 24),
+              TextField(
+                controller: _notesController,
+                maxLines: 4,
+                decoration: const InputDecoration(
+                  labelText: 'Notizen (optional)',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _saveMedication,
+                  child: Text(isEditing ? 'Aktualisieren' : 'Speichern'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
+

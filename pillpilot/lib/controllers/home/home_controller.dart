@@ -30,12 +30,20 @@ class HomeController extends Controller implements InitializableController {
 
   Future<void> loadMedications() async {
     try {
-      final medications = await _medicationService.getMedications();
-      onMedicationsLoaded?.call(medications);
+      final todayWeekday = DateTime.now().weekday;
+
+      final allMedications = await _medicationService.getMedications();
+
+      final todaysMedications = allMedications
+          .where((medication) => medication.daysOfWeek.contains(todayWeekday))
+          .toList();
+
+      onMedicationsLoaded?.call(todaysMedications);
     } catch (e) {
       onError?.call('Failed to load medications: ${e.toString()}');
     }
   }
+
 
   Future<void> loadAppointments() async {
     try {
