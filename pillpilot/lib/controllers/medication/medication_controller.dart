@@ -4,12 +4,17 @@ import '../../models/medication_model.dart';
 import '../../models/medication_state_model.dart';
 import '../../services/medication_service.dart';
 import '../../services/service_provider.dart';
+import '../../services/notification_service.dart';
 
 class MedicationController extends Cubit<MedicationModel> {
   final MedicationService medicationService;
+  final NotificationService _notificationService;
 
-  MedicationController({MedicationService? medicationService})
-      : medicationService = medicationService ?? ServiceProvider().medicationService,
+  MedicationController({
+    MedicationService? medicationService,
+    NotificationService? notificationService,
+  })  : medicationService = medicationService ?? ServiceProvider().medicationService,
+        _notificationService = notificationService ?? ServiceProvider().notificationService,
         super(MedicationModel(medications: []));
 
   void initialize() {
@@ -21,6 +26,11 @@ class MedicationController extends Cubit<MedicationModel> {
       emit(state.copyWith(isLoading: true));
       final medications = await medicationService.getMedications();
       emit(state.copyWith(medications: medications, isLoading: false));
+
+      for (var med in medications) {
+        _notificationService.scheduleMedicationNotification(medication: med);
+      }
+
     } catch (e) {
       emit(state.copyWith(isLoading: false));
     }
@@ -42,6 +52,7 @@ class MedicationController extends Cubit<MedicationModel> {
       notes: notes,
     );
     await loadMedications();
+    _notificationService.scheduleMedicationNotification(medication: medication);
     return medication;
   }
 
@@ -49,6 +60,7 @@ class MedicationController extends Cubit<MedicationModel> {
     emit(state.copyWith(isLoading: true));
     final updatedMedication = await medicationService.updateMedication(medication);
     await loadMedications();
+    _notificationService.scheduleMedicationNotification(medication: updatedMedication);
     return updatedMedication;
   }
 
@@ -56,6 +68,7 @@ class MedicationController extends Cubit<MedicationModel> {
     emit(state.copyWith(isLoading: true));
     await medicationService.deleteMedication(id);
     await loadMedications();
+    _notificationService.cancelMedicationNotifications(id);
   }
 
   Future<void> toggleMedicationCompletion(String id, bool isCompleted) async {

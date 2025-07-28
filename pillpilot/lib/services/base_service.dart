@@ -16,7 +16,7 @@ abstract class PersistenceService {
 class HivePersistenceService  implements PersistenceService {
   static const String _boxName = 'pillpilot_data';
 
-  late Box _box;
+  late Box<dynamic> _box;
 
   static final HivePersistenceService _instance = HivePersistenceService._internal();
 

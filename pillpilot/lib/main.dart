@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:timezone/data/latest.dart';
 import 'theme/app_theme.dart';
 import 'router.dart';
 import 'services/service_provider.dart';
@@ -11,9 +12,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initializeTimeZones();
 
   // Initialize services
   await ServiceProvider().initialize();
+
 
   runApp(const MyApp());
 }
@@ -30,6 +33,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<MedicationController>(
           create: (context) => MedicationController(
             medicationService: ServiceProvider().medicationService,
+              notificationService: ServiceProvider().notificationService,
           )..initialize(),
         ),
         BlocProvider<AppointmentController>(

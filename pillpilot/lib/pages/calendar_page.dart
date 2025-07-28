@@ -92,18 +92,10 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
       await controller.deleteAppointment(id);
 
       if (!mounted) return;
-
       _loadAppointments();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Termin erfolgreich gelöscht')),
-      );
     } catch (e) {
       if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fehler beim Löschen des Termins: $e')),
-      );
     }
   }
 

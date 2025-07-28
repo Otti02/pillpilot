@@ -17,6 +17,8 @@ class Medication extends BaseModel implements Persistable {
 
   final String notes;
 
+  final bool enableReminders;
+
   Medication({
     required this.id,
     required this.name,
@@ -25,6 +27,7 @@ class Medication extends BaseModel implements Persistable {
     required this.daysOfWeek,
     this.isCompleted = false,
     this.notes = '',
+    this.enableReminders = true,
   });
 
   static TimeOfDay _timeOfDayFromString(String timeString) {
@@ -41,6 +44,7 @@ class Medication extends BaseModel implements Persistable {
       daysOfWeek: (json['daysOfWeek'] as List<dynamic>?)?.cast<int>() ?? [],
       isCompleted: json['isCompleted'] as bool? ?? false,
       notes: json['notes'] as String? ?? '',
+      enableReminders: json['enableReminders'] as bool? ?? true,
     );
   }
 
@@ -54,6 +58,7 @@ class Medication extends BaseModel implements Persistable {
       'daysOfWeek': daysOfWeek,
       'isCompleted': isCompleted,
       'notes': notes,
+      'enableReminders': enableReminders,
     };
   }
 
@@ -65,6 +70,7 @@ class Medication extends BaseModel implements Persistable {
     List<int>? daysOfWeek,
     bool? isCompleted,
     String? notes,
+    bool? enableReminders,
   }) {
     return Medication(
       id: id ?? this.id,
@@ -74,6 +80,7 @@ class Medication extends BaseModel implements Persistable {
       daysOfWeek: daysOfWeek ?? this.daysOfWeek,
       isCompleted: isCompleted ?? this.isCompleted,
       notes: notes ?? this.notes,
+      enableReminders: enableReminders ?? this.enableReminders,
     );
   }
 }

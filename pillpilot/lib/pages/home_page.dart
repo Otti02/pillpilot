@@ -229,12 +229,7 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         final medication = _medications[index];
                         return MedicationItem(
-                          medicationName: medication.name,
-                          dosage: medication.dosage,
-                          time: medication.time,
-                          daysOfWeek: medication.daysOfWeek,
-                          isCompleted: medication.isCompleted,
-                          notes: medication.notes,
+                          medication: medication,
                           onToggle: () => _toggleMedicationCompletion(medication),
                         );
                       },

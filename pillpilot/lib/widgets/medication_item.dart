@@ -4,29 +4,17 @@ import '../pages/medication_detail_page.dart';
 import '../theme/app_theme.dart';
 
 class MedicationItem extends StatefulWidget {
-  final String medicationName;
-  final String dosage;
-  final TimeOfDay time;
-  final List<int> daysOfWeek;
-  final bool isCompleted;
+  final Medication medication; // <--- HIER: Gesamtes Medication-Objekt
   final Widget? trailingWidget;
   final VoidCallback? onTap;
-  final String notes;
-  final VoidCallback? onToggle;
-  final bool showStrikethrough;
+  final VoidCallback? onToggle; // Für isCompleted
 
   const MedicationItem({
     super.key,
-    required this.medicationName,
-    required this.dosage,
-    required this.time,
-    required this.daysOfWeek,
+    required this.medication, // <--- HIER: Required Medication-Objekt
     this.trailingWidget,
     this.onTap,
-    this.isCompleted = false,
-    this.notes = '',
     this.onToggle,
-    this.showStrikethrough = true,
   });
 
   @override
@@ -39,7 +27,7 @@ class _MedicationItemState extends State<MedicationItem> {
   @override
   void initState() {
     super.initState();
-    _isCompleted = widget.isCompleted;
+    _isCompleted = widget.medication.isCompleted; // <--- An Medication-Objekt anpassen
   }
 
   String _formatDaysOfWeek(List<int> days) {
@@ -56,32 +44,24 @@ class _MedicationItemState extends State<MedicationItem> {
       context,
       MaterialPageRoute(
         builder: (context) => MedicationDetailPage(
-          medicationName: widget.medicationName,
-          dosage: widget.dosage,
-          time: widget.time,
-          daysOfWeek: widget.daysOfWeek,
-          isCompleted: _isCompleted,
-          notes: widget.notes,
+          medication: widget.medication,
           onToggle: (bool newValue) {
             setState(() {
               _isCompleted = newValue;
             });
-            if (widget.onToggle != null) {
-              widget.onToggle!();
-            }
+            widget.onToggle?.call();
           },
         ),
       ),
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final effectiveOnTap = widget.onTap ?? _navigateToDetailPage;
 
     return GestureDetector(
-      onTap: _navigateToDetailPage,
+      onTap: effectiveOnTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         padding: const EdgeInsets.all(16),
@@ -118,7 +98,7 @@ class _MedicationItemState extends State<MedicationItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.medicationName,
+                    widget.medication.name, // <--- Hier angepasst
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -127,7 +107,7 @@ class _MedicationItemState extends State<MedicationItem> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${widget.dosage} · ${widget.time.format(context)} · ${_formatDaysOfWeek(widget.daysOfWeek)}',
+                    '${widget.medication.dosage} · ${widget.medication.time.format(context)} · ${_formatDaysOfWeek(widget.medication.daysOfWeek)}', // <--- Hier angepasst
                     style: TextStyle(
                       fontSize: 14,
                       color: _isCompleted ? AppTheme.completedTextColor : AppTheme.secondaryTextColor,

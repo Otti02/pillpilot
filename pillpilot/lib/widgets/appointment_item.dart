@@ -17,14 +17,12 @@ class AppointmentItem extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
-        // Ein führendes Icon für ein konsistentes Aussehen
         leading: Icon(
           Icons.event_available, // Ein passenderes Icon
           color: AppTheme.primaryColor,
         ),
         title: Text(appointment.title),
         subtitle: Text(appointment.time.format(context)),
-        // Zeigt einen Pfeil an, wenn das Element klickbar ist
         trailing: onTap != null ? const Icon(Icons.chevron_right) : null,
         onTap: onTap,
       ),

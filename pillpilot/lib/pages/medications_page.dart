@@ -67,12 +67,6 @@ class MedicationsPage extends StatelessWidget {
                     Navigator.of(dialogContext).pop();
                     await BlocProvider.of<MedicationController>(context)
                         .deleteMedication(medication.id);
-
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('$medicationName wurde gelöscht')),
-                      );
-                    }
                   },
                 ),
               ),
@@ -123,10 +117,7 @@ class MedicationsPage extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final medication = model.medications[index];
                       return MedicationItem(
-                        medicationName: medication.name,
-                        dosage: medication.dosage,
-                        time: medication.time,
-                        daysOfWeek: medication.daysOfWeek,
+                        medication: medication,
                         onTap: () => _navigateToEditMedication(context, medication),
                         trailingWidget: IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),

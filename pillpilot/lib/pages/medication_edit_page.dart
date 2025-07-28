@@ -113,6 +113,14 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
           context: context,
           initialTime: _selectedTime,
           initialEntryMode: TimePickerEntryMode.input,
+          builder: (BuildContext context, Widget? child) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                alwaysUse24HourFormat: true,
+              ),
+              child: child!,
+            );
+          },
         );
         if (pickedTime != null) {
           setState(() => _selectedTime = pickedTime);

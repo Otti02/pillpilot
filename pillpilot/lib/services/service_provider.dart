@@ -1,8 +1,8 @@
-import 'auth_service.dart';
 import 'base_service.dart';
 import 'medication_service.dart';
 import 'lexicon_service.dart';
 import 'appointment_service.dart';
+import 'notification_service.dart';
 
 
 class ServiceProvider {
@@ -14,8 +14,6 @@ class ServiceProvider {
 
   ServiceProvider._internal();
 
-  late final AuthService _authService;
-
   late final PersistenceService _persistenceService;
 
   late final MedicationService _medicationService;
@@ -24,6 +22,8 @@ class ServiceProvider {
 
   late final AppointmentService _appointmentService;
 
+  late final NotificationService _notificationService;
+
   Future<void> initialize() async {
     _persistenceService = ServiceFactory().getPersistenceService();
 
@@ -31,13 +31,13 @@ class ServiceProvider {
       await (_persistenceService).initialize();
     }
 
-    _authService = AuthServiceImpl();
     _medicationService = MedicationServiceImpl();
     _lexiconService = LexiconServiceImpl();
     _appointmentService = AppointmentServiceImpl();
+    _notificationService = NotificationServiceImpl();
+    await _notificationService.initialize();
   }
 
-  AuthService get authService => _authService;
 
   PersistenceService get persistenceService => _persistenceService;
 
@@ -46,4 +46,6 @@ class ServiceProvider {
   LexiconService get lexiconService => _lexiconService;
 
   AppointmentService get appointmentService => _appointmentService;
+
+  NotificationService get notificationService => _notificationService;
 }
