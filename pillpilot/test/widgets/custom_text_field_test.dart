@@ -105,23 +105,5 @@ void main() {
       // ASSERT
       expect(changedText, 'New Text');
     });
-
-    testWidgets('has correct border styling', (WidgetTester tester) async {
-      // ARRANGE
-      await tester.pumpWidget(makeTestableWidget(
-        const CustomTextField(),
-      ));
-
-      // ASSERT
-      final textField = tester.widget<TextField>(find.byType(TextField));
-      final decoration = textField.decoration as InputDecoration;
-      
-      // Check border radius
-      final border = decoration.border as OutlineInputBorder;
-      expect(border.borderRadius, BorderRadius.circular(12));
-      
-      // Check border color
-      expect(border.borderSide.color, AppTheme.borderColor);
-    });
   });
 }

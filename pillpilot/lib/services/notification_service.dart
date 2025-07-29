@@ -1,8 +1,7 @@
 import '../models/medication_model.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz; // HIER IST DIE WICHTIGE ÄNDERUNG
-import 'package:timezone/timezone.dart' as tz;   // HIER IST DIE WICHTIGE ÄNDERUNG
-
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 abstract class NotificationService {
   Future<void> initialize();
   Future<void> scheduleMedicationNotification({required Medication medication});
@@ -20,13 +19,7 @@ class NotificationServiceImpl implements NotificationService {
 
   @override
   Future<void> initialize() async {
-    try {
-      tz.initializeTimeZones();
-      print('Zeitzonen erfolgreich initialisiert.');
-    } catch (e) {
-      print('Fehler bei der Initialisierung der Zeitzonen: $e');
-      rethrow; // Wirf den Fehler weiter, um ihn nicht zu verschlucken
-    }
+    tz.initializeTimeZones();
 
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
 
@@ -62,9 +55,9 @@ class NotificationServiceImpl implements NotificationService {
     for (int dayNumber in medication.daysOfWeek) {
       final int notificationId = int.parse('${medication.id}$dayNumber');
 
-      final tz.TZDateTime now = tz.TZDateTime.now(tz.local); // HIER local zu tz.local geändert
+      final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
       tz.TZDateTime scheduledDate = tz.TZDateTime(
-        tz.local, // HIER local zu tz.local geändert
+        tz.local,
         now.year,
         now.month,
         now.day,

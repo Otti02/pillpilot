@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/appointment_model.dart';
 import '../../models/appointment_state_model.dart';
 import '../../services/appointment_service.dart';
 import '../../services/service_provider.dart';
+import '../base_controller.dart';
 
-class AppointmentController extends Cubit<AppointmentModel> {
+class AppointmentController extends BlocController<AppointmentModel> {
   final AppointmentService appointmentService;
 
   AppointmentController({AppointmentService? appointmentService})
       : appointmentService = appointmentService ?? ServiceProvider().appointmentService,
         super(AppointmentModel(appointments: []));
 
-  void initialize() {
-    loadAppointments();
+  @override
+  Future<void> initialize() async {
+    await loadAppointments();
   }
 
   Future<void> loadAppointments() async {

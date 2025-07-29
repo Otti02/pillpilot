@@ -1,33 +1,38 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-// Base interface for all controllers
+/// Base interface for all controllers that provides common functionality
 abstract class BaseController {
+  /// Clean up resources when controller is no longer needed
   void dispose();
-}
-
-// Interface for controllers that need to initialize data
-abstract class InitializableController extends BaseController {
+  
+  /// Initialize the controller and load initial data
   Future<void> initialize();
 }
 
-// Base controller implementation
-abstract class Controller implements BaseController {
+/// Base controller implementation for BLoC-based controllers
+abstract class BlocController<T> extends Cubit<T> implements BaseController {
+  BlocController(super.initialState);
+  
   @override
   void dispose() {
-    // Clean up resources
+    super.close();
   }
-
-  // Additional common controller methods can be added here
-}
-
-// Base controller implementation with initialization
-abstract class InitializableControllerImpl implements InitializableController {
+  
   @override
   Future<void> initialize() async {
-    // Default implementation
+    // Default implementation - override in subclasses
   }
+}
 
+/// Base controller implementation for callback-based controllers
+abstract class CallbackController implements BaseController {
   @override
   void dispose() {
-    // Clean up resources
+    // Default implementation - override in subclasses
+  }
+  
+  @override
+  Future<void> initialize() async {
+    // Default implementation - override in subclasses
   }
 }

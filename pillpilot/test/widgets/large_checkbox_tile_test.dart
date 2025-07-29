@@ -113,7 +113,6 @@ void main() {
       ));
 
       // ASSERT
-      // Find the Transform widget that's a parent of the Checkbox
       final transformFinder = find.ancestor(
         of: find.byType(Checkbox),
         matching: find.byType(Transform),

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/medication_model.dart';
 import '../../models/medication_state_model.dart';
 import '../../services/medication_service.dart';
 import '../../services/service_provider.dart';
 import '../../services/notification_service.dart';
+import '../base_controller.dart';
 
-class MedicationController extends Cubit<MedicationModel> {
+class MedicationController extends BlocController<MedicationModel> {
   final MedicationService medicationService;
   final NotificationService _notificationService;
 
@@ -17,8 +17,9 @@ class MedicationController extends Cubit<MedicationModel> {
         _notificationService = notificationService ?? ServiceProvider().notificationService,
         super(MedicationModel(medications: []));
 
-  void initialize() {
-    loadMedications();
+  @override
+  Future<void> initialize() async {
+    await loadMedications();
   }
 
   Future<void> loadMedications() async {

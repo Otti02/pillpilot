@@ -1,18 +1,19 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/lexicon_entry_model.dart';
 import '../../models/lexicon_state_model.dart';
 import '../../services/lexicon_service.dart';
 import '../../services/service_provider.dart';
+import '../base_controller.dart';
 
-class LexiconController extends Cubit<LexiconModel> {
+class LexiconController extends BlocController<LexiconModel> {
   final LexiconService lexiconService;
 
   LexiconController({LexiconService? lexiconService})
       : lexiconService = lexiconService ?? ServiceProvider().lexiconService,
         super(LexiconModel(entries: []));
 
-  void initialize() {
-    loadEntries();
+  @override
+  Future<void> initialize() async {
+    await loadEntries();
   }
 
   Future<void> loadEntries() async {

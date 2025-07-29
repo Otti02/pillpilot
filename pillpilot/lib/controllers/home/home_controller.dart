@@ -5,7 +5,7 @@ import '../../services/appointment_service.dart';
 import '../../services/medication_service.dart';
 import '../../services/service_provider.dart';
 
-class HomeController extends Controller implements InitializableController {
+class HomeController extends CallbackController {
   void Function(String)? onUserInfoLoaded;
   void Function(String)? onError;
   void Function(List<Medication>)? onMedicationsLoaded;
