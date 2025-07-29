@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../theme/app_strings.dart';
 
 class DiaryPage extends StatelessWidget {
   const DiaryPage({super.key});
@@ -14,7 +15,7 @@ class DiaryPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Tagebuch',
+                AppStrings.tagebuch,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -23,7 +24,7 @@ class DiaryPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Führe dein Gesundheitstagebuch',
+                AppStrings.fuehreDeinGesundheitstagebuch,
                 style: TextStyle(
                   fontSize: 18,
                   color: AppTheme.secondaryTextColor,
@@ -42,7 +43,7 @@ class DiaryPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'Tagebuch Screen',
+                        AppStrings.tagebuchScreen,
                         style: Theme.of(context).textTheme.headlineSmall,
                       ),
                     ],

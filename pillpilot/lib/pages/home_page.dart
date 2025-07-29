@@ -6,6 +6,7 @@ import '../widgets/appointment_item.dart';
 import '../widgets/medication_item.dart';
 import '../models/medication_model.dart';
 import '../models/appointment_model.dart';
+import '../theme/app_strings.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -163,7 +164,7 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
-                'Schließen',
+                AppStrings.schliessen,
                 style: TextStyle(color: AppTheme.primaryColor),
               ),
             ),
@@ -182,7 +183,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(AppTheme.defaultPadding),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -195,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   Text(
-                    'Deine Einnahmen Heute',
+                    AppStrings.deineEinnahmenHeute,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -204,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   if (_welcomeMessage.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding: const EdgeInsets.only(top: AppTheme.smallPadding),
                       child: Text(
                         _welcomeMessage,
                         style: TextStyle(
@@ -225,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _medications.isEmpty
-                        ? _buildEmptyState('Keine Medikamente vorhanden')
+                        ? _buildEmptyState(AppStrings.keineMedikamenteVorhanden)
                         : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -239,10 +240,10 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                     ),
-                    const SizedBox(height: 24),
-                    _buildSectionTitle('Heutige Termine'),
+                    const SizedBox(height: AppTheme.largePadding),
+                    _buildSectionTitle(AppStrings.heutigeTermine),
                     _todayAppointments.isEmpty
-                        ? _buildEmptyState('Keine Termine für heute')
+                        ? _buildEmptyState(AppStrings.keineTermineFuerHeute)
                         : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -267,7 +268,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: AppTheme.defaultPadding),
       child: Text(
         title,
         style: TextStyle(
@@ -282,7 +283,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildEmptyState(String message) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 24.0),
+        padding: const EdgeInsets.symmetric(vertical: AppTheme.defaultPadding),
         child: Text(
           message,
           style: TextStyle(fontSize: 16, color: AppTheme.secondaryTextColor),

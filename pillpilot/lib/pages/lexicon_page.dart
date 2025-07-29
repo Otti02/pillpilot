@@ -4,6 +4,7 @@ import '../controllers/lexicon/lexicon_controller.dart';
 import '../models/lexicon_entry_model.dart';
 import '../models/lexicon_state_model.dart';
 import '../theme/app_theme.dart';
+import '../theme/app_strings.dart';
 import 'lexicon_detail_page.dart';
 
 class LexiconPage extends StatelessWidget {
@@ -83,7 +84,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Lexikon',
+                    AppStrings.lexikon,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -101,7 +102,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: 'Medikament / Supplement',
+                        hintText: AppStrings.searchHint,
                         prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -123,7 +124,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                   if (filteredEntries.isEmpty) {
                     return Center(
                       child: Text(
-                        'Keine Einträge gefunden',
+                        AppStrings.noEntriesFound,
                         style: TextStyle(
                           fontSize: 16,
                           color: AppTheme.secondaryTextColor,

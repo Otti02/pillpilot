@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../widgets/custom_button.dart'; // Import für den CustomButton
 import '../widgets/medication_item.dart';
 import 'medication_edit_page.dart';
+import '../theme/app_strings.dart';
 
 
 class MedicationsPage extends StatelessWidget {
@@ -96,7 +97,7 @@ class MedicationsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(_getCurrentTime(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  const Text('Deine Medikamente', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                  Text(AppStrings.deineMedikamente, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
                   Text('Übersicht aller Medikamente', style: TextStyle(fontSize: 14, color: AppTheme.secondaryTextColor)),
                 ],
               ),

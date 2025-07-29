@@ -9,6 +9,7 @@ import '../theme/app_theme.dart';
 import '../widgets/appointment_item.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_calendar.dart';
+import '../theme/app_strings.dart';
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
@@ -51,7 +52,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
   Future<void> _addAppointment(BuildContext context) async {
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bitte gib einen Titel ein')),
+        const SnackBar(content: Text(AppStrings.bitteGibEinenTitelEin)),
       );
       return;
     }
@@ -75,7 +76,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
       _loadAppointments();
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Termin erfolgreich erstellt')),
+        const SnackBar(content: Text(AppStrings.terminErfolgreichErstellt)),
       );
     } catch (e) {
       if (!mounted) return;
@@ -107,7 +108,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
     showDialog(
       context: context,
       builder: (dialogContext) => SimpleDialog(
-        title: const Text('Neuer Termin'),
+        title: const Text(AppStrings.neuerTermin),
         contentPadding: const EdgeInsets.all(16.0),
         children: [
           Text(
@@ -118,7 +119,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
           TextField(
             controller: _titleController,
             decoration: const InputDecoration(
-              labelText: 'Titel',
+              labelText: AppStrings.titel,
               border: OutlineInputBorder(),
             ),
           ),
@@ -146,7 +147,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
             },
             child: InputDecorator(
               decoration: const InputDecoration(
-                labelText: 'Uhrzeit',
+                labelText: AppStrings.uhrzeit,
                 border: OutlineInputBorder(),
               ),
               child: Row(
@@ -162,7 +163,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
           TextField(
             controller: _notesController,
             decoration: const InputDecoration(
-              labelText: 'Notizen',
+              labelText: AppStrings.notizen,
               border: OutlineInputBorder(),
             ),
             maxLines: 3,
@@ -173,12 +174,12 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
             children: [
               CustomButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                text: 'Abbrechen',
+                text: AppStrings.abbrechen,
               ),
               const SizedBox(width: 8),
               CustomButton(
                 onPressed: () => _addAppointment(dialogContext),
-                text: 'Speichern',
+                text: AppStrings.speichern,
               ),
             ],
           ),
@@ -217,7 +218,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               CustomButton(
-                text: 'Löschen',
+                text: AppStrings.loeschen,
                 color: Colors.red,
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
@@ -226,7 +227,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
               ),
               const SizedBox(width: 8),
               CustomButton(
-                text: 'Schließen',
+                text: AppStrings.schliessen,
                 onPressed: () => Navigator.of(dialogContext).pop(),
               ),
             ],
@@ -246,7 +247,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Kalender',
+                AppStrings.kalender,
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -255,7 +256,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
               ),
               const SizedBox(height: 16),
               Text(
-                'Plane deine Termine',
+                AppStrings.planeDeineTermine,
                 style: TextStyle(
                   fontSize: 18,
                   color: AppTheme.secondaryTextColor,
@@ -297,7 +298,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Termine am ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
+            '${AppStrings.termineAm} ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -312,7 +313,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                 }
                 
                 if (model.appointments.isEmpty) {
-                  return const Center(child: Text('Keine Termine an diesem Tag'));
+                  return const Center(child: Text(AppStrings.keineTermineAnDiesemTag));
                 }
                 
                 return ListView.builder(

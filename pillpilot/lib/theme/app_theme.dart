@@ -37,6 +37,33 @@ class AppTheme {
   static const Color completedTextColor = Colors.grey;
   static const Color completedColor = successColor;
 
+  // Design constants
+  static const double defaultPadding = 16.0;
+  static const double smallPadding = 8.0;
+  static const double largePadding = 24.0;
+  static const double defaultBorderRadius = 12.0;
+  static const double smallBorderRadius = 8.0;
+  static const double iconCircleSize = 48.0;
+  static const double iconFontSize = 20.0;
+  static const double sectionTitleFontSize = 18.0;
+  static const double mainTitleFontSize = 24.0;
+  static const double subtitleFontSize = 16.0;
+  static const double smallFontSize = 14.0;
+  static const double blurRadius = 4.0;
+  static const double spreadRadius = 1.0;
+  static const Offset defaultShadowOffset = Offset(0, 2);
+  static const int daysInWeek = 7;
+
+  static const Map<int, String> weekdays = {
+    1: 'Mo',
+    2: 'Di',
+    3: 'Mi',
+    4: 'Do',
+    5: 'Fr',
+    6: 'Sa',
+    7: 'So',
+  };
+
   static ThemeData get themeData => ThemeData(
     primaryColor: primaryColor,
     scaffoldBackgroundColor: backgroundColor,

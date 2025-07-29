@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../controllers/medication/medication_controller.dart';
 import '../models/medication_model.dart';
 import '../theme/app_theme.dart';
+import '../theme/app_strings.dart';
 import '../widgets/custom_text_field.dart';
 
 class MedicationEditPage extends StatefulWidget {
@@ -52,15 +53,15 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
 
   Future<void> _saveMedication() async {
     if (_nameController.text.isEmpty) {
-      _showError('Bitte gib einen Namen ein.');
+      _showError(AppStrings.bitteGibEinenNamenEin);
       return;
     }
     if (_dosageController.text.isEmpty) {
-      _showError('Bitte gib eine Dosierung ein.');
+      _showError(AppStrings.bitteGibEineDosierungEin);
       return;
     }
     if (_selectedDays.isEmpty) {
-      _showError('Bitte wähle mindestens einen Wochentag aus.');
+      _showError(AppStrings.bitteWaehleMindestensEinenWochentagAus);
       return;
     }
 
@@ -87,7 +88,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
       }
 
       if (mounted) {
-        final message = widget.medication == null ? 'Medikament erstellt' : 'Medikament aktualisiert';
+        final message = widget.medication == null ? AppStrings.medikamentErstellt : AppStrings.medikamentAktualisiert;
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
         Navigator.pop(context, true);
       }
@@ -143,16 +144,16 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
   }
 
   Widget _buildWeekdaySelector() {
-    final weekdays = {1: 'Mo', 2: 'Di', 3: 'Mi', 4: 'Do', 5: 'Fr', 6: 'Sa', 7: 'So'};
+    final weekdays = AppTheme.weekdays;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text('Einnahmetage', style: TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppTheme.smallPadding),
         Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
+          spacing: AppTheme.smallPadding,
+          runSpacing: AppTheme.smallPadding,
           children: weekdays.entries.map((entry) {
             final isSelected = _selectedDays.contains(entry.key);
             return FilterChip(
@@ -184,7 +185,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: Text(isEditing ? 'Medikament bearbeiten' : 'Neues Medikament'),
+        title: Text(isEditing ? AppStrings.medikamentBearbeiten : AppStrings.neuesMedikament),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -192,33 +193,33 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(AppTheme.defaultPadding),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomTextField(
-                label: 'Name',
-                hint: 'z.B. Ibuprofen',
+                label: AppStrings.name,
+                hint: AppStrings.zB,
                 controller: _nameController,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTheme.smallPadding),
               CustomTextField(
-                label: 'Dosierung',
-                hint: 'z.B. 200mg',
+                label: AppStrings.dosierung,
+                hint: AppStrings.zB,
                 controller: _dosageController,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppTheme.smallPadding),
 
               _buildTimePicker(),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppTheme.largePadding),
               _buildWeekdaySelector(),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppTheme.smallPadding),
               Align(
                 alignment: Alignment.centerRight,
                 child: OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      if (_selectedDays.length == 7) {
+                      if (_selectedDays.length == AppTheme.daysInWeek) {
                         _selectedDays.clear();
                       } else {
                         _selectedDays.clear();
@@ -230,27 +231,27 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
                     foregroundColor: AppTheme.primaryColor,
                     side: BorderSide(color: AppTheme.primaryColor),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
                     ),
                   ),
-                  child: const Text('Alle Tage auswählen'),
+                  child: Text(AppStrings.alleTageAuswaehlen),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppTheme.largePadding),
               TextField(
                 controller: _notesController,
                 maxLines: 4,
-                decoration: const InputDecoration(
-                  labelText: 'Notizen (optional)',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: AppStrings.notizenOptional,
+                  border: const OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: AppTheme.iconCircleSize),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _saveMedication,
-                  child: Text(isEditing ? 'Aktualisieren' : 'Speichern'),
+                  child: Text(isEditing ? AppStrings.aktualisieren : AppStrings.speichern),
                 ),
               ),
             ],
