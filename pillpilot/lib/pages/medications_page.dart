@@ -62,7 +62,7 @@ class MedicationsPage extends StatelessWidget {
               Expanded(
                 child: CustomButton(
                   text: 'Löschen',
-                  color: Colors.red,
+                  color: AppTheme.red,
                   onPressed: () async {
                     final medicationName = medication.name;
                     Navigator.of(dialogContext).pop();
@@ -96,9 +96,9 @@ class MedicationsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(_getCurrentTime(), style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  Text(AppStrings.deineMedikamente, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
-                  Text('Übersicht aller Medikamente', style: TextStyle(fontSize: 14, color: AppTheme.secondaryTextColor)),
+                  Text(_getCurrentTime(), style: TextStyle(fontSize: AppTheme.mainTitleFontSize, fontWeight: FontWeight.bold)),
+                  Text(AppStrings.deineMedikamente, style: TextStyle(fontSize: AppTheme.sectionTitleFontSize, fontWeight: FontWeight.w600)),
+                  Text('Übersicht aller Medikamente', style: TextStyle(fontSize: AppTheme.subtitleFontSize, color: AppTheme.secondaryTextColor)),
                 ],
               ),
             ),
@@ -110,7 +110,7 @@ class MedicationsPage extends StatelessWidget {
                   }
 
                   if (model.medications.isEmpty) {
-                    return Center(child: Text('Keine Medikamente vorhanden', style: TextStyle(fontSize: 16, color: AppTheme.secondaryTextColor)));
+                    return Center(child: Text('Keine Medikamente vorhanden', style: TextStyle(fontSize: AppTheme.subtitleFontSize, color: AppTheme.secondaryTextColor)));
                   }
 
                   return ListView.builder(
@@ -121,7 +121,7 @@ class MedicationsPage extends StatelessWidget {
                         medication: medication,
                         onTap: () => _navigateToEditMedication(context, medication),
                         trailingWidget: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
+                          icon: const Icon(Icons.delete, color: AppTheme.red),
                           onPressed: () => _deleteMedication(context, medication),
                         ),
                       );

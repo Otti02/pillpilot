@@ -54,6 +54,10 @@ class AppTheme {
   static const Offset defaultShadowOffset = Offset(0, 2);
   static const int daysInWeek = 7;
 
+  static const Color white = Colors.white;
+  static const Color red = Colors.red;
+  static const Color transparent = Colors.transparent;
+
   static const Map<int, String> weekdays = {
     1: 'Mo',
     2: 'Di',

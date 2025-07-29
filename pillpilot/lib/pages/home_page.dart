@@ -238,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(AppTheme.defaultPadding),
                     child: Text(
                       state.error!,
-                      style: const TextStyle(color: Colors.red),
+                      style: TextStyle(color: AppTheme.red),
                     ),
                   ),
               ],

@@ -86,7 +86,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                   Text(
                     AppStrings.lexikon,
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: AppTheme.mainTitleFontSize,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.primaryTextColor,
                     ),
@@ -95,7 +95,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                   // Search bar
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppTheme.cardBackgroundColor,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: AppTheme.borderColor),
                     ),
@@ -126,7 +126,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                       child: Text(
                         AppStrings.noEntriesFound,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: AppTheme.subtitleFontSize,
                           color: AppTheme.secondaryTextColor,
                         ),
                       ),
@@ -153,7 +153,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                           ],
                         ),
                         child: Material(
-                          color: Colors.transparent,
+                          color: AppTheme.transparent,
                           child: InkWell(
                             onTap: () => _navigateToEntryDetail(entry),
                             borderRadius: BorderRadius.circular(12),
@@ -189,7 +189,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                                         Text(
                                           entry.name,
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: AppTheme.subtitleFontSize,
                                             fontWeight: FontWeight.w600,
                                             color: AppTheme.primaryTextColor,
                                           ),
@@ -198,7 +198,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                                         Text(
                                           entry.category,
                                           style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: AppTheme.smallFontSize,
                                             color: AppTheme.secondaryTextColor,
                                           ),
                                         ),

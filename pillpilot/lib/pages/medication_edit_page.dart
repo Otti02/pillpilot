@@ -103,7 +103,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
 
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
+      SnackBar(content: Text(message), backgroundColor: AppTheme.red),
     );
   }
 
@@ -149,7 +149,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Einnahmetage', style: TextStyle(fontWeight: FontWeight.bold)),
+        Text('Einnahmetage', style: Theme.of(context).textTheme.bodyLarge),
         const SizedBox(height: AppTheme.smallPadding),
         Wrap(
           spacing: AppTheme.smallPadding,
@@ -169,8 +169,8 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
                 });
               },
               selectedColor: AppTheme.primaryColor,
-              checkmarkColor: Colors.white,
-              labelStyle: TextStyle(color: isSelected ? Colors.white : AppTheme.primaryTextColor),
+              checkmarkColor: AppTheme.white,
+              labelStyle: TextStyle(color: isSelected ? AppTheme.white : AppTheme.primaryTextColor),
             );
           }).toList(),
         ),
@@ -186,7 +186,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
         title: Text(isEditing ? AppStrings.medikamentBearbeiten : AppStrings.neuesMedikament),
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppTheme.transparent,
         elevation: 0,
       ),
       body: _isLoading
