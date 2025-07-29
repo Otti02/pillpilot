@@ -22,13 +22,13 @@ class LargeCheckboxListTile extends StatelessWidget {
         onChanged(!value);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
         child: Row(
           children: [
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 16),
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
             // Die vergrößerte Checkbox

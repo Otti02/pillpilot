@@ -30,7 +30,7 @@ class CustomTextField extends StatelessWidget {
               color: AppTheme.primaryTextColor,
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
         ],
         TextField(
           controller: controller,

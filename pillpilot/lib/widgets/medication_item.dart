@@ -91,17 +91,19 @@ class _MedicationItemState extends State<MedicationItem> {
         ),
         child: Row(
           children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: AppTheme.iconBackgroundColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(
-                Icons.medication,
-                color: AppTheme.primaryColor,
-                size: 24,
+            LayoutBuilder(
+              builder: (context, constraints) => Container(
+                width: MediaQuery.of(context).size.width * 0.12,
+                height: MediaQuery.of(context).size.width * 0.12,
+                decoration: BoxDecoration(
+                  color: AppTheme.iconBackgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.medication,
+                  color: AppTheme.primaryColor,
+                  size: 24,
+                ),
               ),
             ),
             const SizedBox(width: 16),
@@ -131,29 +133,31 @@ class _MedicationItemState extends State<MedicationItem> {
             ),
             GestureDetector(
               onTap: widget.onToggle,
-              child: Container(
-                width: 40,
-                height: 40,
-                color: Colors.transparent,
-                alignment: Alignment.center,
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: _isCompleted ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
-                      width: 2,
+              child: LayoutBuilder(
+                builder: (context, constraints) => Container(
+                  width: MediaQuery.of(context).size.width * 0.1,
+                  height: MediaQuery.of(context).size.width * 0.1,
+                  color: Colors.transparent,
+                  alignment: Alignment.center,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.06,
+                    height: MediaQuery.of(context).size.width * 0.06,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: _isCompleted ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
+                        width: 2,
+                      ),
+                      color: _isCompleted ? AppTheme.completedColor : Colors.transparent,
                     ),
-                    color: _isCompleted ? AppTheme.completedColor : Colors.transparent,
+                    child: _isCompleted
+                        ? const Icon(
+                      Icons.check,
+                      color: AppTheme.cardBackgroundColor,
+                      size: 16,
+                    )
+                        : null,
                   ),
-                  child: _isCompleted
-                      ? const Icon(
-                    Icons.check,
-                    color: AppTheme.cardBackgroundColor,
-                    size: 16,
-                  )
-                      : null,
                 ),
               ),
             ),

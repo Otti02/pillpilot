@@ -22,7 +22,7 @@ class CustomButton extends StatelessWidget {
     final ButtonStyle elevatedStyle = ElevatedButton.styleFrom(
       backgroundColor: color ?? AppTheme.primaryColor,
       foregroundColor: Colors.white,
-      minimumSize: const Size(88, 48),
+      minimumSize: Size(MediaQuery.of(context).size.width * 0.25, MediaQuery.of(context).size.height * 0.06),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
       ),
@@ -31,7 +31,7 @@ class CustomButton extends StatelessWidget {
 
     final ButtonStyle outlinedStyle = OutlinedButton.styleFrom(
       foregroundColor: color ?? AppTheme.primaryColor,
-      minimumSize: const Size(88, 48),
+      minimumSize: Size(MediaQuery.of(context).size.width * 0.25, MediaQuery.of(context).size.height * 0.06),
       side: BorderSide(color: color ?? AppTheme.primaryColor),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.0),
@@ -39,8 +39,9 @@ class CustomButton extends StatelessWidget {
     );
 
     if (isLoading) {
-      return SizedBox(
-        height: 48,
+      return FractionallySizedBox(
+        widthFactor: 0.25,
+        heightFactor: 0.06,
         child: ElevatedButton(
           style: elevatedStyle,
           onPressed: null,
