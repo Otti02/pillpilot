@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../models/medication_model.dart';
 import '../../models/medication_state_model.dart';
@@ -11,6 +12,7 @@ import '../base_controller.dart';
 class MedicationController extends BlocController<MedicationModel> {
   final MedicationService medicationService;
   final NotificationService _notificationService;
+  Timer? _midnightResetTimer;
 
   MedicationController({
     MedicationService? medicationService,
@@ -37,6 +39,7 @@ class MedicationController extends BlocController<MedicationModel> {
   @override
   Future<void> initialize() async {
     await loadMedications();
+    _startMidnightResetTimer();
   }
 
   Future<void> loadMedications() async {
@@ -114,5 +117,41 @@ class MedicationController extends BlocController<MedicationModel> {
       handleError('Failed to toggle medication completion: ${e.toString()}', e);
       rethrow;
     }
+  }
+
+  void _startMidnightResetTimer() {
+    _midnightResetTimer?.cancel();
+    
+    final now = DateTime.now();
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    final timeUntilMidnight = tomorrow.difference(now);
+    
+    _midnightResetTimer = Timer(timeUntilMidnight, () {
+      _resetAllMedications();
+      _startMidnightResetTimer(); // Schedule next reset
+    });
+  }
+
+  Future<void> _resetAllMedications() async {
+    try {
+      final medications = await medicationService.getMedications();
+      final updatedMedications = medications.map((med) => med.copyWith(isCompleted: false)).toList();
+      
+      // Update all medications to reset their completion status
+      for (final medication in updatedMedications) {
+        await medicationService.updateMedication(medication);
+      }
+      
+      // Reload medications to update the UI
+      await loadMedications();
+    } catch (e) {
+      handleError('Failed to reset medications at midnight: ${e.toString()}', e);
+    }
+  }
+
+  @override
+  void dispose() {
+    _midnightResetTimer?.cancel();
+    super.dispose();
   }
 }

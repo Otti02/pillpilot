@@ -53,7 +53,8 @@ class NotificationServiceImpl implements NotificationService {
     await cancelMedicationNotifications(medication.id);
 
     for (int dayNumber in medication.daysOfWeek) {
-      final int notificationId = medication.id.hashCode * 10 + dayNumber;
+      // Use a more controlled ID generation to avoid 32-bit integer overflow
+      final int notificationId = (medication.id.hashCode.abs() % 1000000) * 10 + dayNumber;
 
       final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
       tz.TZDateTime scheduledDate = tz.TZDateTime(
@@ -95,7 +96,7 @@ class NotificationServiceImpl implements NotificationService {
   Future<void> cancelMedicationNotifications(String medicationId) async {
     await Future.wait([
       for (int i = 1; i <= 7; i++)
-        _flutterLocalNotificationsPlugin.cancel(medicationId.hashCode * 10 + i)
+        _flutterLocalNotificationsPlugin.cancel((medicationId.hashCode.abs() % 1000000) * 10 + i)
     ]);
   }
 

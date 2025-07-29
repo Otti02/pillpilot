@@ -120,6 +120,7 @@ class MedicationsPage extends StatelessWidget {
                       return MedicationItem(
                         medication: medication,
                         onTap: () => _navigateToEditMedication(context, medication),
+                        showCompletedStyling: false,
                         trailingWidget: IconButton(
                           icon: const Icon(Icons.delete, color: AppTheme.red),
                           onPressed: () => _deleteMedication(context, medication),

@@ -9,6 +9,7 @@ class MedicationItem extends StatefulWidget {
   final VoidCallback? onTap;
   final VoidCallback? onToggle;
   final VoidCallback? onDataChanged;
+  final bool showCompletedStyling;
 
   const MedicationItem({
     super.key,
@@ -17,6 +18,7 @@ class MedicationItem extends StatefulWidget {
     this.trailingWidget,
     this.onTap,
     this.onToggle,
+    this.showCompletedStyling = true,
   });
 
   @override
@@ -116,7 +118,7 @@ class _MedicationItemState extends State<MedicationItem> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: _isCompleted ? AppTheme.completedTextColor : AppTheme.primaryTextColor,
+                      color: (widget.showCompletedStyling && _isCompleted) ? AppTheme.completedTextColor : AppTheme.primaryTextColor,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -124,14 +126,15 @@ class _MedicationItemState extends State<MedicationItem> {
                     '${widget.medication.dosage} · ${widget.medication.time.format(context)} · ${_formatDaysOfWeek(widget.medication.daysOfWeek)}', // <--- Hier angepasst
                     style: TextStyle(
                       fontSize: 14,
-                      color: _isCompleted ? AppTheme.completedTextColor : AppTheme.secondaryTextColor,
+                      color: (widget.showCompletedStyling && _isCompleted) ? AppTheme.completedTextColor : AppTheme.secondaryTextColor,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
-            GestureDetector(
+            // Show trailingWidget if provided, otherwise show checkbox
+            widget.trailingWidget ?? GestureDetector(
               onTap: widget.onToggle,
               child: LayoutBuilder(
                 builder: (context, constraints) => Container(
@@ -145,12 +148,12 @@ class _MedicationItemState extends State<MedicationItem> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: _isCompleted ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
+                        color: (widget.showCompletedStyling && _isCompleted) ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
                         width: 2,
                       ),
-                      color: _isCompleted ? AppTheme.completedColor : Colors.transparent,
+                      color: (widget.showCompletedStyling && _isCompleted) ? AppTheme.completedColor : Colors.transparent,
                     ),
-                    child: _isCompleted
+                    child: (widget.showCompletedStyling && _isCompleted)
                         ? const Icon(
                       Icons.check,
                       color: AppTheme.cardBackgroundColor,
