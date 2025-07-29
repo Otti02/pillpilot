@@ -7,6 +7,8 @@ import '../widgets/medication_item.dart';
 import '../models/medication_model.dart';
 import '../models/appointment_model.dart';
 import '../theme/app_strings.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../models/home_state_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,21 +19,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late final HomeController _controller;
-  String _welcomeMessage = '';
-  List<Medication> _medications = [];
-  List<Appointment> _todayAppointments = [];
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _controller = HomeController();
-
-    _controller.onUserInfoLoaded = _showUserInfo;
-    _controller.onError = _showError;
-    _controller.onMedicationsLoaded = _showMedications;
-    _controller.onAppointmentsLoaded = _showAppointments;
-
     _controller.initialize();
   }
 
@@ -39,28 +31,6 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  void _showUserInfo(String name) {
-    setState(() => _welcomeMessage = name);
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red),
-    );
-    setState(() => _isLoading = false);
-  }
-
-  void _showMedications(List<Medication> medications) {
-    setState(() => _medications = medications);
-  }
-
-  void _showAppointments(List<Appointment> appointments) {
-    setState(() {
-      _todayAppointments = appointments;
-      _isLoading = false;
-    });
   }
 
   void _reloadData() {
@@ -176,93 +146,106 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppTheme.defaultPadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _getCurrentTime(),
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryTextColor,
-                    ),
-                  ),
-                  Text(
-                    AppStrings.deineEinnahmenHeute,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.primaryTextColor,
-                    ),
-                  ),
-                  if (_welcomeMessage.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: AppTheme.smallPadding),
-                      child: Text(
-                        _welcomeMessage,
+    return BlocBuilder<HomeController, HomeState>(
+      bloc: _controller,
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AppTheme.backgroundColor,
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.defaultPadding),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _getCurrentTime(),
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: AppTheme.secondaryTextColor,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.primaryTextColor,
                         ),
                       ),
-                    ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _medications.isEmpty
-                        ? _buildEmptyState(AppStrings.keineMedikamenteVorhanden)
-                        : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _medications.length,
-                      itemBuilder: (context, index) {
-                        final medication = _medications[index];
-                        return MedicationItem(
-                          medication: medication,
-                          onToggle: () => _toggleMedicationCompletion(medication),
-                          onDataChanged: _reloadData,
-                        );
-                      },
-                    ),
-                    const SizedBox(height: AppTheme.largePadding),
-                    _buildSectionTitle(AppStrings.heutigeTermine),
-                    _todayAppointments.isEmpty
-                        ? _buildEmptyState(AppStrings.keineTermineFuerHeute)
-                        : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _todayAppointments.length,
-                      itemBuilder: (context, index) {
-                        final appointment = _todayAppointments[index];
-                        return AppointmentItem(
-                          appointment: appointment,
-                          onTap: () => _showAppointmentDetails(appointment),
-                        );
-                      },
-                    ),
-                  ],
+                      Text(
+                        AppStrings.deineEinnahmenHeute,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.primaryTextColor,
+                        ),
+                      ),
+                      if (state.welcomeMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: AppTheme.smallPadding),
+                          child: Text(
+                            state.welcomeMessage,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppTheme.secondaryTextColor,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: state.isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              state.medications.isEmpty
+                                  ? _buildEmptyState(AppStrings.keineMedikamenteVorhanden)
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: state.medications.length,
+                                      itemBuilder: (context, index) {
+                                        final medication = state.medications[index];
+                                        return MedicationItem(
+                                          medication: medication,
+                                          onToggle: () => _toggleMedicationCompletion(medication),
+                                          onDataChanged: _reloadData,
+                                        );
+                                      },
+                                    ),
+                              const SizedBox(height: AppTheme.largePadding),
+                              _buildSectionTitle(AppStrings.heutigeTermine),
+                              state.appointments.isEmpty
+                                  ? _buildEmptyState(AppStrings.keineTermineFuerHeute)
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: state.appointments.length,
+                                      itemBuilder: (context, index) {
+                                        final appointment = state.appointments[index];
+                                        return AppointmentItem(
+                                          appointment: appointment,
+                                          onTap: () => _showAppointmentDetails(appointment),
+                                        );
+                                      },
+                                    ),
+                            ],
+                          ),
+                        ),
+                ),
+                if (state.error != null)
+                  Padding(
+                    padding: const EdgeInsets.all(AppTheme.defaultPadding),
+                    child: Text(
+                      state.error!,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 

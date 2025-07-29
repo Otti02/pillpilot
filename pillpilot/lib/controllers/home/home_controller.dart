@@ -1,59 +1,54 @@
 import '../../controllers/base_controller.dart';
 import '../../models/appointment_model.dart';
 import '../../models/medication_model.dart';
+import '../../models/home_state_model.dart';
 import '../../services/appointment_service.dart';
 import '../../services/medication_service.dart';
 import '../../services/service_provider.dart';
 
-class HomeController extends CallbackController {
-  void Function(String)? onUserInfoLoaded;
-  void Function(String)? onError;
-  void Function(List<Medication>)? onMedicationsLoaded;
-  void Function(List<Appointment>)? onAppointmentsLoaded;
-
-
+class HomeController extends BlocController<HomeState> {
   final MedicationService _medicationService;
   final AppointmentService _appointmentService;
 
-  HomeController({MedicationService? medicationService, AppointmentService? appointmentService,})
+  HomeController({MedicationService? medicationService, AppointmentService? appointmentService})
       : _medicationService = medicationService ?? ServiceProvider.instance.medicationService,
-        _appointmentService = appointmentService ?? ServiceProvider.instance.appointmentService;
+        _appointmentService = appointmentService ?? ServiceProvider.instance.appointmentService,
+        super(HomeState.initial());
 
   @override
   Future<void> initialize() async {
+    emit(state.copyWith(isLoading: true));
     await Future.wait([
       loadMedications(),
       loadAppointments(),
     ]);
+    emit(state.copyWith(isLoading: false));
   }
 
   @override
   void handleError(String message, [Object? error]) {
-    onError?.call(message);
+    emit(state.copyWith(isLoading: false, error: message));
   }
 
   Future<void> loadMedications() async {
     try {
       final todayWeekday = DateTime.now().weekday;
-
       final allMedications = await _medicationService.getMedications();
-
       final todaysMedications = allMedications
           .where((medication) => medication.daysOfWeek.contains(todayWeekday))
           .toList();
-
-      onMedicationsLoaded?.call(todaysMedications);
+      emit(state.copyWith(medications: todaysMedications));
     } catch (e) {
-      handleError('Failed to load medications: ${e.toString()}', e);
+      handleError('Failed to load medications:  ${e.toString()}', e);
     }
   }
 
   Future<void> loadAppointments() async {
     try {
       final appointments = await _appointmentService.getAppointmentsForDate(DateTime.now());
-      onAppointmentsLoaded?.call(appointments);
+      emit(state.copyWith(appointments: appointments));
     } catch (e) {
-      handleError('Failed to load appointments: ${e.toString()}', e);
+      handleError('Failed to load appointments:  ${e.toString()}', e);
     }
   }
 
@@ -64,8 +59,11 @@ class HomeController extends CallbackController {
       await _medicationService.updateMedication(updatedMedication);
       await loadMedications();
     } catch (e) {
-      handleError('Failed to update medication: ${e.toString()}', e);
+      handleError('Failed to update medication:  ${e.toString()}', e);
     }
   }
 
+  void setWelcomeMessage(String name) {
+    emit(state.copyWith(welcomeMessage: name));
+  }
 }
