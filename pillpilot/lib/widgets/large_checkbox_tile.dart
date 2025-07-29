@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
 
 class LargeCheckboxListTile extends StatelessWidget {
@@ -17,34 +18,42 @@ class LargeCheckboxListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        onChanged(!value);
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return InkWell(
+          onTap: () {
+            onChanged(!value);
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                      color: themeProvider.primaryTextColor,
+                    ),
+                  ),
+                ),
+                // Die vergrößerte Checkbox
+                Transform.scale(
+                  scale: scale,
+                  child: Checkbox(
+                    value: value,
+                    onChanged: onChanged,
+                    activeColor: AppTheme.primaryColor,
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ),
-            // Die vergrößerte Checkbox
-            Transform.scale(
-              scale: scale,
-              child: Checkbox(
-                value: value,
-                onChanged: onChanged,
-                activeColor: AppTheme.primaryColor,
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

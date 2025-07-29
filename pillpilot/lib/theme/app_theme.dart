@@ -6,6 +6,13 @@ class AppTheme {
   static const Color backgroundColor = Color(0xFFFFFBFE);
   static const Color cardBackgroundColor = Colors.white;
 
+  // Dark mode colors
+  static const Color darkBackgroundColor = Color(0xFF121212);
+  static const Color darkCardBackgroundColor = Color(0xFF2A2A2A);
+  static const Color darkPrimaryTextColor = Colors.white;
+  static const Color darkSecondaryTextColor = Color(0xFFB3B3B3);
+  static const Color darkBorderColor = Color(0xFF3A3A3A);
+
   // Text colors
   static const Color primaryTextColor = Color(0xFF1C1B1F);
   static const Color secondaryTextColor = Color(0xFF49454F);
@@ -167,4 +174,124 @@ class AppTheme {
     ),
   );
 
+  static ThemeData get darkThemeData => ThemeData(
+    primaryColor: primaryColor,
+    scaffoldBackgroundColor: darkBackgroundColor,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      brightness: Brightness.dark,
+      primary: primaryColor,
+      secondary: primaryColor,
+      error: errorColor,
+      background: darkBackgroundColor,
+      surface: darkCardBackgroundColor,
+    ),
+    useMaterial3: true,
+
+    // Text theme
+    textTheme: const TextTheme(
+      titleLarge: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: darkPrimaryTextColor,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: darkPrimaryTextColor,
+      ),
+      bodyLarge: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: darkPrimaryTextColor,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 14,
+        color: darkSecondaryTextColor,
+      ),
+    ),
+
+    // Input decoration theme
+    inputDecorationTheme: InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: darkBorderColor),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: primaryColor, width: 2),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: darkBorderColor),
+      ),
+    ),
+
+    // Button themes
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+      ),
+    ),
+
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        foregroundColor: primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      ),
+    ),
+
+    // Bottom navigation bar theme
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      selectedItemColor: primaryColor,
+      unselectedItemColor: darkSecondaryTextColor,
+      type: BottomNavigationBarType.fixed,
+    ),
+
+    // Card theme
+    cardTheme: CardThemeData(
+      color: darkCardBackgroundColor,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ),
+
+    dialogTheme: DialogTheme(
+      backgroundColor: darkCardBackgroundColor,
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+    ),
+  );
+}
+
+// Simple theme provider
+class ThemeProvider extends ChangeNotifier {
+  bool _isDarkMode = false;
+
+  bool get isDarkMode => _isDarkMode;
+
+  void toggleTheme() {
+    _isDarkMode = !_isDarkMode;
+    notifyListeners();
+  }
+
+  ThemeData get theme => _isDarkMode ? AppTheme.darkThemeData : AppTheme.themeData;
+
+  // Helper methods to get colors based on current theme
+  Color get backgroundColor => _isDarkMode ? AppTheme.darkBackgroundColor : AppTheme.backgroundColor;
+  Color get cardBackgroundColor => _isDarkMode ? AppTheme.darkCardBackgroundColor : AppTheme.cardBackgroundColor;
+  Color get primaryTextColor => _isDarkMode ? AppTheme.darkPrimaryTextColor : AppTheme.primaryTextColor;
+  Color get secondaryTextColor => _isDarkMode ? AppTheme.darkSecondaryTextColor : AppTheme.secondaryTextColor;
+  Color get borderColor => _isDarkMode ? AppTheme.darkBorderColor : AppTheme.borderColor;
 }

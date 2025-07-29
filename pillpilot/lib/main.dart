@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:timezone/data/latest.dart';
 import 'theme/app_theme.dart';
 import 'router.dart';
@@ -47,20 +48,27 @@ class MyApp extends StatelessWidget {
           )..initialize(),
         ),
       ],
-      child: MaterialApp.router(
-        title: 'Pill Pilot',
-        theme: AppTheme.themeData,
-        routerConfig: router,
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('de', ''),
-          Locale('en', ''),
-        ],
-        locale: const Locale('de'),
+      child: ChangeNotifierProvider(
+        create: (context) => ThemeProvider(),
+        child: Consumer<ThemeProvider>(
+          builder: (context, themeProvider, child) {
+            return MaterialApp.router(
+              title: 'Pill Pilot',
+              theme: themeProvider.theme,
+              routerConfig: router,
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('de', ''),
+                Locale('en', ''),
+              ],
+              locale: const Locale('de'),
+            );
+          },
+        ),
       ),
     );
   }

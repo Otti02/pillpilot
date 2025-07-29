@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../controllers/home/home_controller.dart';
 import '../theme/app_theme.dart';
 import '../widgets/appointment_item.dart';
@@ -62,7 +63,9 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return Consumer<ThemeProvider>(
+          builder: (context, themeProvider, child) {
+            return AlertDialog(
           title: Row(
             children: [
               Icon(
@@ -72,14 +75,14 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
-                  appointment.title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.primaryTextColor,
+                child:                   Text(
+                    appointment.title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: themeProvider.primaryTextColor,
+                    ),
                   ),
-                ),
               ),
             ],
           ),
@@ -117,13 +120,13 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: Text(
-                        appointment.notes,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppTheme.secondaryTextColor,
-                        ),
+                      child:                     Text(
+                      appointment.notes,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: themeProvider.secondaryTextColor,
                       ),
+                    ),
                     ),
                   ],
                 ),
@@ -140,6 +143,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         );
+          },
+        );
       },
     );
   }
@@ -149,8 +154,10 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder<HomeController, HomeState>(
       bloc: _controller,
       builder: (context, state) {
-        return Scaffold(
-          backgroundColor: AppTheme.backgroundColor,
+        return Consumer<ThemeProvider>(
+          builder: (context, themeProvider, child) {
+            return Scaffold(
+              backgroundColor: themeProvider.backgroundColor,
           body: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,21 +167,57 @@ class _HomePageState extends State<HomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        _getCurrentTime(),
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primaryTextColor,
-                        ),
-                      ),
-                      Text(
-                        AppStrings.deineEinnahmenHeute,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.primaryTextColor,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _getCurrentTime(),
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: themeProvider.primaryTextColor,
+                                  ),
+                                ),
+                                Text(
+                                  AppStrings.deineEinnahmenHeute,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: themeProvider.primaryTextColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Theme toggle switch
+                          Consumer<ThemeProvider>(
+                            builder: (context, themeProvider, child) {
+                              return Row(
+                                children: [
+                                  Icon(
+                                    themeProvider.isDarkMode 
+                                        ? Icons.dark_mode 
+                                        : Icons.light_mode,
+                                    color: AppTheme.primaryColor,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Switch(
+                                    value: themeProvider.isDarkMode,
+                                    onChanged: (value) {
+                                      themeProvider.toggleTheme();
+                                    },
+                                    activeColor: AppTheme.primaryColor,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
                       ),
                       if (state.welcomeMessage.isNotEmpty)
                         Padding(
@@ -184,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: AppTheme.secondaryTextColor,
+                              color: themeProvider.secondaryTextColor,
                             ),
                           ),
                         ),
@@ -245,33 +288,43 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         );
+          },
+        );
       },
     );
   }
 
   Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.defaultPadding),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: AppTheme.primaryTextColor,
-        ),
-      ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.defaultPadding),
+          child: Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: themeProvider.primaryTextColor,
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildEmptyState(String message) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppTheme.defaultPadding),
-        child: Text(
-          message,
-          style: TextStyle(fontSize: 16, color: AppTheme.secondaryTextColor),
-        ),
-      ),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.defaultPadding),
+            child: Text(
+              message,
+              style: TextStyle(fontSize: 16, color: themeProvider.secondaryTextColor),
+            ),
+          ),
+        );
+      },
     );
   }
 }

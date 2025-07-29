@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../theme/app_theme.dart';
 
 class CustomTextField extends StatelessWidget {
@@ -19,41 +20,46 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (label != null) ...[
-          Text(
-            label!,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              color: AppTheme.primaryTextColor,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (label != null) ...[
+              Text(
+                label!,
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: themeProvider.primaryTextColor,
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+            ],
+            TextField(
+              controller: controller,
+              obscureText: obscureText,
+              onChanged: onChanged,
+              style: TextStyle(color: themeProvider.primaryTextColor),
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: TextStyle(color: themeProvider.secondaryTextColor),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: themeProvider.borderColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: themeProvider.borderColor),
+                ),
+              ),
             ),
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-        ],
-        TextField(
-          controller: controller,
-          obscureText: obscureText,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            hintText: hint,
-            hintStyle: TextStyle(color: AppTheme.secondaryTextColor),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppTheme.borderColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppTheme.borderColor),
-            ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

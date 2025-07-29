@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../models/medication_state_model.dart';
 import '../services/service_provider.dart';
 import '../theme/app_theme.dart';
@@ -76,77 +77,85 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Medikament Details'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDetailCard('Name', widget.medication.name),
-              const SizedBox(height: 16),
-              _buildDetailCard('Dosierung', widget.medication.dosage),
-              const SizedBox(height: 16),
-              _buildDetailCard('Uhrzeit', widget.medication.time.format(context)),
-              const SizedBox(height: 16),
-              _buildDetailCard('Einnahmetage', _formatDaysOfWeek(widget.medication.daysOfWeek)),
-              const SizedBox(height: 16),
-              _buildDetailCard('Notizen', widget.medication.notes.isNotEmpty ? widget.medication.notes : 'Keine Notizen vorhanden.', isNote: true),
-              const SizedBox(height: 32),
-              LargeCheckboxListTile(
-                title: 'Erinnerungen aktivieren',
-                value: _enableReminders,
-                onChanged: (bool? newValue) {
-                  if (newValue != null) {
-                    _toggleEnableReminders(newValue);
-                  }
-                },
-                scale: 1.5,
-              ),
-              const SizedBox(height: 16),
-              LargeCheckboxListTile(
-                title: 'Eingenommen',
-                value: _isCompleted,
-                onChanged: (bool? newValue) {
-                  if (newValue != null) {
-                    _toggleCompletion(newValue);
-                  }
-                },
-                scale: 1.5,
-              ),
-              const SizedBox(height: 32),
-              Row(
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          backgroundColor: themeProvider.backgroundColor,
+          appBar: AppBar(
+            title: Text(
+              'Medikament Details',
+              style: TextStyle(color: themeProvider.primaryTextColor),
+            ),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(color: themeProvider.primaryTextColor),
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: CustomButton(
-                      text: 'Bearbeiten',
-                      isOutlined: true,
-                      onPressed: _navigateToEditMedication,
-                    ),
+                  _buildDetailCard('Name', widget.medication.name, themeProvider),
+                  const SizedBox(height: 16),
+                  _buildDetailCard('Dosierung', widget.medication.dosage, themeProvider),
+                  const SizedBox(height: 16),
+                  _buildDetailCard('Uhrzeit', widget.medication.time.format(context), themeProvider),
+                  const SizedBox(height: 16),
+                  _buildDetailCard('Einnahmetage', _formatDaysOfWeek(widget.medication.daysOfWeek), themeProvider),
+                  const SizedBox(height: 16),
+                  _buildDetailCard('Notizen', widget.medication.notes.isNotEmpty ? widget.medication.notes : 'Keine Notizen vorhanden.', themeProvider, isNote: true),
+                  const SizedBox(height: 32),
+                  LargeCheckboxListTile(
+                    title: 'Erinnerungen aktivieren',
+                    value: _enableReminders,
+                    onChanged: (bool? newValue) {
+                      if (newValue != null) {
+                        _toggleEnableReminders(newValue);
+                      }
+                    },
+                    scale: 1.5,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: CustomButton(
-                      text: 'Speichern',
-                      onPressed: _saveAndGoBack,
-                    ),
+                  const SizedBox(height: 16),
+                  LargeCheckboxListTile(
+                    title: 'Eingenommen',
+                    value: _isCompleted,
+                    onChanged: (bool? newValue) {
+                      if (newValue != null) {
+                        _toggleCompletion(newValue);
+                      }
+                    },
+                    scale: 1.5,
+                  ),
+                  const SizedBox(height: 32),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          text: 'Bearbeiten',
+                          isOutlined: true,
+                          onPressed: _navigateToEditMedication,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: CustomButton(
+                          text: 'Speichern',
+                          onPressed: _saveAndGoBack,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildDetailCard(String title, String value, {bool isNote = false}) {
+  Widget _buildDetailCard(String title, String value, ThemeProvider themeProvider, {bool isNote = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -154,7 +163,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
           title,
           style: TextStyle(
             fontSize: 14,
-            color: AppTheme.secondaryTextColor,
+            color: themeProvider.secondaryTextColor,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -163,7 +172,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
           value,
           style: TextStyle(
             fontSize: 18,
-            color: AppTheme.primaryTextColor,
+            color: themeProvider.primaryTextColor,
             fontStyle: isNote && value == 'Keine Notizen vorhanden.' ? FontStyle.italic : FontStyle.normal,
           ),
         ),

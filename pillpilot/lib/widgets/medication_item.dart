@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/medication_model.dart';
 import '../pages/medication_detail_page.dart';
 import '../theme/app_theme.dart';
@@ -74,99 +75,111 @@ class _MedicationItemState extends State<MedicationItem> {
   Widget build(BuildContext context) {
     final effectiveOnTap = widget.onTap ?? _navigateToDetailPage;
 
-    return GestureDetector(
-      onTap: effectiveOnTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.cardBackgroundColor,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.shadowColor,
-              spreadRadius: 1,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            LayoutBuilder(
-              builder: (context, constraints) => Container(
-                width: MediaQuery.of(context).size.width * 0.12,
-                height: MediaQuery.of(context).size.width * 0.12,
-                decoration: BoxDecoration(
-                  color: AppTheme.iconBackgroundColor,
-                  borderRadius: BorderRadius.circular(8),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return GestureDetector(
+          onTap: effectiveOnTap,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: themeProvider.cardBackgroundColor,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.shadowColor,
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
                 ),
-                child: const Icon(
-                  Icons.medication,
-                  color: AppTheme.primaryColor,
-                  size: 24,
-                ),
-              ),
+              ],
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.medication.name, // <--- Hier angepasst
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: (widget.showCompletedStyling && _isCompleted) ? AppTheme.completedTextColor : AppTheme.primaryTextColor,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${widget.medication.dosage} · ${widget.medication.time.format(context)} · ${_formatDaysOfWeek(widget.medication.daysOfWeek)}', // <--- Hier angepasst
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: (widget.showCompletedStyling && _isCompleted) ? AppTheme.completedTextColor : AppTheme.secondaryTextColor,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            // Show trailingWidget if provided, otherwise show checkbox
-            widget.trailingWidget ?? GestureDetector(
-              onTap: widget.onToggle,
-              child: LayoutBuilder(
-                builder: (context, constraints) => Container(
-                  width: MediaQuery.of(context).size.width * 0.1,
-                  height: MediaQuery.of(context).size.width * 0.1,
-                  color: Colors.transparent,
-                  alignment: Alignment.center,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.06,
-                    height: MediaQuery.of(context).size.width * 0.06,
+            child: Row(
+              children: [
+                LayoutBuilder(
+                  builder: (context, constraints) => Container(
+                    width: MediaQuery.of(context).size.width * 0.12,
+                    height: MediaQuery.of(context).size.width * 0.12,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: (widget.showCompletedStyling && _isCompleted) ? AppTheme.completedColor : AppTheme.checkboxInactiveColor,
-                        width: 2,
-                      ),
-                      color: (widget.showCompletedStyling && _isCompleted) ? AppTheme.completedColor : Colors.transparent,
+                      color: AppTheme.iconBackgroundColor,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    child: (widget.showCompletedStyling && _isCompleted)
-                        ? const Icon(
-                      Icons.check,
-                      color: AppTheme.cardBackgroundColor,
-                      size: 16,
-                    )
-                        : null,
+                    child: const Icon(
+                      Icons.medication,
+                      color: AppTheme.primaryColor,
+                      size: 24,
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.medication.name, // <--- Hier angepasst
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: (widget.showCompletedStyling && _isCompleted) 
+                              ? AppTheme.completedTextColor 
+                              : themeProvider.primaryTextColor,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${widget.medication.dosage} · ${widget.medication.time.format(context)} · ${_formatDaysOfWeek(widget.medication.daysOfWeek)}', // <--- Hier angepasst
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: (widget.showCompletedStyling && _isCompleted) 
+                              ? AppTheme.completedTextColor 
+                              : themeProvider.secondaryTextColor,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                // Show trailingWidget if provided, otherwise show checkbox
+                widget.trailingWidget ?? GestureDetector(
+                  onTap: widget.onToggle,
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => Container(
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      height: MediaQuery.of(context).size.width * 0.1,
+                      color: Colors.transparent,
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.06,
+                        height: MediaQuery.of(context).size.width * 0.06,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: (widget.showCompletedStyling && _isCompleted) 
+                                ? AppTheme.completedColor 
+                                : AppTheme.checkboxInactiveColor,
+                            width: 2,
+                          ),
+                          color: (widget.showCompletedStyling && _isCompleted) 
+                              ? AppTheme.completedColor 
+                              : Colors.transparent,
+                        ),
+                        child: (widget.showCompletedStyling && _isCompleted)
+                            ? Icon(
+                          Icons.check,
+                          color: themeProvider.cardBackgroundColor,
+                          size: 16,
+                        )
+                            : null,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

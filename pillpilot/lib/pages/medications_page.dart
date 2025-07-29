@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../controllers/medication/medication_controller.dart';
 import '../models/medication_model.dart';
 import '../models/medication_state_model.dart';
@@ -45,95 +46,137 @@ class MedicationsPage extends StatelessWidget {
   void _deleteMedication(BuildContext context, Medication medication) {
     showDialog<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text('Medikament löschen'),
-        content: Text('Möchtest du "${medication.name}" wirklich löschen?'),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: CustomButton(
-                  text: 'Abbrechen',
-                  isOutlined: true,
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: CustomButton(
-                  text: 'Löschen',
-                  color: AppTheme.red,
-                  onPressed: () async {
-                    final medicationName = medication.name;
-                    Navigator.of(dialogContext).pop();
-                    await BlocProvider.of<MedicationController>(context)
-                        .deleteMedication(medication.id);
-                  },
-                ),
+      builder: (dialogContext) => Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return AlertDialog(
+            title: Text(
+              'Medikament löschen',
+              style: TextStyle(color: themeProvider.primaryTextColor),
+            ),
+            content: Text(
+              'Möchtest du "${medication.name}" wirklich löschen?',
+              style: TextStyle(color: themeProvider.primaryTextColor),
+            ),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomButton(
+                      text: 'Abbrechen',
+                      isOutlined: true,
+                      onPressed: () => Navigator.of(dialogContext).pop(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: CustomButton(
+                      text: 'Löschen',
+                      color: AppTheme.red,
+                      onPressed: () async {
+                        final medicationName = medication.name;
+                        Navigator.of(dialogContext).pop();
+                        await BlocProvider.of<MedicationController>(context)
+                            .deleteMedication(medication.id);
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToCreateMedication(context),
-        backgroundColor: AppTheme.primaryColor,
-        child: const Icon(Icons.add),
-      ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(_getCurrentTime(), style: TextStyle(fontSize: AppTheme.mainTitleFontSize, fontWeight: FontWeight.bold)),
-                  Text(AppStrings.deineMedikamente, style: TextStyle(fontSize: AppTheme.sectionTitleFontSize, fontWeight: FontWeight.w600)),
-                  Text('Übersicht aller Medikamente', style: TextStyle(fontSize: AppTheme.subtitleFontSize, color: AppTheme.secondaryTextColor)),
-                ],
-              ),
-            ),
-            Expanded(
-              child: BlocBuilder<MedicationController, MedicationModel>(
-                builder: (context, model) {
-                  if (model.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (model.medications.isEmpty) {
-                    return Center(child: Text('Keine Medikamente vorhanden', style: TextStyle(fontSize: AppTheme.subtitleFontSize, color: AppTheme.secondaryTextColor)));
-                  }
-
-                  return ListView.builder(
-                    itemCount: model.medications.length,
-                    itemBuilder: (context, index) {
-                      final medication = model.medications[index];
-                      return MedicationItem(
-                        medication: medication,
-                        onTap: () => _navigateToEditMedication(context, medication),
-                        showCompletedStyling: false,
-                        trailingWidget: IconButton(
-                          icon: const Icon(Icons.delete, color: AppTheme.red),
-                          onPressed: () => _deleteMedication(context, medication),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          backgroundColor: themeProvider.backgroundColor,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _navigateToCreateMedication(context),
+            backgroundColor: AppTheme.primaryColor,
+            child: const Icon(Icons.add),
+          ),
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _getCurrentTime(), 
+                        style: TextStyle(
+                          fontSize: AppTheme.mainTitleFontSize, 
+                          fontWeight: FontWeight.bold,
+                          color: themeProvider.primaryTextColor,
                         ),
+                      ),
+                      Text(
+                        AppStrings.deineMedikamente, 
+                        style: TextStyle(
+                          fontSize: AppTheme.sectionTitleFontSize, 
+                          fontWeight: FontWeight.w600,
+                          color: themeProvider.primaryTextColor,
+                        ),
+                      ),
+                      Text(
+                        'Übersicht aller Medikamente', 
+                        style: TextStyle(
+                          fontSize: AppTheme.subtitleFontSize, 
+                          color: themeProvider.secondaryTextColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: BlocBuilder<MedicationController, MedicationModel>(
+                    builder: (context, model) {
+                      if (model.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      if (model.medications.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'Keine Medikamente vorhanden', 
+                            style: TextStyle(
+                              fontSize: AppTheme.subtitleFontSize, 
+                              color: themeProvider.secondaryTextColor,
+                            ),
+                          ),
+                        );
+                      }
+
+                      return ListView.builder(
+                        itemCount: model.medications.length,
+                        itemBuilder: (context, index) {
+                          final medication = model.medications[index];
+                          return MedicationItem(
+                            medication: medication,
+                            onTap: () => _navigateToEditMedication(context, medication),
+                            showCompletedStyling: false,
+                            trailingWidget: IconButton(
+                              icon: const Icon(Icons.delete, color: AppTheme.red),
+                              onPressed: () => _deleteMedication(context, medication),
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

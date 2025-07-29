@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'dart:math';
 import '../controllers/appointment/appointment_controller.dart';
 import '../models/appointment_model.dart';
@@ -239,69 +240,76 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppStrings.kalender,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.primaryTextColor,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                AppStrings.planeDeineTermine,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: AppTheme.secondaryTextColor,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CustomCalendar(
-                    initialDate: _selectedDate,
-                    onDateSelected: (date) {
-                      setState(() {
-                        _selectedDate = date;
-                      });
-                      _loadAppointments();
-                    },
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          backgroundColor: themeProvider.backgroundColor,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    AppStrings.kalender,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: themeProvider.primaryTextColor,
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 16),
+                  Text(
+                    AppStrings.planeDeineTermine,
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: themeProvider.primaryTextColor,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Card(
+                    elevation: 4,
+                    color: themeProvider.cardBackgroundColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomCalendar(
+                        initialDate: _selectedDate,
+                        onDateSelected: (date) {
+                          setState(() {
+                            _selectedDate = date;
+                          });
+                          _loadAppointments();
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildAppointmentsList(context, themeProvider),
+                ],
               ),
-              const SizedBox(height: 16),
-              _buildAppointmentsList(context),
-            ],
+            ),
           ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddAppointmentDialog(context),
-        backgroundColor: AppTheme.primaryColor,
-        child: const Icon(Icons.add),
-      ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _showAddAppointmentDialog(context),
+            backgroundColor: AppTheme.primaryColor,
+            child: const Icon(Icons.add),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildAppointmentsList(BuildContext context) {
+  Widget _buildAppointmentsList(BuildContext context, ThemeProvider themeProvider) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '${AppStrings.termineAm} ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
+              color: themeProvider.primaryTextColor,
             ),
           ),
           const SizedBox(height: 8),
@@ -313,7 +321,14 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                 }
                 
                 if (model.appointments.isEmpty) {
-                  return const Center(child: Text(AppStrings.keineTermineAnDiesemTag));
+                  return Center(
+                    child: Text(
+                      AppStrings.keineTermineAnDiesemTag,
+                      style: TextStyle(
+                        color: themeProvider.secondaryTextColor,
+                      ),
+                    ),
+                  );
                 }
                 
                 return ListView.builder(

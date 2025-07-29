@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../controllers/lexicon/lexicon_controller.dart';
 import '../models/lexicon_entry_model.dart';
 import '../models/lexicon_state_model.dart';
@@ -72,153 +73,159 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    AppStrings.lexikon,
-                    style: TextStyle(
-                      fontSize: AppTheme.mainTitleFontSize,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryTextColor,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Search bar
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppTheme.cardBackgroundColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppTheme.borderColor),
-                    ),
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        hintText: AppStrings.searchHint,
-                        prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: BlocBuilder<LexiconController, LexiconModel>(
-                builder: (context, model) {
-                  if (model.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  
-                  final filteredEntries = _filterEntries(model.entries);
-                  
-                  if (filteredEntries.isEmpty) {
-                    return Center(
-                      child: Text(
-                        AppStrings.noEntriesFound,
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return Scaffold(
+          backgroundColor: themeProvider.backgroundColor,
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppStrings.lexikon,
                         style: TextStyle(
-                          fontSize: AppTheme.subtitleFontSize,
-                          color: AppTheme.secondaryTextColor,
+                          fontSize: AppTheme.mainTitleFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: themeProvider.primaryTextColor,
                         ),
                       ),
-                    );
-                  }
-                  
-                  return ListView.builder(
-                    itemCount: filteredEntries.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemBuilder: (context, index) {
-                      final entry = filteredEntries[index];
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 12),
+                      const SizedBox(height: 16),
+                      // Search bar
+                      Container(
                         decoration: BoxDecoration(
-                          color: AppTheme.cardBackgroundColor,
+                          color: themeProvider.cardBackgroundColor,
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.shadowColor,
-                              spreadRadius: 1,
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+                          border: Border.all(color: themeProvider.borderColor),
                         ),
-                        child: Material(
-                          color: AppTheme.transparent,
-                          child: InkWell(
-                            onTap: () => _navigateToEntryDetail(entry),
-                            borderRadius: BorderRadius.circular(12),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                children: [
-                                  // Circle with first letter
-                                  Container(
-                                    width: 48,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.iconBackgroundColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        entry.name.substring(0, 1).toUpperCase(),
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppTheme.primaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  // Entry info
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          entry.name,
-                                          style: TextStyle(
-                                            fontSize: AppTheme.subtitleFontSize,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppTheme.primaryTextColor,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          entry.category,
-                                          style: TextStyle(
-                                            fontSize: AppTheme.smallFontSize,
-                                            color: AppTheme.secondaryTextColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                        child: TextField(
+                          controller: _searchController,
+                          style: TextStyle(color: themeProvider.primaryTextColor),
+                          decoration: InputDecoration(
+                            hintText: AppStrings.searchHint,
+                            hintStyle: TextStyle(color: themeProvider.secondaryTextColor),
+                            prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: BlocBuilder<LexiconController, LexiconModel>(
+                    builder: (context, model) {
+                      if (model.isLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      
+                      final filteredEntries = _filterEntries(model.entries);
+                      
+                      if (filteredEntries.isEmpty) {
+                        return Center(
+                          child: Text(
+                            AppStrings.noEntriesFound,
+                            style: TextStyle(
+                              fontSize: AppTheme.subtitleFontSize,
+                              color: themeProvider.secondaryTextColor,
+                            ),
+                          ),
+                        );
+                      }
+                      
+                      return ListView.builder(
+                        itemCount: filteredEntries.length,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemBuilder: (context, index) {
+                          final entry = filteredEntries[index];
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            decoration: BoxDecoration(
+                              color: themeProvider.cardBackgroundColor,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppTheme.shadowColor,
+                                  spreadRadius: 1,
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Material(
+                              color: AppTheme.transparent,
+                              child: InkWell(
+                                onTap: () => _navigateToEntryDetail(entry),
+                                borderRadius: BorderRadius.circular(12),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
+                                    children: [
+                                      // Circle with first letter
+                                      Container(
+                                        width: 48,
+                                        height: 48,
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.iconBackgroundColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            entry.name.substring(0, 1).toUpperCase(),
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppTheme.primaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      // Entry info
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              entry.name,
+                                              style: TextStyle(
+                                                fontSize: AppTheme.subtitleFontSize,
+                                                fontWeight: FontWeight.w600,
+                                                color: themeProvider.primaryTextColor,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              entry.category,
+                                              style: TextStyle(
+                                                fontSize: AppTheme.smallFontSize,
+                                                color: themeProvider.secondaryTextColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
-                },
-              ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
