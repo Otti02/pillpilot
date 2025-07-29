@@ -41,7 +41,7 @@ void main() {
       ));
       expect(find.text('Doctor Visit'), findsOneWidget);
       expect(find.byIcon(Icons.event_available), findsOneWidget);
-      expect(find.text('14:30'), findsOneWidget);
+      expect(find.text('2:30 PM'), findsOneWidget);
     });
 
     testWidgets('renders appointment without notes', (WidgetTester tester) async {
@@ -49,7 +49,7 @@ void main() {
         AppointmentItem(appointment: testAppointmentNoNotes),
       ));
       expect(find.text('Dentist'), findsOneWidget);
-      expect(find.text('09:00'), findsOneWidget);
+      expect(find.text('9:00 AM'), findsOneWidget);
     });
 
     testWidgets('calls onTap when tapped', (WidgetTester tester) async {

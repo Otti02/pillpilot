@@ -39,8 +39,8 @@ void main() {
       await tester.pumpWidget(makeTestableWidget(
         CustomCalendar(initialDate: initialDate),
       ));
-      final state = tester.state(find.byType(CustomCalendar)) as dynamic;
-      expect(state._selectedDate, initialDate);
+      final calendar = tester.widget<CalendarDatePicker>(find.byType(CalendarDatePicker));
+      expect(calendar.initialDate, initialDate);
     });
 
     testWidgets('does not fail if onDateSelected is null', (WidgetTester tester) async {

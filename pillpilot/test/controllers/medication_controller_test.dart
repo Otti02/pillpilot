@@ -7,6 +7,8 @@ import 'package:pillpilot/models/medication_model.dart';
 import 'package:pillpilot/models/medication_state_model.dart';
 import 'package:pillpilot/services/medication_service.dart';
 import 'package:pillpilot/services/notification_service.dart';
+import 'package:pillpilot/services/base_service.dart';
+import 'package:pillpilot/theme/app_strings.dart';
 
 @GenerateMocks([MedicationService, NotificationService])
 import './medication_controller_test.mocks.dart';
@@ -144,18 +146,43 @@ void main() {
     });
 
     group('Error Handling Tests', () {
-      test('loadMedications should handle service errors gracefully', () async {
+      test('loadMedications should handle network errors gracefully', () async {
         // ARRANGE
         when(mockMedicationService.getMedications())
-            .thenThrow(Exception('Database connection failed'));
+            .thenThrow(NetworkException('No connection'));
 
         // ACT
         await medicationController.loadMedications();
 
         // ASSERT
         expect(medicationController.state.isLoading, false);
-        expect(medicationController.state.medications.length, 0);
-        // Don't verify notification calls since they shouldn't happen on error
+        expect(medicationController.state.error, AppStrings.networkError);
+      });
+
+      test('loadMedications should handle validation errors gracefully', () async {
+        // ARRANGE
+        when(mockMedicationService.getMedications())
+            .thenThrow(ValidationException('Invalid data'));
+
+        // ACT
+        await medicationController.loadMedications();
+
+        // ASSERT
+        expect(medicationController.state.isLoading, false);
+        expect(medicationController.state.error, AppStrings.validationError);
+      });
+
+      test('loadMedications should handle unknown errors gracefully', () async {
+        // ARRANGE
+        when(mockMedicationService.getMedications())
+            .thenThrow(Exception('Unknown'));
+
+        // ACT
+        await medicationController.loadMedications();
+
+        // ASSERT
+        expect(medicationController.state.isLoading, false);
+        expect(medicationController.state.error, AppStrings.unknownError);
       });
 
       test('createMedication should handle service errors and rethrow', () async {

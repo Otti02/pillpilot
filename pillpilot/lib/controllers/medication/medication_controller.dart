@@ -31,9 +31,7 @@ class MedicationController extends BlocController<MedicationModel> {
     } else {
       userMessage = AppStrings.unknownError;
     }
-    emit(state.copyWith(isLoading: false));
-    // Optional: Fehler im State speichern, falls UI das anzeigen soll
-    // emit(state.copyWith(isLoading: false, error: userMessage));
+    emit(state.copyWith(isLoading: false, error: userMessage));
   }
 
   @override

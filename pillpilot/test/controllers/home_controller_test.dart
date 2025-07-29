@@ -7,6 +7,8 @@ import 'package:pillpilot/services/appointment_service.dart';
 import 'package:pillpilot/models/medication_model.dart';
 import 'package:pillpilot/models/appointment_model.dart';
 import 'package:flutter/material.dart';
+import 'package:pillpilot/services/base_service.dart';
+import 'package:pillpilot/theme/app_strings.dart';
 
 @GenerateMocks([MedicationService, AppointmentService])
 import './home_controller_test.mocks.dart';
@@ -51,19 +53,14 @@ void main() {
         when(mockAppointmentService.getAppointmentsForDate(any))
             .thenAnswer((_) async => [testAppointment]);
 
-        List<Medication>? capturedMedications;
-        List<Appointment>? capturedAppointments;
-        homeController.onMedicationsLoaded = (meds) => capturedMedications = meds;
-        homeController.onAppointmentsLoaded = (apps) => capturedAppointments = apps;
-
         // ACT
         await homeController.initialize();
 
         // ASSERT
-        expect(capturedMedications, isNotNull);
-        expect(capturedMedications!.length, 1);
-        expect(capturedAppointments, isNotNull);
-        expect(capturedAppointments!.length, 1);
+        expect(homeController.state.medications, isNotNull);
+        expect(homeController.state.medications!.length, 1);
+        expect(homeController.state.appointments, isNotNull);
+        expect(homeController.state.appointments!.length, 1);
       });
 
       test('toggleMedicationCompletion should update medication and reload the list', () async {
@@ -78,11 +75,6 @@ void main() {
           testMedication.copyWith(isCompleted: true),
         ]);
 
-        List<Medication>? capturedMedications;
-        homeController.onMedicationsLoaded = (meds) {
-          capturedMedications = meds;
-        };
-
         // ACT
         await homeController.toggleMedicationCompletion('1', true);
 
@@ -91,9 +83,9 @@ void main() {
           argThat(isA<Medication>().having((m) => m.isCompleted, 'isCompleted', true)),
         )).called(1);
 
-        expect(capturedMedications, isNotNull);
-        expect(capturedMedications!.length, 1);
-        expect(capturedMedications!.first.isCompleted, true);
+        expect(homeController.state.medications, isNotNull);
+        expect(homeController.state.medications!.length, 1);
+        expect(homeController.state.medications!.first.isCompleted, true);
       });
 
       test('loadMedications should filter medications for today', () async {
@@ -108,50 +100,87 @@ void main() {
         when(mockMedicationService.getMedications())
             .thenAnswer((_) async => [todayMedication, otherMedication]);
 
-        List<Medication>? capturedMedications;
-        homeController.onMedicationsLoaded = (meds) => capturedMedications = meds;
-
         // ACT
         await homeController.loadMedications();
 
         // ASSERT
-        expect(capturedMedications, isNotNull);
-        expect(capturedMedications!.length, 1);
-        expect(capturedMedications!.first.id, '1');
+        expect(homeController.state.medications, isNotNull);
+        expect(homeController.state.medications!.length, 1);
+        expect(homeController.state.medications!.first.id, '1');
       });
     });
 
     group('Error Handling Tests', () {
-      test('loadMedications should handle service errors', () async {
+      test('loadMedications should handle network errors', () async {
         // ARRANGE
         when(mockMedicationService.getMedications())
-            .thenThrow(Exception('Database connection failed'));
-
-        String? capturedError;
-        homeController.onError = (error) => capturedError = error;
+            .thenThrow(NetworkException('No connection'));
 
         // ACT
         await homeController.loadMedications();
 
         // ASSERT
-        expect(capturedError, isNotNull);
-        expect(capturedError!.contains('Failed to load medications'), isTrue);
+        expect(homeController.state.error, AppStrings.networkError);
       });
 
-      test('loadAppointments should handle service errors', () async {
+      test('loadMedications should handle validation errors', () async {
+        // ARRANGE
+        when(mockMedicationService.getMedications())
+            .thenThrow(ValidationException('Invalid data'));
+
+        // ACT
+        await homeController.loadMedications();
+
+        // ASSERT
+        expect(homeController.state.error, AppStrings.validationError);
+      });
+
+      test('loadMedications should handle unknown errors', () async {
+        // ARRANGE
+        when(mockMedicationService.getMedications())
+            .thenThrow(Exception('Unknown'));
+
+        // ACT
+        await homeController.loadMedications();
+
+        // ASSERT
+        expect(homeController.state.error, AppStrings.unknownError);
+      });
+
+      test('loadAppointments should handle network errors', () async {
         // ARRANGE
         when(mockAppointmentService.getAppointmentsForDate(any))
-            .thenThrow(Exception('Failed to fetch appointments'));
-
-        String? capturedError;
-        homeController.onError = (error) => capturedError = error;
+            .thenThrow(NetworkException('No connection'));
 
         // ACT
         await homeController.loadAppointments();
 
         // ASSERT
-        expect(capturedError, isNotNull);
-        expect(capturedError!.contains('Failed to load appointments'), isTrue);
+        expect(homeController.state.error, AppStrings.networkError);
+      });
+
+      test('loadAppointments should handle validation errors', () async {
+        // ARRANGE
+        when(mockAppointmentService.getAppointmentsForDate(any))
+            .thenThrow(ValidationException('Invalid data'));
+
+        // ACT
+        await homeController.loadAppointments();
+
+        // ASSERT
+        expect(homeController.state.error, AppStrings.validationError);
+      });
+
+      test('loadAppointments should handle unknown errors', () async {
+        // ARRANGE
+        when(mockAppointmentService.getAppointmentsForDate(any))
+            .thenThrow(Exception('Unknown'));
+
+        // ACT
+        await homeController.loadAppointments();
+
+        // ASSERT
+        expect(homeController.state.error, AppStrings.unknownError);
       });
 
       test('toggleMedicationCompletion should handle service errors', () async {
@@ -159,15 +188,11 @@ void main() {
         when(mockMedicationService.getMedicationById('1'))
             .thenThrow(Exception('Medication not found'));
 
-        String? capturedError;
-        homeController.onError = (error) => capturedError = error;
-
         // ACT
         await homeController.toggleMedicationCompletion('1', true);
 
         // ASSERT
-        expect(capturedError, isNotNull);
-        expect(capturedError!.contains('Failed to update medication'), isTrue);
+        expect(homeController.state.error, AppStrings.unknownError);
       });
 
       test('initialize should handle partial failures gracefully', () async {
@@ -175,21 +200,15 @@ void main() {
         when(mockMedicationService.getMedications())
             .thenAnswer((_) async => [testMedication]);
         when(mockAppointmentService.getAppointmentsForDate(any))
-            .thenThrow(Exception('Appointment service failed'));
-
-        List<Medication>? capturedMedications;
-        String? capturedError;
-        homeController.onMedicationsLoaded = (meds) => capturedMedications = meds;
-        homeController.onError = (error) => capturedError = error;
+            .thenThrow(NetworkException('No connection'));
 
         // ACT
         await homeController.initialize();
 
         // ASSERT
-        expect(capturedMedications, isNotNull);
-        expect(capturedMedications!.length, 1);
-        expect(capturedError, isNotNull);
-        expect(capturedError!.contains('Failed to load appointments'), isTrue);
+        expect(homeController.state.medications, isNotNull);
+        expect(homeController.state.medications!.length, 1);
+        expect(homeController.state.error, AppStrings.networkError);
       });
     });
 
@@ -199,15 +218,12 @@ void main() {
         when(mockMedicationService.getMedications())
             .thenAnswer((_) async => <Medication>[]);
 
-        List<Medication>? capturedMedications;
-        homeController.onMedicationsLoaded = (meds) => capturedMedications = meds;
-
         // ACT
         await homeController.loadMedications();
 
         // ASSERT
-        expect(capturedMedications, isNotNull);
-        expect(capturedMedications!.length, 0);
+        expect(homeController.state.medications, isNotNull);
+        expect(homeController.state.medications!.length, 0);
       });
 
       test('loadAppointments should handle empty appointment list', () async {
@@ -215,15 +231,12 @@ void main() {
         when(mockAppointmentService.getAppointmentsForDate(any))
             .thenAnswer((_) async => <Appointment>[]);
 
-        List<Appointment>? capturedAppointments;
-        homeController.onAppointmentsLoaded = (apps) => capturedAppointments = apps;
-
         // ACT
         await homeController.loadAppointments();
 
         // ASSERT
-        expect(capturedAppointments, isNotNull);
-        expect(capturedAppointments!.length, 0);
+        expect(homeController.state.appointments, isNotNull);
+        expect(homeController.state.appointments!.length, 0);
       });
     });
   });
