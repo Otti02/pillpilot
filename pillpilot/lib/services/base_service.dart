@@ -1,31 +1,23 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-
-
+/// Interface for persistence operations
 abstract class PersistenceService {
+  /// Initialize the persistence service
+  Future<void> initialize();
+  
   Future<void> saveData(String key, dynamic data);
-
   Future<dynamic> getData(String key);
-
   Future<void> removeData(String key);
-
   Future<bool> containsKey(String key);
 }
 
-/// Implementation of persistence service using Hive database.
-class HivePersistenceService  implements PersistenceService {
+/// Implementation of persistence service using Hive database
+class HivePersistenceService implements PersistenceService {
   static const String _boxName = 'pillpilot_data';
-
   late Box<dynamic> _box;
 
-  static final HivePersistenceService _instance = HivePersistenceService._internal();
-
-  factory HivePersistenceService() {
-    return _instance;
-  }
-
-  HivePersistenceService._internal();
-
+  /// Initialize Hive and open the data box
+  @override
   Future<void> initialize() async {
     await Hive.initFlutter();
     _box = await Hive.openBox(_boxName);
@@ -49,20 +41,5 @@ class HivePersistenceService  implements PersistenceService {
   @override
   Future<void> saveData(String key, dynamic data) async {
     await _box.put(key, data);
-  }
-}
-
-
-class ServiceFactory {
-  static final ServiceFactory _instance = ServiceFactory._internal();
-
-  factory ServiceFactory() {
-    return _instance;
-  }
-
-  ServiceFactory._internal();
-
-  PersistenceService getPersistenceService() {
-    return HivePersistenceService();
   }
 }

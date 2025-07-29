@@ -16,8 +16,8 @@ class HomeController extends CallbackController {
   final AppointmentService _appointmentService;
 
   HomeController({MedicationService? medicationService, AppointmentService? appointmentService,})
-      : _medicationService = medicationService ?? ServiceProvider().medicationService,
-        _appointmentService = appointmentService ?? ServiceProvider().appointmentService;
+      : _medicationService = medicationService ?? ServiceProvider.instance.medicationService,
+        _appointmentService = appointmentService ?? ServiceProvider.instance.appointmentService;
 
   @override
   Future<void> initialize() async {

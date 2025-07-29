@@ -28,15 +28,8 @@ class MedicationServiceImpl implements MedicationService {
   final PersistenceService _persistenceService;
   int _nextId = 1;
 
-  static final MedicationServiceImpl _instance = MedicationServiceImpl._internal(
-    ServiceProvider().persistenceService,
-  );
-
-  factory MedicationServiceImpl() {
-    return _instance;
-  }
-
-  MedicationServiceImpl._internal(this._persistenceService) {
+  /// Constructor with dependency injection
+  MedicationServiceImpl(this._persistenceService) {
     _initNextId();
   }
 

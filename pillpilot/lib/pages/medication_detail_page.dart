@@ -35,8 +35,8 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
     _isCompleted = widget.medication.isCompleted;
     _enableReminders = widget.medication.enableReminders;
     _medicationController = MedicationController(
-      medicationService: ServiceProvider().medicationService,
-      notificationService: ServiceProvider().notificationService,
+      medicationService: ServiceProvider.instance.medicationService,
+      notificationService: ServiceProvider.instance.notificationService,
     );
   }
 

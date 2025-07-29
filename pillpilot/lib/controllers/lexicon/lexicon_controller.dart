@@ -8,7 +8,7 @@ class LexiconController extends BlocController<LexiconModel> {
   final LexiconService lexiconService;
 
   LexiconController({LexiconService? lexiconService})
-      : lexiconService = lexiconService ?? ServiceProvider().lexiconService,
+      : lexiconService = lexiconService ?? ServiceProvider.instance.lexiconService,
         super(LexiconModel(entries: []));
 
   @override

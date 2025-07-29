@@ -22,7 +22,7 @@ abstract class AppointmentService {
 }
 
 /// Implementation of the [AppointmentService] using local storage.
-class AppointmentServiceImpl  implements AppointmentService {
+class AppointmentServiceImpl implements AppointmentService {
   static const String _appointmentsKey = 'appointments';
 
   static const String _nextIdKey = 'next_appointment_id';
@@ -31,15 +31,8 @@ class AppointmentServiceImpl  implements AppointmentService {
 
   int _nextId = 1;
 
-  static final AppointmentServiceImpl _instance = AppointmentServiceImpl._internal(
-    ServiceProvider().persistenceService,
-  );
-
-  factory AppointmentServiceImpl() {
-    return _instance;
-  }
-
-  AppointmentServiceImpl._internal(this._persistenceService) {
+  /// Constructor with dependency injection
+  AppointmentServiceImpl(this._persistenceService) {
     _initNextId();
   }
 

@@ -13,8 +13,8 @@ class MedicationController extends BlocController<MedicationModel> {
   MedicationController({
     MedicationService? medicationService,
     NotificationService? notificationService,
-  })  : medicationService = medicationService ?? ServiceProvider().medicationService,
-        _notificationService = notificationService ?? ServiceProvider().notificationService,
+  })  : medicationService = medicationService ?? ServiceProvider.instance.medicationService,
+        _notificationService = notificationService ?? ServiceProvider.instance.notificationService,
         super(MedicationModel(medications: []));
 
   @override

@@ -15,7 +15,7 @@ void main() async {
   initializeTimeZones();
 
   // Initialize services
-  await ServiceProvider().initialize();
+  await ServiceProvider.instance.initialize();
 
 
   runApp(const MyApp());
@@ -32,18 +32,18 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<MedicationController>(
           create: (context) => MedicationController(
-            medicationService: ServiceProvider().medicationService,
-              notificationService: ServiceProvider().notificationService,
+            medicationService: ServiceProvider.instance.medicationService,
+              notificationService: ServiceProvider.instance.notificationService,
           )..initialize(),
         ),
         BlocProvider<AppointmentController>(
           create: (context) => AppointmentController(
-            appointmentService: ServiceProvider().appointmentService,
+            appointmentService: ServiceProvider.instance.appointmentService,
           )..initialize(),
         ),
         BlocProvider<LexiconController>(
           create: (context) => LexiconController(
-            lexiconService: ServiceProvider().lexiconService,
+            lexiconService: ServiceProvider.instance.lexiconService,
           )..initialize(),
         ),
       ],

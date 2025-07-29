@@ -9,7 +9,7 @@ class AppointmentController extends BlocController<AppointmentModel> {
   final AppointmentService appointmentService;
 
   AppointmentController({AppointmentService? appointmentService})
-      : appointmentService = appointmentService ?? ServiceProvider().appointmentService,
+      : appointmentService = appointmentService ?? ServiceProvider.instance.appointmentService,
         super(AppointmentModel(appointments: []));
 
   @override

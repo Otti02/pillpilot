@@ -33,15 +33,8 @@ class LexiconServiceImpl implements LexiconService {
 
   int _nextId = 1;
 
-  static final LexiconServiceImpl _instance = LexiconServiceImpl._internal(
-    ServiceProvider().persistenceService,
-  );
-
-  factory LexiconServiceImpl() {
-    return _instance;
-  }
-
-  LexiconServiceImpl._internal(this._persistenceService) {
+  /// Constructor with dependency injection
+  LexiconServiceImpl(this._persistenceService) {
     _initNextId();
   }
 
