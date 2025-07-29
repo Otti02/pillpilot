@@ -55,5 +55,8 @@ class AppStrings {
   static const zB = 'z.B.';
   static const searchHint = 'Medikament / Supplement';
   static const noEntriesFound = 'Keine Einträge gefunden';
+  static const networkError = 'Bitte überprüfen Sie Ihre Internetverbindung.';
+  static const unknownError = 'Ein unbekannter Fehler ist aufgetreten.';
+  static const validationError = 'Bitte überprüfen Sie Ihre Eingaben.';
   // ... weitere Strings nach Bedarf
 } 

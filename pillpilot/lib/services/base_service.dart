@@ -43,3 +43,24 @@ class HivePersistenceService implements PersistenceService {
     await _box.put(key, data);
   }
 }
+
+class NetworkException implements Exception {
+  final String message;
+  NetworkException([this.message = '']);
+  @override
+  String toString() => 'NetworkException: $message';
+}
+
+class ValidationException implements Exception {
+  final String message;
+  ValidationException([this.message = '']);
+  @override
+  String toString() => 'ValidationException: $message';
+}
+
+class AppException implements Exception {
+  final String message;
+  AppException([this.message = '']);
+  @override
+  String toString() => 'AppException: $message';
+}

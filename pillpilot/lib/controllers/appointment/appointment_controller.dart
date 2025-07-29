@@ -3,6 +3,8 @@ import '../../models/appointment_model.dart';
 import '../../models/appointment_state_model.dart';
 import '../../services/appointment_service.dart';
 import '../../services/service_provider.dart';
+import '../../services/base_service.dart';
+import '../../theme/app_strings.dart';
 import '../base_controller.dart';
 
 class AppointmentController extends BlocController<AppointmentModel> {
@@ -19,8 +21,19 @@ class AppointmentController extends BlocController<AppointmentModel> {
 
   @override
   void handleError(String message, [Object? error]) {
-    // For BLoC controllers, we emit an error state
+    String userMessage = message;
+    if (error is NetworkException) {
+      userMessage = AppStrings.networkError;
+    } else if (error is ValidationException) {
+      userMessage = AppStrings.validationError;
+    } else if (error is AppException) {
+      userMessage = error.message.isNotEmpty ? error.message : AppStrings.unknownError;
+    } else {
+      userMessage = AppStrings.unknownError;
+    }
     emit(state.copyWith(isLoading: false));
+    // Optional: Fehler im State speichern, falls UI das anzeigen soll
+    // emit(state.copyWith(isLoading: false, error: userMessage));
   }
 
   Future<void> loadAppointments() async {

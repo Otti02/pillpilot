@@ -4,15 +4,15 @@ import '../pages/medication_detail_page.dart';
 import '../theme/app_theme.dart';
 
 class MedicationItem extends StatefulWidget {
-  final Medication medication; // <--- HIER: Gesamtes Medication-Objekt
+  final Medication medication;
   final Widget? trailingWidget;
   final VoidCallback? onTap;
-  final VoidCallback? onToggle; // Für isCompleted
+  final VoidCallback? onToggle;
   final VoidCallback? onDataChanged;
 
   const MedicationItem({
     super.key,
-    required this.medication, // <--- HIER: Required Medication-Objekt
+    required this.medication,
     this.onDataChanged,
     this.trailingWidget,
     this.onTap,
@@ -29,7 +29,7 @@ class _MedicationItemState extends State<MedicationItem> {
   @override
   void initState() {
     super.initState();
-    _isCompleted = widget.medication.isCompleted; // <--- An Medication-Objekt anpassen
+    _isCompleted = widget.medication.isCompleted;
   }
 
   @override

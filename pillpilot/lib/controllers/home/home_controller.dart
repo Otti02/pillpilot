@@ -5,6 +5,8 @@ import '../../models/home_state_model.dart';
 import '../../services/appointment_service.dart';
 import '../../services/medication_service.dart';
 import '../../services/service_provider.dart';
+import '../../services/base_service.dart';
+import '../../theme/app_strings.dart';
 
 class HomeController extends BlocController<HomeState> {
   final MedicationService _medicationService;
@@ -27,7 +29,17 @@ class HomeController extends BlocController<HomeState> {
 
   @override
   void handleError(String message, [Object? error]) {
-    emit(state.copyWith(isLoading: false, error: message));
+    String userMessage = message;
+    if (error is NetworkException) {
+      userMessage = AppStrings.networkError;
+    } else if (error is ValidationException) {
+      userMessage = AppStrings.validationError;
+    } else if (error is AppException) {
+      userMessage = error.message.isNotEmpty ? error.message : AppStrings.unknownError;
+    } else {
+      userMessage = AppStrings.unknownError;
+    }
+    emit(state.copyWith(isLoading: false, error: userMessage));
   }
 
   Future<void> loadMedications() async {
