@@ -33,19 +33,30 @@ class Appointment extends BaseModel implements Persistable {
 
   /// Creates an appointment from a JSON map.
   factory Appointment.fromJson(Map<String, dynamic> json) {
-    final dateTime = DateTime.parse(json['date'] as String);
-    final timeMap = json['time'] as Map<String, dynamic>;
+    try {
+      final dateTime = DateTime.parse(json['date'] as String);
+      final timeMap = json['time'] as Map<String, dynamic>;
 
-    return Appointment(
-      id: json['id'] as String,
-      title: json['title'] as String,
-      date: dateTime,
-      time: TimeOfDay(
-        hour: timeMap['hour'] as int,
-        minute: timeMap['minute'] as int,
-      ),
-      notes: json['notes'] as String? ?? '',
-    );
+      return Appointment(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        date: dateTime,
+        time: TimeOfDay(
+          hour: timeMap['hour'] as int,
+          minute: timeMap['minute'] as int,
+        ),
+        notes: json['notes'] as String? ?? '',
+      );
+    } catch (e) {
+      // Fallback to default values if parsing fails
+      return Appointment(
+        id: json['id'] as String? ?? '',
+        title: json['title'] as String? ?? '',
+        date: DateTime.now(),
+        time: const TimeOfDay(hour: 8, minute: 0),
+        notes: json['notes'] as String? ?? '',
+      );
+    }
   }
 
   /// Converts the appointment to a JSON map.

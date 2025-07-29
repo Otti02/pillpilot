@@ -31,16 +31,57 @@ class Medication extends BaseModel implements Persistable {
   });
 
   static TimeOfDay _timeOfDayFromString(String timeString) {
-    final parts = timeString.split(':');
-    return TimeOfDay(hour: int.parse(parts[0]), minute: int.parse(parts[1]));
+    try {
+      final parts = timeString.split(':');
+      if (parts.length != 2) {
+        throw FormatException('Invalid time format. Expected HH:MM, got: $timeString');
+      }
+      
+      final hour = int.tryParse(parts[0]);
+      final minute = int.tryParse(parts[1]);
+      
+      if (hour == null || minute == null) {
+        throw FormatException('Invalid time values. Expected numbers, got: $timeString');
+      }
+      
+      if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+        throw FormatException('Time out of range. Hour: 0-23, Minute: 0-59, got: $timeString');
+      }
+      
+      return TimeOfDay(hour: hour, minute: minute);
+    } catch (e) {
+      // Fallback to default time if parsing fails
+      return const TimeOfDay(hour: 8, minute: 0);
+    }
   }
 
   factory Medication.fromJson(Map<String, dynamic> json) {
+    TimeOfDay time;
+    try {
+      if (json['time'] is Map<String, dynamic>) {
+        // New format: time as map
+        final timeMap = json['time'] as Map<String, dynamic>;
+        time = TimeOfDay(
+          hour: timeMap['hour'] as int,
+          minute: timeMap['minute'] as int,
+        );
+      } else if (json['time'] is String) {
+        // Legacy format: time as string (HH:MM)
+        time = _timeOfDayFromString(json['time'] as String);
+      } else {
+        // Fallback to default
+        time = const TimeOfDay(hour: 8, minute: 0);
+      }
+    } catch (e) {
+      // Fallback to default time if parsing fails
+      time = const TimeOfDay(hour: 8, minute: 0);
+    }
+
     return Medication(
       id: json['id'] as String,
       name: json['name'] as String,
       dosage: json['dosage'] as String,
-      time: _timeOfDayFromString(json['time'] as String? ?? '08:00'),
+      time: time,
       daysOfWeek: (json['daysOfWeek'] as List<dynamic>?)?.cast<int>() ?? [],
       isCompleted: json['isCompleted'] as bool? ?? false,
       notes: json['notes'] as String? ?? '',
@@ -54,7 +95,10 @@ class Medication extends BaseModel implements Persistable {
       'id': id,
       'name': name,
       'dosage': dosage,
-      'time': '${time.hour}:${time.minute}',
+      'time': {
+        'hour': time.hour,
+        'minute': time.minute,
+      },
       'daysOfWeek': daysOfWeek,
       'isCompleted': isCompleted,
       'notes': notes,
