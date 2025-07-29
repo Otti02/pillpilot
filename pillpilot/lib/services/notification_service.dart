@@ -53,7 +53,7 @@ class NotificationServiceImpl implements NotificationService {
     await cancelMedicationNotifications(medication.id);
 
     for (int dayNumber in medication.daysOfWeek) {
-      final int notificationId = int.parse('${medication.id}$dayNumber');
+      final int notificationId = medication.id.hashCode * 10 + dayNumber;
 
       final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
       tz.TZDateTime scheduledDate = tz.TZDateTime(
@@ -85,7 +85,7 @@ class NotificationServiceImpl implements NotificationService {
           iOS: DarwinNotificationDetails(),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime, // HIER muss es DateTimeComponents sein (nicht tz.DateTimeComponents)
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
         payload: medication.id,
       );
     }
@@ -93,10 +93,10 @@ class NotificationServiceImpl implements NotificationService {
 
   @override
   Future<void> cancelMedicationNotifications(String medicationId) async {
-    for (int i = 1; i <= 7; i++) {
-      final int notificationId = int.parse('$medicationId$i');
-      await _flutterLocalNotificationsPlugin.cancel(notificationId);
-    }
+    await Future.wait([
+      for (int i = 1; i <= 7; i++)
+        _flutterLocalNotificationsPlugin.cancel(medicationId.hashCode * 10 + i)
+    ]);
   }
 
   @override
