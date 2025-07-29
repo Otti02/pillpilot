@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/medication_model.dart';
 import '../pages/medication_detail_page.dart';
 import '../theme/app_theme.dart';
+import '../theme/app_strings.dart';
 
 class MedicationItem extends StatefulWidget {
   final Medication medication;
@@ -46,10 +47,10 @@ class _MedicationItemState extends State<MedicationItem> {
   }
 
   String _formatDaysOfWeek(List<int> days) {
-    if (days.length == 7) return 'Täglich';
-    if (days.isEmpty) return 'Keine Tage';
+    if (days.length == 7) return AppStrings.taeglich;
+    if (days.isEmpty) return AppStrings.keineTage;
 
-    const dayMap = {1: 'Mo', 2: 'Di', 3: 'Mi', 4: 'Do', 5: 'Fr', 6: 'Sa', 7: 'So'};
+    final dayMap = AppTheme.weekdays;
     days.sort();
     return days.map((d) => dayMap[d] ?? '').join(', ');
   }
@@ -80,8 +81,8 @@ class _MedicationItemState extends State<MedicationItem> {
         return GestureDetector(
           onTap: effectiveOnTap,
           child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            padding: const EdgeInsets.all(16),
+            margin: EdgeInsets.symmetric(horizontal: AppTheme.defaultPadding, vertical: AppTheme.smallPadding),
+            padding: EdgeInsets.all(AppTheme.defaultPadding),
             decoration: BoxDecoration(
               color: themeProvider.cardBackgroundColor,
               borderRadius: BorderRadius.circular(12),
@@ -90,7 +91,7 @@ class _MedicationItemState extends State<MedicationItem> {
                   color: AppTheme.shadowColor,
                   spreadRadius: 1,
                   blurRadius: 4,
-                  offset: const Offset(0, 2),
+                  offset: AppTheme.defaultShadowOffset,
                 ),
               ],
             ),
@@ -111,7 +112,7 @@ class _MedicationItemState extends State<MedicationItem> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: AppTheme.defaultPadding),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +127,7 @@ class _MedicationItemState extends State<MedicationItem> {
                               : themeProvider.primaryTextColor,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: AppTheme.smallPadding / 2),
                       Text(
                         '${widget.medication.dosage} · ${widget.medication.time.format(context)} · ${_formatDaysOfWeek(widget.medication.daysOfWeek)}', // <--- Hier angepasst
                         style: TextStyle(

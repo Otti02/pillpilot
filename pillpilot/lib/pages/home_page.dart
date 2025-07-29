@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               ? '${medication.name} als eingenommen markiert'
               : '${medication.name} als nicht eingenommen markiert',
         ),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: AppTheme.snackBarDuration),
       ),
     );
   }
@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
                 color: AppTheme.primaryColor,
                 size: 24,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: AppTheme.smallPadding),
               Expanded(
                 child:                   Text(
                     appointment.title,
@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                     color: AppTheme.primaryColor,
                     size: 16,
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: AppTheme.smallPadding),
                   Text(
                     DateFormat('HH:mm').format(appointment.dateTime),
                     style: TextStyle(
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               if (appointment.notes.isNotEmpty) ...[
-                const SizedBox(height: 16),
+                SizedBox(height: AppTheme.defaultPadding),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -118,15 +118,15 @@ class _HomePageState extends State<HomePage> {
                       color: AppTheme.secondaryTextColor,
                       size: 16,
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: AppTheme.smallPadding),
                     Expanded(
-                      child:                     Text(
-                      appointment.notes,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: themeProvider.secondaryTextColor,
+                      child: Text(
+                        appointment.notes,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: themeProvider.secondaryTextColor,
+                        ),
                       ),
-                    ),
                     ),
                   ],
                 ),
@@ -205,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                                     color: AppTheme.primaryColor,
                                     size: 20,
                                   ),
-                                  const SizedBox(width: 8),
+                                  SizedBox(width: AppTheme.smallPadding),
                                   Switch(
                                     value: themeProvider.isDarkMode,
                                     onChanged: (value) {

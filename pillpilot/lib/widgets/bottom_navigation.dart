@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../theme/app_strings.dart';
 
 class BottomNavigation extends StatefulWidget {
   final int currentIndex;
@@ -27,19 +28,19 @@ class _BottomNavigationState extends State<BottomNavigation> {
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
-          label: 'Home',
+          label: AppStrings.home,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.medication),
-          label: 'Medikamente',
+          label: AppStrings.medikamente,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.book),
-          label: 'Lexikon',
+          label: AppStrings.lexikon,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
-          label: 'Kalender',
+          label: AppStrings.kalender,
         ),
       ],
     );

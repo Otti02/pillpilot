@@ -136,7 +136,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
           },
           child: InputDecorator(
             decoration: InputDecoration(
-              labelText: 'Uhrzeit',
+              labelText: AppStrings.uhrzeit,
               labelStyle: TextStyle(color: themeProvider.secondaryTextColor),
               border: OutlineInputBorder(
                 borderSide: BorderSide(color: themeProvider.borderColor),
@@ -176,7 +176,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Einnahmetage', 
+              AppStrings.einnahmetage, 
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,

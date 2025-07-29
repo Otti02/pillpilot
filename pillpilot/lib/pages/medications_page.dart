@@ -50,11 +50,11 @@ class MedicationsPage extends StatelessWidget {
         builder: (context, themeProvider, child) {
           return AlertDialog(
             title: Text(
-              'Medikament löschen',
+              AppStrings.medikamentLoeschenTitel,
               style: TextStyle(color: themeProvider.primaryTextColor),
             ),
             content: Text(
-              'Möchtest du "${medication.name}" wirklich löschen?',
+              AppStrings.medikamentLoeschenFrage.replaceAll('{name}', medication.name),
               style: TextStyle(color: themeProvider.primaryTextColor),
             ),
             actions: [
@@ -62,7 +62,7 @@ class MedicationsPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CustomButton(
-                      text: 'Abbrechen',
+                      text: AppStrings.abbrechen,
                       isOutlined: true,
                       onPressed: () => Navigator.of(dialogContext).pop(),
                     ),
@@ -70,7 +70,7 @@ class MedicationsPage extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: CustomButton(
-                      text: 'Löschen',
+                      text: AppStrings.loeschen,
                       color: AppTheme.red,
                       onPressed: () async {
                         final medicationName = medication.name;
@@ -126,7 +126,7 @@ class MedicationsPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Übersicht aller Medikamente', 
+                        AppStrings.uebersichtMedikamente, 
                         style: TextStyle(
                           fontSize: AppTheme.subtitleFontSize, 
                           color: themeProvider.secondaryTextColor,
@@ -145,7 +145,7 @@ class MedicationsPage extends StatelessWidget {
                       if (model.medications.isEmpty) {
                         return Center(
                           child: Text(
-                            'Keine Medikamente vorhanden', 
+                            AppStrings.keineMedikamenteVorhanden, 
                             style: TextStyle(
                               fontSize: AppTheme.subtitleFontSize, 
                               color: themeProvider.secondaryTextColor,

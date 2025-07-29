@@ -60,6 +60,7 @@ class AppTheme {
   static const double spreadRadius = 1.0;
   static const Offset defaultShadowOffset = Offset(0, 2);
   static const int daysInWeek = 7;
+  static const int snackBarDuration = 2;
 
   static const Color white = Colors.white;
   static const Color red = Colors.red;

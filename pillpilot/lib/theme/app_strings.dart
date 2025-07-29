@@ -58,5 +58,29 @@ class AppStrings {
   static const networkError = 'Bitte überprüfen Sie Ihre Internetverbindung.';
   static const unknownError = 'Ein unbekannter Fehler ist aufgetreten.';
   static const validationError = 'Bitte überprüfen Sie Ihre Eingaben.';
+  
+  // Navigation
+  static const home = 'Home';
+  static const medikamente = 'Medikamente';
+  
+  // Medication related
+  static const taeglich = 'Täglich';
+  static const keineTage = 'Keine Tage';
+  static const keineTageAusgewaehlt = 'Keine Tage ausgewählt';
+  static const medikamentDetails = 'Medikament Details';
+  static const keineNotizenVorhanden = 'Keine Notizen vorhanden.';
+  static const erinnerungenAktivieren = 'Erinnerungen aktivieren';
+  static const eingenommen = 'Eingenommen';
+  static const bearbeiten = 'Bearbeiten';
+  
+  // Calendar related
+  static const datum = 'Datum';
+  
+  // Notification related
+  static const erinnerung = 'Erinnerung';
+  static const zeitFuerDosis = 'Zeit für deine Dosis von';
+  static const medikamentenerinnerungen = 'Medikamentenerinnerungen';
+  static const medikamentenerinnerungenBeschreibung = 'Erinnert Sie an die Einnahme von Medikamenten';
+  
   // ... weitere Strings nach Bedarf
 } 

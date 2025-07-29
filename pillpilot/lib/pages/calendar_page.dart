@@ -83,7 +83,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fehler beim Erstellen des Termins: $e')),
+        SnackBar(content: Text('${AppStrings.fehler}: $e')),
       );
     }
   }
@@ -113,7 +113,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
         contentPadding: const EdgeInsets.all(16.0),
         children: [
           Text(
-            'Datum: ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
+            '${AppStrings.datum}: ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
@@ -197,19 +197,19 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
         contentPadding: const EdgeInsets.all(16.0),
         children: [
           Text(
-            'Datum: ${DateFormat('dd.MM.yyyy').format(appointment.date)}',
+            '${AppStrings.datum}: ${DateFormat('dd.MM.yyyy').format(appointment.date)}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
-            'Uhrzeit: ${appointment.time.format(dialogContext)}',
+            '${AppStrings.uhrzeit}: ${appointment.time.format(dialogContext)}',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           if (appointment.notes.isNotEmpty) ...[
             const SizedBox(height: 16),
-            const Text(
-              'Notizen:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Text(
+              '${AppStrings.notizen}:',
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(appointment.notes),
