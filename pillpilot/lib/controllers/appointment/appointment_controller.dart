@@ -17,14 +17,19 @@ class AppointmentController extends BlocController<AppointmentModel> {
     await loadAppointments();
   }
 
+  @override
+  void handleError(String message, [Object? error]) {
+    // For BLoC controllers, we emit an error state
+    emit(state.copyWith(isLoading: false));
+  }
+
   Future<void> loadAppointments() async {
     try {
       emit(state.copyWith(isLoading: true));
       final appointments = await appointmentService.getAppointments();
       emit(state.copyWith(appointments: appointments, isLoading: false));
     } catch (e) {
-      emit(state.copyWith(isLoading: false));
-      // Error handling could be improved here
+      handleError('Failed to load appointments: ${e.toString()}', e);
     }
   }
 
@@ -34,31 +39,51 @@ class AppointmentController extends BlocController<AppointmentModel> {
       final appointments = await appointmentService.getAppointmentsForDate(date);
       emit(state.copyWith(appointments: appointments, isLoading: false));
     } catch (e) {
-      emit(state.copyWith(isLoading: false));
+      handleError('Failed to load appointments for date: ${e.toString()}', e);
     }
   }
 
   Future<List<DateTime>> getDatesWithAppointments() async {
-    return await appointmentService.getDatesWithAppointments();
+    try {
+      return await appointmentService.getDatesWithAppointments();
+    } catch (e) {
+      handleError('Failed to get dates with appointments: ${e.toString()}', e);
+      rethrow;
+    }
   }
 
   Future<Appointment> createAppointment(String title, DateTime date, TimeOfDay time, {String notes = ''}) async {
-    emit(state.copyWith(isLoading: true));
-    final appointment = await appointmentService.createAppointment(title, date, time, notes: notes);
-    await loadAppointments();
-    return appointment;
+    try {
+      emit(state.copyWith(isLoading: true));
+      final appointment = await appointmentService.createAppointment(title, date, time, notes: notes);
+      await loadAppointments();
+      return appointment;
+    } catch (e) {
+      handleError('Failed to create appointment: ${e.toString()}', e);
+      rethrow;
+    }
   }
 
   Future<Appointment> updateAppointment(Appointment appointment) async {
-    emit(state.copyWith(isLoading: true));
-    final updatedAppointment = await appointmentService.updateAppointment(appointment);
-    await loadAppointments();
-    return updatedAppointment;
+    try {
+      emit(state.copyWith(isLoading: true));
+      final updatedAppointment = await appointmentService.updateAppointment(appointment);
+      await loadAppointments();
+      return updatedAppointment;
+    } catch (e) {
+      handleError('Failed to update appointment: ${e.toString()}', e);
+      rethrow;
+    }
   }
 
   Future<void> deleteAppointment(String id) async {
-    emit(state.copyWith(isLoading: true));
-    await appointmentService.deleteAppointment(id);
-    await loadAppointments();
+    try {
+      emit(state.copyWith(isLoading: true));
+      await appointmentService.deleteAppointment(id);
+      await loadAppointments();
+    } catch (e) {
+      handleError('Failed to delete appointment: ${e.toString()}', e);
+      rethrow;
+    }
   }
 }

@@ -7,6 +7,9 @@ abstract class BaseController {
   
   /// Initialize the controller and load initial data
   Future<void> initialize();
+  
+  /// Handle errors in a consistent way
+  void handleError(String message, [Object? error]);
 }
 
 /// Base controller implementation for BLoC-based controllers
@@ -22,6 +25,12 @@ abstract class BlocController<T> extends Cubit<T> implements BaseController {
   Future<void> initialize() async {
     // Default implementation - override in subclasses
   }
+  
+  @override
+  void handleError(String message, [Object? error]) {
+    // Default implementation for BLoC controllers - just log the error
+    // Subclasses can override this to emit error states
+  }
 }
 
 /// Base controller implementation for callback-based controllers
@@ -34,5 +43,10 @@ abstract class CallbackController implements BaseController {
   @override
   Future<void> initialize() async {
     // Default implementation - override in subclasses
+  }
+  
+  @override
+  void handleError(String message, [Object? error]) {
+    // Default implementation - override in subclasses to call callbacks
   }
 }

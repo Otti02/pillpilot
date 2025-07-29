@@ -27,6 +27,10 @@ class HomeController extends CallbackController {
     ]);
   }
 
+  @override
+  void handleError(String message, [Object? error]) {
+    onError?.call(message);
+  }
 
   Future<void> loadMedications() async {
     try {
@@ -40,17 +44,16 @@ class HomeController extends CallbackController {
 
       onMedicationsLoaded?.call(todaysMedications);
     } catch (e) {
-      onError?.call('Failed to load medications: ${e.toString()}');
+      handleError('Failed to load medications: ${e.toString()}', e);
     }
   }
-
 
   Future<void> loadAppointments() async {
     try {
       final appointments = await _appointmentService.getAppointmentsForDate(DateTime.now());
       onAppointmentsLoaded?.call(appointments);
     } catch (e) {
-      onError?.call('Failed to load appointments: ${e.toString()}');
+      handleError('Failed to load appointments: ${e.toString()}', e);
     }
   }
 
@@ -61,7 +64,7 @@ class HomeController extends CallbackController {
       await _medicationService.updateMedication(updatedMedication);
       await loadMedications();
     } catch (e) {
-      onError?.call('Failed to update medication: ${e.toString()}');
+      handleError('Failed to update medication: ${e.toString()}', e);
     }
   }
 

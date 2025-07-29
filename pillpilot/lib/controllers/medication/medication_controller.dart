@@ -18,6 +18,12 @@ class MedicationController extends BlocController<MedicationModel> {
         super(MedicationModel(medications: []));
 
   @override
+  void handleError(String message, [Object? error]) {
+    // For BLoC controllers, we emit an error state
+    emit(state.copyWith(isLoading: false));
+  }
+
+  @override
   Future<void> initialize() async {
     await loadMedications();
   }
@@ -33,7 +39,7 @@ class MedicationController extends BlocController<MedicationModel> {
       }
 
     } catch (e) {
-      emit(state.copyWith(isLoading: false));
+      handleError('Failed to load medications: ${e.toString()}', e);
     }
   }
 
@@ -44,38 +50,58 @@ class MedicationController extends BlocController<MedicationModel> {
       List<int> daysOfWeek, {
         String notes = '',
       }) async {
-    emit(state.copyWith(isLoading: true));
-    final medication = await medicationService.createMedication(
-      name,
-      dosage,
-      time,
-      daysOfWeek,
-      notes: notes,
-    );
-    await loadMedications();
-    _notificationService.scheduleMedicationNotification(medication: medication);
-    return medication;
+    try {
+      emit(state.copyWith(isLoading: true));
+      final medication = await medicationService.createMedication(
+        name,
+        dosage,
+        time,
+        daysOfWeek,
+        notes: notes,
+      );
+      await loadMedications();
+      _notificationService.scheduleMedicationNotification(medication: medication);
+      return medication;
+    } catch (e) {
+      handleError('Failed to create medication: ${e.toString()}', e);
+      rethrow;
+    }
   }
 
   Future<Medication> updateMedication(Medication medication) async {
-    emit(state.copyWith(isLoading: true));
-    final updatedMedication = await medicationService.updateMedication(medication);
-    await loadMedications();
-    _notificationService.scheduleMedicationNotification(medication: updatedMedication);
-    return updatedMedication;
+    try {
+      emit(state.copyWith(isLoading: true));
+      final updatedMedication = await medicationService.updateMedication(medication);
+      await loadMedications();
+      _notificationService.scheduleMedicationNotification(medication: updatedMedication);
+      return updatedMedication;
+    } catch (e) {
+      handleError('Failed to update medication: ${e.toString()}', e);
+      rethrow;
+    }
   }
 
   Future<void> deleteMedication(String id) async {
-    emit(state.copyWith(isLoading: true));
-    await medicationService.deleteMedication(id);
-    await loadMedications();
-    _notificationService.cancelMedicationNotifications(id);
+    try {
+      emit(state.copyWith(isLoading: true));
+      await medicationService.deleteMedication(id);
+      await loadMedications();
+      _notificationService.cancelMedicationNotifications(id);
+    } catch (e) {
+      handleError('Failed to delete medication: ${e.toString()}', e);
+      rethrow;
+    }
   }
 
   Future<void> toggleMedicationCompletion(String id, bool isCompleted) async {
-    emit(state.copyWith(isLoading: true));
-    final medication = await medicationService.getMedicationById(id);
-    final updatedMedication = medication.copyWith(isCompleted: isCompleted);
-    await updateMedication(updatedMedication);
+    try {
+      emit(state.copyWith(isLoading: true));
+      final medication = await medicationService.getMedicationById(id);
+      final updatedMedication = medication.copyWith(isCompleted: isCompleted);
+      await updateMedication(updatedMedication);
+    } catch (e) {
+      handleError('Failed to toggle medication completion: ${e.toString()}', e);
+      rethrow;
+    }
   }
 }

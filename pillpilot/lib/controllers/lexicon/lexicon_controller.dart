@@ -12,6 +12,12 @@ class LexiconController extends BlocController<LexiconModel> {
         super(LexiconModel(entries: []));
 
   @override
+  void handleError(String message, [Object? error]) {
+    // For BLoC controllers, we emit an error state
+    emit(state.copyWith(isLoading: false));
+  }
+
+  @override
   Future<void> initialize() async {
     await loadEntries();
   }
@@ -22,8 +28,7 @@ class LexiconController extends BlocController<LexiconModel> {
       final entries = await lexiconService.getLexiconEntries();
       emit(state.copyWith(entries: entries, isLoading: false));
     } catch (e) {
-      emit(state.copyWith(isLoading: false));
-      // Error handling could be improved here
+      handleError('Failed to load lexicon entries: ${e.toString()}', e);
     }
   }
 
@@ -31,7 +36,7 @@ class LexiconController extends BlocController<LexiconModel> {
     try {
       return await lexiconService.getLexiconEntryById(id);
     } catch (e) {
-      // Error handling could be improved here
+      handleError('Failed to get lexicon entry by id: ${e.toString()}', e);
       rethrow;
     }
   }
@@ -43,28 +48,43 @@ class LexiconController extends BlocController<LexiconModel> {
     String description,
     String usageInfo,
   ) async {
-    emit(state.copyWith(isLoading: true));
-    final entry = await lexiconService.createLexiconEntry(
-      name,
-      type,
-      category,
-      description,
-      usageInfo,
-    );
-    await loadEntries();
-    return entry;
+    try {
+      emit(state.copyWith(isLoading: true));
+      final entry = await lexiconService.createLexiconEntry(
+        name,
+        type,
+        category,
+        description,
+        usageInfo,
+      );
+      await loadEntries();
+      return entry;
+    } catch (e) {
+      handleError('Failed to create lexicon entry: ${e.toString()}', e);
+      rethrow;
+    }
   }
 
   Future<LexiconEntry> updateEntry(LexiconEntry entry) async {
-    emit(state.copyWith(isLoading: true));
-    final updatedEntry = await lexiconService.updateLexiconEntry(entry);
-    await loadEntries();
-    return updatedEntry;
+    try {
+      emit(state.copyWith(isLoading: true));
+      final updatedEntry = await lexiconService.updateLexiconEntry(entry);
+      await loadEntries();
+      return updatedEntry;
+    } catch (e) {
+      handleError('Failed to update lexicon entry: ${e.toString()}', e);
+      rethrow;
+    }
   }
 
   Future<void> deleteEntry(String id) async {
-    emit(state.copyWith(isLoading: true));
-    await lexiconService.deleteLexiconEntry(id);
-    await loadEntries();
+    try {
+      emit(state.copyWith(isLoading: true));
+      await lexiconService.deleteLexiconEntry(id);
+      await loadEntries();
+    } catch (e) {
+      handleError('Failed to delete lexicon entry: ${e.toString()}', e);
+      rethrow;
+    }
   }
 }
