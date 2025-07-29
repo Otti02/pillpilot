@@ -23,23 +23,27 @@ class AppRouter {
 
   AppRouter._();
 
-   final router = GoRouter(
+  // Tab indices as constants to avoid magic numbers
+  static const int _homeIndex = 0;
+  static const int _medicationsIndex = 1;
+  static const int _lexiconIndex = 2;
+  static const int _calendarIndex = 3;
+
+  // Route to index mapping
+  static const Map<String, int> _routeToIndex = {
+    AppRoute.home: _homeIndex,
+    AppRoute.medications: _medicationsIndex,
+    AppRoute.lexicon: _lexiconIndex,
+    AppRoute.calendar: _calendarIndex,
+  };
+
+  final router = GoRouter(
     initialLocation: AppRoute.home,
     routes: [
       ShellRoute(
         builder: (context, state, child) {
           final location = state.uri.path;
-          int currentIndex = 0;
-
-          if (location == AppRoute.home) {
-            currentIndex = 0;
-          } else if (location == AppRoute.medications) {
-            currentIndex = 1;
-          } else if (location == AppRoute.lexicon) {
-            currentIndex = 2;
-          } else if (location == AppRoute.calendar) {
-            currentIndex = 3;
-          }
+          final currentIndex = _routeToIndex[location] ?? _homeIndex;
 
           return MainScreen(
             currentIndex: currentIndex,
@@ -50,7 +54,7 @@ class AppRouter {
           // Tab routes
           GoRoute(
             path: AppRoute.home,
-            builder: (context, state) => const HomePage(), // Diese muss aus dem importierten File kommen
+            builder: (context, state) => const HomePage(),
           ),
           GoRoute(
             path: AppRoute.medications,
@@ -69,12 +73,15 @@ class AppRouter {
     ],
   );
 
-  // Navigation methods
-  void goToHome() => router.go(AppRoute.home);
-  void goToMedications() => router.go(AppRoute.medications);
-  void goToLexicon() => router.go(AppRoute.lexicon);
-  void goToCalendar() => router.go(AppRoute.calendar);
-  void goToWidgets() => router.go(AppRoute.widgets);
+  // Generic navigation method to replace redundant methods
+  void navigateTo(String route) => router.go(route);
+
+  // Keep specific methods for backward compatibility but implement them generically
+  void goToHome() => navigateTo(AppRoute.home);
+  void goToMedications() => navigateTo(AppRoute.medications);
+  void goToLexicon() => navigateTo(AppRoute.lexicon);
+  void goToCalendar() => navigateTo(AppRoute.calendar);
+  void goToWidgets() => navigateTo(AppRoute.widgets);
 
   void goToWidgetDetail({
     required String id,
@@ -91,21 +98,14 @@ class AppRouter {
   }
 
   void goToTab(int index) {
-    switch (index) {
-      case 0:
-        goToHome();
-        break;
-      case 1:
-        goToMedications();
-        break;
-      case 2:
-        goToLexicon();
-        break;
-      case 3:
-        goToCalendar();
-        break;
-      default:
-        goToHome();
-    }
+    // Find route by index
+    final route = _routeToIndex.entries
+        .firstWhere(
+          (entry) => entry.value == index,
+          orElse: () => MapEntry(AppRoute.home, _homeIndex),
+        )
+        .key;
+    
+    navigateTo(route);
   }
 }
