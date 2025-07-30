@@ -10,6 +10,10 @@ import '../models/appointment_model.dart';
 import '../theme/app_strings.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/home_state_model.dart';
+import '../controllers/appointment/appointment_controller.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/appointment_details_dialog.dart';
+import '../widgets/edit_appointment_dialog.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -59,93 +63,39 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> _deleteAppointment(String id) async {
+    try {
+      final controller = BlocProvider.of<AppointmentController>(context);
+      await controller.deleteAppointment(id);
+
+      if (!mounted) return;
+      _reloadData();
+
+    } catch (e) {
+      if (!mounted) return;
+    }
+  }
+
   void _showAppointmentDetails(Appointment appointment) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return Consumer<ThemeProvider>(
-          builder: (context, themeProvider, child) {
-            return AlertDialog(
-          title: Row(
-            children: [
-              Icon(
-                Icons.event,
-                color: AppTheme.primaryColor,
-                size: 24,
-              ),
-              SizedBox(width: AppTheme.smallPadding),
-              Expanded(
-                child:                   Text(
-                    appointment.title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: themeProvider.primaryTextColor,
-                    ),
-                  ),
-              ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.access_time,
-                    color: AppTheme.primaryColor,
-                    size: 16,
-                  ),
-                  SizedBox(width: AppTheme.smallPadding),
-                  Text(
-                    DateFormat('HH:mm').format(appointment.dateTime),
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: AppTheme.primaryColor,
-                    ),
-                  ),
-                ],
-              ),
-              if (appointment.notes.isNotEmpty) ...[
-                SizedBox(height: AppTheme.defaultPadding),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.note,
-                      color: AppTheme.secondaryTextColor,
-                      size: 16,
-                    ),
-                    SizedBox(width: AppTheme.smallPadding),
-                    Expanded(
-                      child: Text(
-                        appointment.notes,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: themeProvider.secondaryTextColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                AppStrings.schliessen,
-                style: TextStyle(color: AppTheme.primaryColor),
-              ),
-            ),
-          ],
-        );
-          },
-        );
-      },
+      builder: (dialogContext) => AppointmentDetailsDialog(
+        appointment: appointment,
+        onDelete: () => _deleteAppointment(appointment.id),
+        onEdit: () => _showEditAppointmentDialog(context, appointment),
+      ),
+    );
+  }
+
+  void _showEditAppointmentDialog(BuildContext context, Appointment appointment) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => EditAppointmentDialog(
+        appointment: appointment,
+        onAppointmentUpdated: () {
+          _reloadData();
+        },
+      ),
     );
   }
 

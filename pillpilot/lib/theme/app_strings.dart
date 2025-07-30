@@ -44,7 +44,9 @@ class AppStrings {
   static const heutigeTermine = 'Heutige Termine';
   static const keineTermineFuerHeute = 'Keine Termine für heute';
   static const terminErfolgreichErstellt = 'Termin erfolgreich erstellt';
+  static const terminErfolgreichAktualisiert = 'Termin erfolgreich aktualisiert';
   static const neuerTermin = 'Neuer Termin';
+  static const terminBearbeiten = 'Termin bearbeiten';
   static const titel = 'Titel';
   static const notizen = 'Notizen';
   static const kalender = 'Kalender';

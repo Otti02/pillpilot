@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import 'package:pillpilot/models/medication_model.dart';
 import 'package:pillpilot/widgets/medication_item.dart';
+import 'package:pillpilot/theme/app_theme.dart';
 
 void main() {
   final testMedication = Medication(
@@ -14,9 +16,12 @@ void main() {
   );
 
   Widget makeTestableWidget(Widget child) {
-    return MaterialApp(
-      home: Scaffold(
-        body: child,
+    return ChangeNotifierProvider<ThemeProvider>(
+      create: (_) => ThemeProvider(),
+      child: MaterialApp(
+        home: Scaffold(
+          body: child,
+        ),
       ),
     );
   }

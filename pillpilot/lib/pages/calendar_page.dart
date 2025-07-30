@@ -10,6 +10,8 @@ import '../theme/app_theme.dart';
 import '../widgets/appointment_item.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_calendar.dart';
+import '../widgets/appointment_details_dialog.dart';
+import '../widgets/edit_appointment_dialog.dart';
 import '../theme/app_strings.dart';
 
 class CalendarPage extends StatelessWidget {
@@ -70,48 +72,22 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
   void _showAppointmentDetails(BuildContext context, Appointment appointment) {
     showDialog(
       context: context,
-      builder: (dialogContext) => SimpleDialog(
-        title: Text(appointment.title),
-        contentPadding: const EdgeInsets.all(16.0),
-        children: [
-          Text(
-            '${AppStrings.datum}: ${DateFormat('dd.MM.yyyy').format(appointment.date)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '${AppStrings.uhrzeit}: ${appointment.time.format(dialogContext)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          if (appointment.notes.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(
-              '${AppStrings.notizen}:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(appointment.notes),
-          ],
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CustomButton(
-                text: AppStrings.loeschen,
-                color: Colors.red,
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                  _deleteAppointment(appointment.id);
-                },
-              ),
-              const SizedBox(width: 8),
-              CustomButton(
-                text: AppStrings.schliessen,
-                onPressed: () => Navigator.of(dialogContext).pop(),
-              ),
-            ],
-          ),
-        ],
+      builder: (dialogContext) => AppointmentDetailsDialog(
+        appointment: appointment,
+        onDelete: () => _deleteAppointment(appointment.id),
+        onEdit: () => _showEditAppointmentDialog(context, appointment),
+      ),
+    );
+  }
+
+  void _showEditAppointmentDialog(BuildContext context, Appointment appointment) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => EditAppointmentDialog(
+        appointment: appointment,
+        onAppointmentUpdated: () {
+          _loadAppointments();
+        },
       ),
     );
   }
