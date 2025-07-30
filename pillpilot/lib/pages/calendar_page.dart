@@ -28,9 +28,6 @@ class _CalendarPageContent extends StatefulWidget {
 
 class _CalendarPageContentState extends State<_CalendarPageContent> {
   DateTime _selectedDate = DateTime.now();
-  final _titleController = TextEditingController();
-  final _notesController = TextEditingController();
-  TimeOfDay _selectedTime = TimeOfDay.now();
 
   @override
   void initState() {
@@ -38,55 +35,12 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
     _loadAppointments();
   }
 
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _notesController.dispose();
-    super.dispose();
-  }
-
   void _loadAppointments() {
     final controller = BlocProvider.of<AppointmentController>(context);
     controller.loadAppointmentsForDate(_selectedDate);
   }
 
-  Future<void> _addAppointment(BuildContext context) async {
-    if (_titleController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.bitteGibEinenTitelEin)),
-      );
-      return;
-    }
 
-    try {
-      final controller = BlocProvider.of<AppointmentController>(context);
-      await controller.createAppointment(
-        _titleController.text,
-        _selectedDate,
-        _selectedTime,
-        notes: _notesController.text,
-      );
-
-      _titleController.clear();
-      _notesController.clear();
-
-      if (!mounted) return;
-
-      Navigator.of(context).pop();
-
-      _loadAppointments();
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.terminErfolgreichErstellt)),
-      );
-    } catch (e) {
-      if (!mounted) return;
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${AppStrings.fehler}: $e')),
-      );
-    }
-  }
 
   Future<void> _deleteAppointment(String id) async {
     try {
@@ -102,89 +56,13 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
   }
 
   void _showAddAppointmentDialog(BuildContext context) {
-    _titleController.clear();
-    _notesController.clear();
-    _selectedTime = TimeOfDay.now();
-
     showDialog(
       context: context,
-      builder: (dialogContext) => SimpleDialog(
-        title: const Text(AppStrings.neuerTermin),
-        contentPadding: const EdgeInsets.all(16.0),
-        children: [
-          Text(
-            '${AppStrings.datum}: ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _titleController,
-            decoration: const InputDecoration(
-              labelText: AppStrings.titel,
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 16),
-          InkWell(
-            onTap: () async {
-              final TimeOfDay? time = await showTimePicker(
-                context: dialogContext,
-                initialTime: _selectedTime,
-                initialEntryMode: TimePickerEntryMode.input,
-                builder: (context, child) {
-                  return MediaQuery(
-                    data: MediaQuery.of(context).copyWith(
-                      alwaysUse24HourFormat: true,
-                    ),
-                    child: child!,
-                  );
-                  },
-              );
-              if (time != null && mounted) {
-                setState(() {
-                  _selectedTime = time;
-                });
-              }
-            },
-            child: InputDecorator(
-              decoration: const InputDecoration(
-                labelText: AppStrings.uhrzeit,
-                border: OutlineInputBorder(),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(_selectedTime.format(dialogContext)),
-                  const Icon(Icons.access_time),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _notesController,
-            decoration: const InputDecoration(
-              labelText: AppStrings.notizen,
-              border: OutlineInputBorder(),
-            ),
-            maxLines: 3,
-          ),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CustomButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                text: AppStrings.abbrechen,
-              ),
-              const SizedBox(width: 8),
-              CustomButton(
-                onPressed: () => _addAppointment(dialogContext),
-                text: AppStrings.speichern,
-              ),
-            ],
-          ),
-        ],
+      builder: (dialogContext) => _AddAppointmentDialog(
+        selectedDate: _selectedDate,
+        onAppointmentCreated: () {
+          _loadAppointments();
+        },
       ),
     );
   }
@@ -346,6 +224,148 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AddAppointmentDialog extends StatefulWidget {
+  final DateTime selectedDate;
+  final VoidCallback onAppointmentCreated;
+
+  const _AddAppointmentDialog({
+    required this.selectedDate,
+    required this.onAppointmentCreated,
+  });
+
+  @override
+  State<_AddAppointmentDialog> createState() => _AddAppointmentDialogState();
+}
+
+class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
+  final _titleController = TextEditingController();
+  final _notesController = TextEditingController();
+  TimeOfDay _selectedTime = TimeOfDay.now();
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _addAppointment() async {
+    if (_titleController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(AppStrings.bitteGibEinenTitelEin)),
+      );
+      return;
+    }
+
+    try {
+      final controller = BlocProvider.of<AppointmentController>(context);
+      await controller.createAppointment(
+        _titleController.text,
+        widget.selectedDate,
+        _selectedTime,
+        notes: _notesController.text,
+      );
+
+      if (!mounted) return;
+
+      Navigator.of(context).pop();
+      widget.onAppointmentCreated();
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text(AppStrings.terminErfolgreichErstellt)),
+      );
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${AppStrings.fehler}: $e')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      title: const Text(AppStrings.neuerTermin),
+      contentPadding: const EdgeInsets.all(16.0),
+      children: [
+        Text(
+          '${AppStrings.datum}: ${DateFormat('dd.MM.yyyy').format(widget.selectedDate)}',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _titleController,
+          decoration: const InputDecoration(
+            labelText: AppStrings.titel,
+            border: OutlineInputBorder(),
+          ),
+        ),
+        const SizedBox(height: 16),
+        InkWell(
+          onTap: () async {
+            final TimeOfDay? time = await showTimePicker(
+              context: context,
+              initialTime: _selectedTime,
+              initialEntryMode: TimePickerEntryMode.input,
+              builder: (context, child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context).copyWith(
+                    alwaysUse24HourFormat: true,
+                  ),
+                  child: child!,
+                );
+              },
+            );
+            if (time != null) {
+              setState(() {
+                _selectedTime = time;
+              });
+            }
+          },
+          child: InputDecorator(
+            decoration: const InputDecoration(
+              labelText: AppStrings.uhrzeit,
+              border: OutlineInputBorder(),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(_selectedTime.format(context)),
+                const Icon(Icons.access_time),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _notesController,
+          decoration: const InputDecoration(
+            labelText: AppStrings.notizen,
+            border: OutlineInputBorder(),
+          ),
+          maxLines: 3,
+        ),
+        const SizedBox(height: 24),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            CustomButton(
+              onPressed: () => Navigator.of(context).pop(),
+              text: AppStrings.abbrechen,
+            ),
+            const SizedBox(width: 8),
+            CustomButton(
+              onPressed: _addAppointment,
+              text: AppStrings.speichern,
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
