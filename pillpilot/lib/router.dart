@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 
+import 'pages/splash_screen.dart';
 import 'pages/main_screen.dart';
 import 'pages/home_page.dart';
 import 'pages/medications_page.dart';
@@ -7,7 +8,8 @@ import 'pages/lexicon_page.dart';
 import 'pages/calendar_page.dart';
 
 class AppRoute {
-  static const home = '/';
+  static const splash = '/';
+  static const home = '/home';
   static const medications = '/medications';
   static const lexicon = '/lexicon';
   static const calendar = '/calendar';
@@ -38,8 +40,14 @@ class AppRouter {
   };
 
   final router = GoRouter(
-    initialLocation: AppRoute.home,
+    initialLocation: AppRoute.splash,
     routes: [
+      // Splash screen route
+      GoRoute(
+        path: AppRoute.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
+      // Main app shell route
       ShellRoute(
         builder: (context, state, child) {
           final location = state.uri.path;
