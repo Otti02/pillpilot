@@ -4,7 +4,7 @@ import '../../models/appointment_state_model.dart';
 import '../../services/appointment_service.dart';
 import '../../services/service_provider.dart';
 import '../../services/base_service.dart';
-import '../../theme/app_strings.dart';
+
 import '../base_controller.dart';
 
 class AppointmentController extends BlocController<AppointmentModel> {
@@ -23,13 +23,13 @@ class AppointmentController extends BlocController<AppointmentModel> {
   void handleError(String message, [Object? error]) {
     String userMessage = message;
     if (error is NetworkException) {
-      userMessage = AppStrings.networkError;
-    } else if (error is ValidationException) {
-      userMessage = AppStrings.validationError;
-    } else if (error is AppException) {
-      userMessage = error.message.isNotEmpty ? error.message : AppStrings.unknownError;
-    } else {
-      userMessage = AppStrings.unknownError;
+              userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
+      } else if (error is ValidationException) {
+        userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
+      } else if (error is AppException) {
+        userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
+      } else {
+        userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
     }
     emit(state.copyWith(isLoading: false));
     // Optional: Fehler im State speichern, falls UI das anzeigen soll

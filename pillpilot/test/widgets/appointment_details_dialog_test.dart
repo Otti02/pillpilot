@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:pillpilot/widgets/appointment_details_dialog.dart';
 import 'package:pillpilot/models/appointment_model.dart';
-import 'package:pillpilot/theme/app_strings.dart';
+
 import 'package:pillpilot/theme/app_theme.dart';
 import 'package:pillpilot/controllers/appointment/appointment_controller.dart';
 import 'package:pillpilot/models/appointment_state_model.dart';
@@ -70,13 +70,13 @@ void main() {
       expect(find.text('Test Termin'), findsOneWidget);
 
       // Verify date is displayed
-      expect(find.text('${AppStrings.datum}: 15.01.2024'), findsOneWidget);
+              expect(find.text('Datum: 15.01.2024'), findsOneWidget);
 
       // Verify time label is displayed
-      expect(find.textContaining('${AppStrings.uhrzeit}:'), findsOneWidget);
+              expect(find.textContaining('Uhrzeit:'), findsOneWidget);
 
       // Verify notes are displayed
-      expect(find.text('${AppStrings.notizen}:'), findsOneWidget);
+              expect(find.text('Notizen:'), findsOneWidget);
       expect(find.text('Test Notizen'), findsOneWidget);
     });
 
@@ -90,7 +90,7 @@ void main() {
       ));
 
       // Verify notes section is not displayed
-      expect(find.text('${AppStrings.notizen}:'), findsNothing);
+      expect(find.text('Notizen:'), findsNothing);
     });
 
     testWidgets('should call onDelete when delete button is tapped', (WidgetTester tester) async {
@@ -157,8 +157,8 @@ void main() {
       ));
 
       // Verify tooltips are present
-      expect(find.byTooltip(AppStrings.loeschen), findsOneWidget);
-      expect(find.byTooltip(AppStrings.bearbeiten), findsOneWidget);
+      expect(find.byTooltip('Löschen'), findsOneWidget);
+      expect(find.byTooltip('Bearbeiten'), findsOneWidget);
     });
 
     testWidgets('should have correct icon sizes', (WidgetTester tester) async {

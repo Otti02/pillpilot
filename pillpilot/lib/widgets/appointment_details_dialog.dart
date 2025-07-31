@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/appointment_model.dart';
-import '../theme/app_strings.dart';
+
 
 class AppointmentDetailsDialog extends StatelessWidget {
   final Appointment appointment;
@@ -46,18 +46,18 @@ class AppointmentDetailsDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              '${AppStrings.datum}: ${DateFormat('dd.MM.yyyy').format(appointment.date)}',
+              'Datum: ${DateFormat('dd.MM.yyyy').format(appointment.date)}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
-              '${AppStrings.uhrzeit}: ${appointment.time.format(context)}',
+              'Uhrzeit: ${appointment.time.format(context)}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             if (appointment.notes.isNotEmpty) ...[
               const SizedBox(height: 16),
               Text(
-                '${AppStrings.notizen}:',
+                'Notizen:',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
@@ -73,7 +73,7 @@ class AppointmentDetailsDialog extends StatelessWidget {
                     onDelete();
                   },
                   icon: const Icon(Icons.delete, color: Colors.red, size: 32),
-                  tooltip: AppStrings.loeschen,
+                  tooltip: 'Löschen',
                   iconSize: 32,
                 ),
                 IconButton(
@@ -82,7 +82,7 @@ class AppointmentDetailsDialog extends StatelessWidget {
                     onEdit();
                   },
                   icon: const Icon(Icons.edit, size: 32),
-                  tooltip: AppStrings.bearbeiten,
+                  tooltip: 'Bearbeiten',
                   iconSize: 32,
                 ),
               ],

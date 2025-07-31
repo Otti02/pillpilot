@@ -7,7 +7,7 @@ import '../widgets/appointment_item.dart';
 import '../widgets/medication_item.dart';
 import '../models/medication_model.dart';
 import '../models/appointment_model.dart';
-import '../theme/app_strings.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/home_state_model.dart';
 import '../controllers/appointment/appointment_controller.dart';
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Text(
-                                  AppStrings.deineEinnahmenHeute,
+                                  'Deine Einnahmen Heute',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
@@ -192,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               state.medications.isEmpty
-                                  ? _buildEmptyState(AppStrings.keineMedikamenteVorhanden)
+                                  ? _buildEmptyState('Keine Medikamente vorhanden')
                                   : ListView.builder(
                                       shrinkWrap: true,
                                       physics: const NeverScrollableScrollPhysics(),
@@ -207,9 +207,9 @@ class _HomePageState extends State<HomePage> {
                                       },
                                     ),
                               const SizedBox(height: AppTheme.largePadding),
-                              _buildSectionTitle(AppStrings.heutigeTermine),
+                              _buildSectionTitle('Heutige Termine'),
                               state.appointments.isEmpty
-                                  ? _buildEmptyState(AppStrings.keineTermineFuerHeute)
+                                  ? _buildEmptyState('Keine Termine für heute')
                                   : ListView.builder(
                                       shrinkWrap: true,
                                       physics: const NeverScrollableScrollPhysics(),

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/medication_model.dart';
 import '../pages/medication_detail_page.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_strings.dart';
+
 
 class MedicationItem extends StatefulWidget {
   final Medication medication;
@@ -47,8 +47,8 @@ class _MedicationItemState extends State<MedicationItem> {
   }
 
   String _formatDaysOfWeek(List<int> days) {
-    if (days.length == 7) return AppStrings.taeglich;
-    if (days.isEmpty) return AppStrings.keineTage;
+    if (days.length == 7) return 'Täglich';
+    if (days.isEmpty) return 'Keine Tage';
 
     final dayMap = AppTheme.weekdays;
     days.sort();

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../controllers/medication/medication_controller.dart';
 import '../models/medication_model.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_strings.dart';
+
 import '../widgets/custom_text_field.dart';
 
 class MedicationEditPage extends StatefulWidget {
@@ -54,15 +54,15 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
 
   Future<void> _saveMedication() async {
     if (_nameController.text.isEmpty) {
-      _showError(AppStrings.bitteGibEinenNamenEin);
+      _showError('Bitte gib einen Namen ein.');
       return;
     }
     if (_dosageController.text.isEmpty) {
-      _showError(AppStrings.bitteGibEineDosierungEin);
+      _showError('Bitte gib eine Dosierung ein.');
       return;
     }
     if (_selectedDays.isEmpty) {
-      _showError(AppStrings.bitteWaehleMindestensEinenWochentagAus);
+      _showError('Bitte wähle mindestens einen Wochentag aus.');
       return;
     }
 
@@ -89,7 +89,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
       }
 
       if (mounted) {
-        final message = widget.medication == null ? AppStrings.medikamentErstellt : AppStrings.medikamentAktualisiert;
+        final message = widget.medication == null ? 'Medikament erstellt' : 'Medikament aktualisiert';
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
         Navigator.pop(context, true);
       }
@@ -136,7 +136,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
           },
           child: InputDecorator(
             decoration: InputDecoration(
-              labelText: AppStrings.uhrzeit,
+              labelText: 'Uhrzeit',
               labelStyle: TextStyle(color: themeProvider.secondaryTextColor),
               border: OutlineInputBorder(
                 borderSide: BorderSide(color: themeProvider.borderColor),
@@ -176,7 +176,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppStrings.einnahmetage, 
+              'Einnahmetage', 
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
@@ -225,7 +225,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
           backgroundColor: themeProvider.backgroundColor,
           appBar: AppBar(
             title: Text(
-              isEditing ? AppStrings.medikamentBearbeiten : AppStrings.neuesMedikament,
+              isEditing ? 'Medikament bearbeiten' : 'Neues Medikament',
               style: TextStyle(color: themeProvider.primaryTextColor),
             ),
             backgroundColor: AppTheme.transparent,
@@ -241,14 +241,14 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomTextField(
-                    label: AppStrings.name,
-                    hint: AppStrings.zB,
+                    label: 'Name',
+                    hint: 'z.B.',
                     controller: _nameController,
                   ),
                   const SizedBox(height: AppTheme.smallPadding),
                   CustomTextField(
-                    label: AppStrings.dosierung,
-                    hint: AppStrings.zB,
+                    label: 'Dosierung',
+                    hint: 'z.B.',
                     controller: _dosageController,
                   ),
                   const SizedBox(height: AppTheme.smallPadding),
@@ -277,7 +277,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
                           borderRadius: BorderRadius.circular(AppTheme.defaultBorderRadius),
                         ),
                       ),
-                      child: Text(AppStrings.alleTageAuswaehlen),
+                      child: Text('Alle Tage auswählen'),
                     ),
                   ),
                   const SizedBox(height: AppTheme.largePadding),
@@ -286,7 +286,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
                     maxLines: 4,
                     style: TextStyle(color: themeProvider.primaryTextColor),
                     decoration: InputDecoration(
-                      labelText: AppStrings.notizenOptional,
+                      labelText: 'Notizen (optional)',
                       labelStyle: TextStyle(color: themeProvider.secondaryTextColor),
                       border: const OutlineInputBorder(),
                     ),
@@ -296,7 +296,7 @@ class _MedicationEditPageState extends State<MedicationEditPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _saveMedication,
-                      child: Text(isEditing ? AppStrings.aktualisieren : AppStrings.speichern),
+                      child: Text(isEditing ? 'Aktualisieren' : 'Speichern'),
                     ),
                   ),
                 ],

@@ -9,7 +9,7 @@ import 'package:pillpilot/models/medication_state_model.dart';
 import 'package:pillpilot/services/medication_service.dart';
 import 'package:pillpilot/services/notification_service.dart';
 import 'package:pillpilot/services/base_service.dart';
-import 'package:pillpilot/theme/app_strings.dart';
+
 
 @GenerateMocks([MedicationService, NotificationService])
 import './medication_controller_test.mocks.dart';
@@ -157,7 +157,7 @@ void main() {
 
         // ASSERT
         expect(medicationController.state.isLoading, false);
-        expect(medicationController.state.error, AppStrings.networkError);
+        expect(medicationController.state.error, 'Bitte überprüfen Sie Ihre Internetverbindung.');
       });
 
       test('loadMedications should handle validation errors gracefully', () async {
@@ -170,7 +170,7 @@ void main() {
 
         // ASSERT
         expect(medicationController.state.isLoading, false);
-        expect(medicationController.state.error, AppStrings.validationError);
+        expect(medicationController.state.error, 'Bitte überprüfen Sie Ihre Eingaben.');
       });
 
       test('loadMedications should handle unknown errors gracefully', () async {
@@ -183,7 +183,7 @@ void main() {
 
         // ASSERT
         expect(medicationController.state.isLoading, false);
-        expect(medicationController.state.error, AppStrings.unknownError);
+        expect(medicationController.state.error, 'Ein unbekannter Fehler ist aufgetreten.');
       });
 
       test('createMedication should handle service errors and rethrow', () async {
@@ -324,7 +324,7 @@ void main() {
 
         // ASSERT
         expect(medicationController.state.isLoading, false);
-        expect(medicationController.state.error, AppStrings.unknownError);
+        expect(medicationController.state.error, 'Ein unbekannter Fehler ist aufgetreten.');
       });
 
       test('dispose should cancel midnight reset timer', () {

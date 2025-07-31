@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:pillpilot/widgets/edit_appointment_dialog.dart';
 import 'package:pillpilot/models/appointment_model.dart';
-import 'package:pillpilot/theme/app_strings.dart';
+
 import 'package:pillpilot/theme/app_theme.dart';
 import 'package:pillpilot/controllers/appointment/appointment_controller.dart';
 import 'package:pillpilot/models/appointment_state_model.dart';
@@ -60,7 +60,7 @@ void main() {
         onAppointmentUpdated: () {},
       ));
 
-      expect(find.text(AppStrings.terminBearbeiten), findsOneWidget);
+      expect(find.text('Termin bearbeiten'), findsOneWidget);
     });
 
     testWidgets('should pre-fill form fields with appointment data', (WidgetTester tester) async {
@@ -88,8 +88,8 @@ void main() {
       ));
 
       // Verify buttons are present
-      expect(find.text(AppStrings.speichern), findsOneWidget);
-      expect(find.text(AppStrings.abbrechen), findsOneWidget);
+      expect(find.text('Speichern'), findsOneWidget);
+      expect(find.text('Abbrechen'), findsOneWidget);
     });
 
     testWidgets('should close dialog when cancel button is tapped', (WidgetTester tester) async {
@@ -99,7 +99,7 @@ void main() {
       ));
 
       // Tap the cancel button
-      final cancelButton = find.text(AppStrings.abbrechen);
+      final cancelButton = find.text('Abbrechen');
       await tester.tap(cancelButton);
       await tester.pumpAndSettle();
 
@@ -129,7 +129,7 @@ void main() {
       ));
 
       // Find and tap the time field by looking for the time label
-      final timeField = find.textContaining('${AppStrings.uhrzeit}');
+      final timeField = find.textContaining('Uhrzeit');
       await tester.tap(timeField, warnIfMissed: false);
       await tester.pumpAndSettle();
 
@@ -146,10 +146,10 @@ void main() {
       ));
 
       // Verify all form field labels are present
-      expect(find.text(AppStrings.titel), findsOneWidget);
-      expect(find.text(AppStrings.datum), findsOneWidget);
-      expect(find.text(AppStrings.uhrzeit), findsOneWidget);
-      expect(find.text(AppStrings.notizen), findsOneWidget);
+      expect(find.text('Titel'), findsOneWidget);
+      expect(find.text('Datum'), findsOneWidget);
+      expect(find.text('Uhrzeit'), findsOneWidget);
+      expect(find.text('Notizen'), findsOneWidget);
     });
 
     testWidgets('should have correct button labels', (WidgetTester tester) async {
@@ -159,8 +159,8 @@ void main() {
       ));
 
       // Verify button labels are present
-      expect(find.text(AppStrings.abbrechen), findsOneWidget);
-      expect(find.text(AppStrings.speichern), findsOneWidget);
+      expect(find.text('Abbrechen'), findsOneWidget);
+      expect(find.text('Speichern'), findsOneWidget);
     });
   });
 } 

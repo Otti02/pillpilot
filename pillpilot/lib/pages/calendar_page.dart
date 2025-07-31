@@ -12,7 +12,7 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_calendar.dart';
 import '../widgets/appointment_details_dialog.dart';
 import '../widgets/edit_appointment_dialog.dart';
-import '../theme/app_strings.dart';
+
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
@@ -105,7 +105,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    AppStrings.kalender,
+                    'Kalender',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -114,7 +114,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    AppStrings.planeDeineTermine,
+                    'Plane deine Termine',
                     style: TextStyle(
                       fontSize: 18,
                       color: themeProvider.primaryTextColor,
@@ -159,7 +159,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${AppStrings.termineAm} ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
+            'Termine am ${DateFormat('dd.MM.yyyy').format(_selectedDate)}',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -177,7 +177,7 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                 if (model.appointments.isEmpty) {
                   return Center(
                     child: Text(
-                      AppStrings.keineTermineAnDiesemTag,
+                      'Keine Termine an diesem Tag',
                       style: TextStyle(
                         color: themeProvider.secondaryTextColor,
                       ),
@@ -232,7 +232,7 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
   Future<void> _addAppointment() async {
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.bitteGibEinenTitelEin)),
+        const SnackBar(content: Text('Bitte gib einen Titel ein')),
       );
       return;
     }
@@ -252,13 +252,13 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
       widget.onAppointmentCreated();
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.terminErfolgreichErstellt)),
+        const SnackBar(content: Text('Termin erfolgreich erstellt')),
       );
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${AppStrings.fehler}: $e')),
+        SnackBar(content: Text('Fehler: $e')),
       );
     }
   }
@@ -266,18 +266,18 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text(AppStrings.neuerTermin),
+      title: const Text('Neuer Termin'),
       contentPadding: const EdgeInsets.all(16.0),
       children: [
         Text(
-          '${AppStrings.datum}: ${DateFormat('dd.MM.yyyy').format(widget.selectedDate)}',
+          'Datum: ${DateFormat('dd.MM.yyyy').format(widget.selectedDate)}',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         TextField(
           controller: _titleController,
           decoration: const InputDecoration(
-            labelText: AppStrings.titel,
+            labelText: 'Titel',
             border: OutlineInputBorder(),
           ),
         ),
@@ -305,7 +305,7 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
           },
           child: InputDecorator(
             decoration: const InputDecoration(
-              labelText: AppStrings.uhrzeit,
+              labelText: 'Uhrzeit',
               border: OutlineInputBorder(),
             ),
             child: Row(
@@ -321,7 +321,7 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
         TextField(
           controller: _notesController,
           decoration: const InputDecoration(
-            labelText: AppStrings.notizen,
+            labelText: 'Notizen',
             border: OutlineInputBorder(),
           ),
           maxLines: 3,
@@ -332,12 +332,12 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
           children: [
             CustomButton(
               onPressed: () => Navigator.of(context).pop(),
-              text: AppStrings.abbrechen,
+              text: 'Abbrechen',
             ),
             const SizedBox(width: 8),
             CustomButton(
               onPressed: _addAppointment,
-              text: AppStrings.speichern,
+              text: 'Speichern',
             ),
           ],
         ),

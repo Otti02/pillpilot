@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import '../widgets/custom_button.dart'; // Import für den CustomButton
 import '../widgets/medication_item.dart';
 import 'medication_edit_page.dart';
-import '../theme/app_strings.dart';
+
 
 
 class MedicationsPage extends StatelessWidget {
@@ -50,11 +50,11 @@ class MedicationsPage extends StatelessWidget {
         builder: (context, themeProvider, child) {
           return AlertDialog(
             title: Text(
-              AppStrings.medikamentLoeschenTitel,
+              'Medikament löschen',
               style: TextStyle(color: themeProvider.primaryTextColor),
             ),
             content: Text(
-              AppStrings.medikamentLoeschenFrage.replaceAll('{name}', medication.name),
+              'Möchtest du "${medication.name}" wirklich löschen?',
               style: TextStyle(color: themeProvider.primaryTextColor),
             ),
             actions: [
@@ -62,7 +62,7 @@ class MedicationsPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CustomButton(
-                      text: AppStrings.abbrechen,
+                      text: 'Abbrechen',
                       isOutlined: true,
                       onPressed: () => Navigator.of(dialogContext).pop(),
                     ),
@@ -70,7 +70,7 @@ class MedicationsPage extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: CustomButton(
-                      text: AppStrings.loeschen,
+                      text: 'Löschen',
                       color: AppTheme.red,
                       onPressed: () async {
                         final medicationName = medication.name;
@@ -118,7 +118,7 @@ class MedicationsPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        AppStrings.deineMedikamente, 
+                        'Deine Medikamente', 
                         style: TextStyle(
                           fontSize: AppTheme.sectionTitleFontSize, 
                           fontWeight: FontWeight.w600,
@@ -126,7 +126,7 @@ class MedicationsPage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        AppStrings.uebersichtMedikamente, 
+                        'Übersicht aller Medikamente', 
                         style: TextStyle(
                           fontSize: AppTheme.subtitleFontSize, 
                           color: themeProvider.secondaryTextColor,
@@ -145,7 +145,7 @@ class MedicationsPage extends StatelessWidget {
                       if (model.medications.isEmpty) {
                         return Center(
                           child: Text(
-                            AppStrings.keineMedikamenteVorhanden, 
+                            'Keine Medikamente vorhanden', 
                             style: TextStyle(
                               fontSize: AppTheme.subtitleFontSize, 
                               color: themeProvider.secondaryTextColor,

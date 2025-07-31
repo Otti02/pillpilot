@@ -1,5 +1,5 @@
 import '../models/medication_model.dart';
-import '../theme/app_strings.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -73,14 +73,14 @@ class NotificationServiceImpl implements NotificationService {
 
       await _flutterLocalNotificationsPlugin.zonedSchedule(
         notificationId,
-              '${medication.name} - ${AppStrings.erinnerung}',
-      '${AppStrings.zeitFuerDosis} ${medication.dosage}!',
+                      '${medication.name} - Erinnerung',
+        'Zeit für deine Dosis von ${medication.dosage}!',
         scheduledDate,
         const NotificationDetails(
           android: AndroidNotificationDetails(
                   'medication_channel',
-      AppStrings.medikamentenerinnerungen,
-      channelDescription: AppStrings.medikamentenerinnerungenBeschreibung,
+              'Medikamentenerinnerungen',
+        channelDescription: 'Erinnert Sie an die Einnahme von Medikamenten',
             importance: Importance.max,
             priority: Priority.high,
           ),

@@ -8,7 +8,7 @@ import 'package:pillpilot/models/medication_model.dart';
 import 'package:pillpilot/models/appointment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:pillpilot/services/base_service.dart';
-import 'package:pillpilot/theme/app_strings.dart';
+
 
 @GenerateMocks([MedicationService, AppointmentService])
 import './home_controller_test.mocks.dart';
@@ -120,7 +120,7 @@ void main() {
         await homeController.loadMedications();
 
         // ASSERT
-        expect(homeController.state.error, AppStrings.networkError);
+        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Internetverbindung.');
       });
 
       test('loadMedications should handle validation errors', () async {
@@ -132,7 +132,7 @@ void main() {
         await homeController.loadMedications();
 
         // ASSERT
-        expect(homeController.state.error, AppStrings.validationError);
+        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Eingaben.');
       });
 
       test('loadMedications should handle unknown errors', () async {
@@ -144,7 +144,7 @@ void main() {
         await homeController.loadMedications();
 
         // ASSERT
-        expect(homeController.state.error, AppStrings.unknownError);
+        expect(homeController.state.error, 'Ein unbekannter Fehler ist aufgetreten.');
       });
 
       test('loadAppointments should handle network errors', () async {
@@ -156,7 +156,7 @@ void main() {
         await homeController.loadAppointments();
 
         // ASSERT
-        expect(homeController.state.error, AppStrings.networkError);
+        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Internetverbindung.');
       });
 
       test('loadAppointments should handle validation errors', () async {
@@ -168,7 +168,7 @@ void main() {
         await homeController.loadAppointments();
 
         // ASSERT
-        expect(homeController.state.error, AppStrings.validationError);
+        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Eingaben.');
       });
 
       test('loadAppointments should handle unknown errors', () async {
@@ -180,7 +180,7 @@ void main() {
         await homeController.loadAppointments();
 
         // ASSERT
-        expect(homeController.state.error, AppStrings.unknownError);
+        expect(homeController.state.error, 'Ein unbekannter Fehler ist aufgetreten.');
       });
 
       test('toggleMedicationCompletion should handle service errors', () async {
@@ -192,7 +192,7 @@ void main() {
         await homeController.toggleMedicationCompletion('1', true);
 
         // ASSERT
-        expect(homeController.state.error, AppStrings.unknownError);
+        expect(homeController.state.error, 'Ein unbekannter Fehler ist aufgetreten.');
       });
 
       test('initialize should handle partial failures gracefully', () async {
@@ -208,7 +208,7 @@ void main() {
         // ASSERT
         expect(homeController.state.medications, isNotNull);
         expect(homeController.state.medications!.length, 1);
-        expect(homeController.state.error, AppStrings.networkError);
+        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Internetverbindung.');
       });
     });
 

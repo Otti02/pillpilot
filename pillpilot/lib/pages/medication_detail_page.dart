@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/medication_state_model.dart';
 import '../services/service_provider.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_strings.dart';
+
 import '../widgets/custom_button.dart';
 import '../models/medication_model.dart';
 import '../controllers/medication/medication_controller.dart';
@@ -68,8 +68,8 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
   }
 
   String _formatDaysOfWeek(List<int> days) {
-    if (days.length == 7) return AppStrings.taeglich;
-    if (days.isEmpty) return AppStrings.keineTageAusgewaehlt;
+    if (days.length == 7) return 'Täglich';
+    if (days.isEmpty) return 'Keine Tage ausgewählt';
 
     final dayMap = AppTheme.weekdays;
     days.sort();
@@ -84,7 +84,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
           backgroundColor: themeProvider.backgroundColor,
           appBar: AppBar(
             title: Text(
-              AppStrings.medikamentDetails,
+              'Medikament Details',
               style: TextStyle(color: themeProvider.primaryTextColor),
             ),
             backgroundColor: Colors.transparent,
@@ -97,18 +97,18 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDetailCard(AppStrings.name, widget.medication.name, themeProvider),
+                  _buildDetailCard('Name', widget.medication.name, themeProvider),
                   const SizedBox(height: 16),
-                  _buildDetailCard(AppStrings.dosierung, widget.medication.dosage, themeProvider),
+                  _buildDetailCard('Dosierung', widget.medication.dosage, themeProvider),
                   const SizedBox(height: 16),
-                  _buildDetailCard(AppStrings.uhrzeit, widget.medication.time.format(context), themeProvider),
+                  _buildDetailCard('Uhrzeit', widget.medication.time.format(context), themeProvider),
                   const SizedBox(height: 16),
-                  _buildDetailCard(AppStrings.einnahmetage, _formatDaysOfWeek(widget.medication.daysOfWeek), themeProvider),
+                  _buildDetailCard('Einnahmetage', _formatDaysOfWeek(widget.medication.daysOfWeek), themeProvider),
                   const SizedBox(height: 16),
-                  _buildDetailCard(AppStrings.notizen, widget.medication.notes.isNotEmpty ? widget.medication.notes : AppStrings.keineNotizenVorhanden, themeProvider, isNote: true),
+                                      _buildDetailCard('Notizen', widget.medication.notes.isNotEmpty ? widget.medication.notes : 'Keine Notizen vorhanden.', themeProvider, isNote: true),
                   const SizedBox(height: 32),
                   LargeCheckboxListTile(
-                    title: AppStrings.erinnerungenAktivieren,
+                    title: 'Erinnerungen aktivieren',
                     value: _enableReminders,
                     onChanged: (bool? newValue) {
                       if (newValue != null) {
@@ -119,7 +119,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
                   ),
                   const SizedBox(height: 16),
                   LargeCheckboxListTile(
-                    title: AppStrings.eingenommen,
+                    title: 'Eingenommen',
                     value: _isCompleted,
                     onChanged: (bool? newValue) {
                       if (newValue != null) {
@@ -133,7 +133,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
                     children: [
                       Expanded(
                         child: CustomButton(
-                          text: AppStrings.bearbeiten,
+                          text: 'Bearbeiten',
                           isOutlined: true,
                           onPressed: _navigateToEditMedication,
                         ),
@@ -141,7 +141,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: CustomButton(
-                          text: AppStrings.speichern,
+                          text: 'Speichern',
                           onPressed: _saveAndGoBack,
                         ),
                       ),
@@ -174,7 +174,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
           style: TextStyle(
             fontSize: 18,
             color: themeProvider.primaryTextColor,
-            fontStyle: isNote && value == AppStrings.keineNotizenVorhanden ? FontStyle.italic : FontStyle.normal,
+                            fontStyle: isNote && value == 'Keine Notizen vorhanden.' ? FontStyle.italic : FontStyle.normal,
           ),
         ),
       ],

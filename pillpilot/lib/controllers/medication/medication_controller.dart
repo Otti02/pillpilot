@@ -6,7 +6,7 @@ import '../../services/medication_service.dart';
 import '../../services/service_provider.dart';
 import '../../services/notification_service.dart';
 import '../../services/base_service.dart';
-import '../../theme/app_strings.dart';
+
 import '../base_controller.dart';
 
 class MedicationController extends BlocController<MedicationModel> {
@@ -25,13 +25,13 @@ class MedicationController extends BlocController<MedicationModel> {
   void handleError(String message, [Object? error]) {
     String userMessage = message;
     if (error is NetworkException) {
-      userMessage = AppStrings.networkError;
+      userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
     } else if (error is ValidationException) {
-      userMessage = AppStrings.validationError;
+      userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
     } else if (error is AppException) {
-      userMessage = error.message.isNotEmpty ? error.message : AppStrings.unknownError;
+      userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
     } else {
-      userMessage = AppStrings.unknownError;
+      userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
     }
     emit(state.copyWith(isLoading: false, error: userMessage));
   }

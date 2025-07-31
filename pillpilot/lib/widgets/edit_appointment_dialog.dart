@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../models/appointment_model.dart';
 import '../controllers/appointment/appointment_controller.dart';
-import '../theme/app_strings.dart';
+
 import '../widgets/custom_button.dart';
 
 class EditAppointmentDialog extends StatefulWidget {
@@ -45,7 +45,7 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
   Future<void> _updateAppointment() async {
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.bitteGibEinenTitelEin)),
+        const SnackBar(content: Text('Bitte gib einen Titel ein')),
       );
       return;
     }
@@ -67,13 +67,13 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
       widget.onAppointmentUpdated();
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text(AppStrings.terminErfolgreichAktualisiert)),
+        const SnackBar(content: Text('Termin erfolgreich aktualisiert')),
       );
     } catch (e) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${AppStrings.fehler}: $e')),
+        SnackBar(content: Text('Fehler: $e')),
       );
     }
   }
@@ -95,13 +95,13 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(
-      title: const Text(AppStrings.terminBearbeiten),
+      title: const Text('Termin bearbeiten'),
       contentPadding: const EdgeInsets.all(16.0),
       children: [
         TextField(
           controller: _titleController,
           decoration: const InputDecoration(
-            labelText: AppStrings.titel,
+            labelText: 'Titel',
             border: OutlineInputBorder(),
           ),
         ),
@@ -110,7 +110,7 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
           onTap: _selectDate,
           child: InputDecorator(
             decoration: const InputDecoration(
-              labelText: AppStrings.datum,
+              labelText: 'Datum',
               border: OutlineInputBorder(),
             ),
             child: Row(
@@ -146,7 +146,7 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
           },
           child: InputDecorator(
             decoration: const InputDecoration(
-              labelText: AppStrings.uhrzeit,
+              labelText: 'Uhrzeit',
               border: OutlineInputBorder(),
             ),
             child: Row(
@@ -162,7 +162,7 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
         TextField(
           controller: _notesController,
           decoration: const InputDecoration(
-            labelText: AppStrings.notizen,
+            labelText: 'Notizen',
             border: OutlineInputBorder(),
           ),
           maxLines: 3,
@@ -173,12 +173,12 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
           children: [
             CustomButton(
               onPressed: () => Navigator.of(context).pop(),
-              text: AppStrings.abbrechen,
+              text: 'Abbrechen',
             ),
             const SizedBox(width: 8),
             CustomButton(
               onPressed: _updateAppointment,
-              text: AppStrings.speichern,
+              text: 'Speichern',
             ),
           ],
         ),

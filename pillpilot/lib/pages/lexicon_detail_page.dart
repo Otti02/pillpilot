@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/lexicon_entry_model.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_strings.dart';
+
 
 class LexiconDetailPage extends StatelessWidget {
   final LexiconEntry entry;
@@ -58,7 +58,7 @@ class LexiconDetailPage extends StatelessWidget {
                       children: [
                         // Type
                         _buildInfoSection(
-                          title: AppStrings.art,
+                          title: 'Art',
                           content: entry.type,
                           themeProvider: themeProvider,
                         ),
@@ -66,7 +66,7 @@ class LexiconDetailPage extends StatelessWidget {
 
                         // Description
                         _buildInfoSection(
-                          title: AppStrings.informationen,
+                          title: 'Informationen',
                           content: entry.description,
                           themeProvider: themeProvider,
                         ),
@@ -74,7 +74,7 @@ class LexiconDetailPage extends StatelessWidget {
 
                         // Usage information
                         _buildInfoSection(
-                          title: AppStrings.einnahmeinformationen,
+                          title: 'Einnahmeinformationen',
                           content: entry.usageInfo,
                           themeProvider: themeProvider,
                         ),
