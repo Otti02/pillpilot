@@ -17,17 +17,11 @@ class LexiconController extends BlocController<LexiconModel> {
   @override
   void handleError(String message, [Object? error]) {
     if (error is NetworkException) {
-      // userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
     } else if (error is ValidationException) {
-      // userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
     } else if (error is AppException) {
-      // userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
     } else {
-      // userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
     }
     emit(state.copyWith(isLoading: false));
-    // Optional: Fehler im State speichern, falls UI das anzeigen soll
-    // emit(state.copyWith(isLoading: false, error: userMessage));
   }
 
   @override

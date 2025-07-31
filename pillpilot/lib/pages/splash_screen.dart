@@ -29,7 +29,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
 
-    // Initialize animation controllers
     _backgroundController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
@@ -55,7 +54,6 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
     );
 
-    // Define animations
     _backgroundColor = ColorTween(
       begin: Colors.white,
       end: AppTheme.primaryColor,
@@ -64,8 +62,8 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _logoScale = Tween<double>(
-      begin: 1.0, // Start from normal size (matching launch screen)
-      end: 1.2, // Slightly larger for animation
+      begin: 1.0,
+      end: 1.2,
     ).animate(
       CurvedAnimation(parent: _logoController, curve: Curves.elasticOut),
     );
@@ -91,31 +89,24 @@ class _SplashScreenState extends State<SplashScreen>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    // Start animations
     _startAnimations();
   }
 
   void _startAnimations() async {
-    // Start background transition first (seamless from launch screen)
     _backgroundController.forward();
 
-    // Start logo animation after a short delay
     await Future<void>.delayed(const Duration(milliseconds: 300));
     _logoController.forward();
 
-    // Start pulse animation after logo appears
     await Future<void>.delayed(const Duration(milliseconds: 800));
     _pulseController.repeat(reverse: true);
 
-    // Start text animation after background transition
     await Future<void>.delayed(const Duration(milliseconds: 400));
     _textController.forward();
 
-    // Wait for animations to complete, then fade out and navigate
     await Future<void>.delayed(const Duration(milliseconds: 1800));
     _fadeController.forward();
 
-    // Navigate to main app
     await Future<void>.delayed(const Duration(milliseconds: 500));
     if (mounted) {
       AppRouter.instance.goToHome();
@@ -158,7 +149,6 @@ class _SplashScreenState extends State<SplashScreen>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Animated App Icon with seamless transition
                     AnimatedBuilder(
                       animation: Listenable.merge([
                         _logoController,
@@ -192,7 +182,6 @@ class _SplashScreenState extends State<SplashScreen>
                                   height: 124,
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
-                                    // Fallback to medication icon if app icon fails to load
                                     return Container(
                                       width: 124,
                                       height: 124,
@@ -217,7 +206,6 @@ class _SplashScreenState extends State<SplashScreen>
 
                     const SizedBox(height: 50),
 
-                    // Animated App Name
                     AnimatedBuilder(
                       animation: _textController,
                       builder: (context, child) {
@@ -259,7 +247,6 @@ class _SplashScreenState extends State<SplashScreen>
 
                     const SizedBox(height: 80),
 
-                    // Loading indicator with fade in
                     AnimatedBuilder(
                       animation: _textController,
                       builder: (context, child) {

@@ -25,13 +25,11 @@ class AppRouter {
 
   AppRouter._();
 
-  // Tab indices as constants to avoid magic numbers
   static const int _homeIndex = 0;
   static const int _medicationsIndex = 1;
   static const int _lexiconIndex = 2;
   static const int _calendarIndex = 3;
 
-  // Route to index mapping
   static const Map<String, int> _routeToIndex = {
     AppRoute.home: _homeIndex,
     AppRoute.medications: _medicationsIndex,
@@ -42,12 +40,10 @@ class AppRouter {
   final router = GoRouter(
     initialLocation: AppRoute.splash,
     routes: [
-      // Splash screen route
       GoRoute(
         path: AppRoute.splash,
         builder: (context, state) => const SplashScreen(),
       ),
-      // Main app shell route
       ShellRoute(
         builder: (context, state, child) {
           final location = state.uri.path;
@@ -56,7 +52,6 @@ class AppRouter {
           return MainScreen(currentIndex: currentIndex, child: child);
         },
         routes: [
-          // Tab routes
           GoRoute(
             path: AppRoute.home,
             builder: (context, state) => const HomePage(),
@@ -78,10 +73,8 @@ class AppRouter {
     ],
   );
 
-  // Generic navigation method to replace redundant methods
   void navigateTo(String route) => router.go(route);
 
-  // Keep specific methods for backward compatibility but implement them generically
   void goToHome() => navigateTo(AppRoute.home);
   void goToMedications() => navigateTo(AppRoute.medications);
   void goToLexicon() => navigateTo(AppRoute.lexicon);
@@ -100,7 +93,6 @@ class AppRouter {
   }
 
   void goToTab(int index) {
-    // Find route by index
     final route =
         _routeToIndex.entries
             .firstWhere(

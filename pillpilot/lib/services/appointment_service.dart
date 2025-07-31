@@ -25,7 +25,6 @@ abstract class AppointmentService {
   Future<List<DateTime>> getDatesWithAppointments();
 }
 
-/// Implementation of the [AppointmentService] using local storage.
 class AppointmentServiceImpl implements AppointmentService {
   static const String _appointmentsKey = 'appointments';
 
@@ -35,7 +34,6 @@ class AppointmentServiceImpl implements AppointmentService {
 
   int _nextId = 1;
 
-  /// Constructor with dependency injection
   AppointmentServiceImpl(this._persistenceService) {
     _initNextId();
   }
@@ -82,14 +80,11 @@ class AppointmentServiceImpl implements AppointmentService {
   }) async {
     final appointments = await getAppointments();
 
-    // Generate a new ID for the appointment
     final String id = _nextId.toString();
     _nextId++;
 
-    // Persist the updated ID counter
     await _saveNextId();
 
-    // Create the new appointment object
     final Appointment newAppointment = Appointment(
       id: id,
       title: title,
@@ -98,7 +93,6 @@ class AppointmentServiceImpl implements AppointmentService {
       notes: notes,
     );
 
-    // Add to the list and save
     appointments.add(newAppointment);
     await _saveAppointments(appointments);
 
@@ -141,7 +135,6 @@ class AppointmentServiceImpl implements AppointmentService {
   Future<List<Appointment>> getAppointmentsForDate(DateTime date) async {
     final appointments = await getAppointments();
 
-    // Filter appointments for the specific date
     return appointments
         .where(
           (appointment) =>
@@ -156,13 +149,11 @@ class AppointmentServiceImpl implements AppointmentService {
   Future<List<DateTime>> getDatesWithAppointments() async {
     final appointments = await getAppointments();
 
-    // Extract unique dates from appointments
     final Set<String> uniqueDateStrings = {};
     for (final appointment in appointments) {
       uniqueDateStrings.add(appointment.date.dateString);
     }
 
-    // Convert date strings back to DateTime objects
     return uniqueDateStrings.map((dateString) {
       final parts = dateString.split('-');
       return DateTime(

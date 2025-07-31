@@ -14,7 +14,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeTimeZones();
 
-  // Initialize services
   await ServiceProvider.instance.initialize();
 
   runApp(const MyApp());

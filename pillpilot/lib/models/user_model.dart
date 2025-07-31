@@ -7,7 +7,6 @@ class User extends BaseModel implements JsonSerializable {
 
   User({required this.id, required this.email, required this.name});
 
-  // Create a user from JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['id'] as String,
@@ -16,13 +15,11 @@ class User extends BaseModel implements JsonSerializable {
     );
   }
 
-  // Convert user to JSON
   @override
   Map<String, dynamic> toJson() {
     return {'id': id, 'email': email, 'name': name};
   }
 
-  // Create a copy of the user with updated fields
   User copyWith({String? id, String? email, String? name}) {
     return User(
       id: id ?? this.id,

@@ -21,7 +21,6 @@ abstract class LexiconService {
   Future<void> deleteLexiconEntry(String id);
 }
 
-/// Implementation of the [LexiconService]
 class LexiconServiceImpl implements LexiconService {
   static const String _entriesKey = 'lexicon_entries';
 
@@ -31,7 +30,6 @@ class LexiconServiceImpl implements LexiconService {
 
   int _nextId = 1;
 
-  /// Constructor with dependency injection
   LexiconServiceImpl(this._persistenceService) {
     _initNextId();
   }
@@ -324,7 +322,6 @@ class LexiconServiceImpl implements LexiconService {
       usageInfo: usageInfo,
     );
 
-    // Add to the list and save
     entries.add(newEntry);
     await _saveEntries(entries);
 

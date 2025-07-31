@@ -13,7 +13,6 @@ class LexiconPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the controller if needed
     final controller = BlocProvider.of<LexiconController>(context);
     if (controller.state.entries.isEmpty) {
       controller.loadEntries();
@@ -95,7 +94,6 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      // Search bar
                       Container(
                         decoration: BoxDecoration(
                           color: themeProvider.cardBackgroundColor,

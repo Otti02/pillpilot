@@ -22,11 +22,9 @@ class HomeController extends BlocController<HomeState> {
   Future<void> initialize() async {
     emit(state.copyWith(isLoading: true));
 
-    // Ladevorgänge sequenziell ausführen, damit Fehler korrekt behandelt werden
     await loadMedications();
     await loadAppointments();
 
-    // Nur isLoading auf false setzen, error-Feld nicht überschreiben
     final currentError = state.error;
     emit(state.copyWith(isLoading: false, error: currentError));
   }

@@ -138,7 +138,7 @@ class MedicationController extends BlocController<MedicationModel> {
 
     _midnightResetTimer = Timer(timeUntilMidnight, () {
       _resetAllMedications();
-      _startMidnightResetTimer(); // Schedule next reset
+      _startMidnightResetTimer();
     });
   }
 
@@ -148,12 +148,10 @@ class MedicationController extends BlocController<MedicationModel> {
       final updatedMedications =
           medications.map((med) => med.copyWith(isCompleted: false)).toList();
 
-      // Update all medications to reset their completion status
       for (final medication in updatedMedications) {
         await medicationService.updateMedication(medication);
       }
 
-      // Reload medications to update the UI
       await loadMedications();
     } catch (e) {
       handleError(

@@ -1,8 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-/// Interface for persistence operations
 abstract class PersistenceService {
-  /// Initialize the persistence service
   Future<void> initialize();
 
   Future<void> saveData(String key, dynamic data);
@@ -11,12 +9,10 @@ abstract class PersistenceService {
   Future<bool> containsKey(String key);
 }
 
-/// Implementation of persistence service using Hive database
 class HivePersistenceService implements PersistenceService {
   static const String _boxName = 'pillpilot_data';
   late Box<dynamic> _box;
 
-  /// Initialize Hive and open the data box
   @override
   Future<void> initialize() async {
     await Hive.initFlutter();

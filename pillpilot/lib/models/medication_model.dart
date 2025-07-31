@@ -56,7 +56,6 @@ class Medication extends BaseModel implements Persistable {
 
       return TimeOfDay(hour: hour, minute: minute);
     } catch (e) {
-      // Fallback to default time if parsing fails
       return const TimeOfDay(hour: 8, minute: 0);
     }
   }
@@ -65,21 +64,17 @@ class Medication extends BaseModel implements Persistable {
     TimeOfDay time;
     try {
       if (json['time'] is Map<String, dynamic>) {
-        // New format: time as map
         final timeMap = json['time'] as Map<String, dynamic>;
         time = TimeOfDay(
           hour: timeMap['hour'] as int,
           minute: timeMap['minute'] as int,
         );
       } else if (json['time'] is String) {
-        // Legacy format: time as string (HH:MM)
         time = _timeOfDayFromString(json['time'] as String);
       } else {
-        // Fallback to default
         time = const TimeOfDay(hour: 8, minute: 0);
       }
     } catch (e) {
-      // Fallback to default time if parsing fails
       time = const TimeOfDay(hour: 8, minute: 0);
     }
 

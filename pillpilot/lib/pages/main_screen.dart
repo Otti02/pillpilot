@@ -13,7 +13,6 @@ class MainScreen extends StatelessWidget {
   });
 
   void _onTabTapped(int index) {
-    // Use the centralized router to navigate to the selected tab
     AppRouter.instance.goToTab(index);
   }
 

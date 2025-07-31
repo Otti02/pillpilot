@@ -40,7 +40,6 @@ class LargeCheckboxListTile extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Die vergrößerte Checkbox
                 Transform.scale(
                   scale: scale,
                   child: Checkbox(

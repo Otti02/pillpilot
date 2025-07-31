@@ -66,7 +66,6 @@ class NotificationServiceImpl implements NotificationService {
     await cancelMedicationNotifications(medication.id);
 
     for (int dayNumber in medication.daysOfWeek) {
-      // Use a more controlled ID generation to avoid 32-bit integer overflow
       final int notificationId =
           (medication.id.hashCode.abs() % 1000000) * 10 + dayNumber;
 

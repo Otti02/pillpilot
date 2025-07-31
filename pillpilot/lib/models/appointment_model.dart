@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
 import 'base_model.dart';
 
-/// Model representing an appointment in the calendar.
-///
-/// Contains information about an appointment including its title,
-/// date, time, and optional notes.
 class Appointment extends BaseModel implements Persistable {
-  /// Unique identifier for the appointment.
   @override
   final String id;
 
-  /// Title of the appointment.
   final String title;
 
-  /// Date of the appointment.
   final DateTime date;
 
-  /// Time of the appointment.
   final TimeOfDay time;
 
-  /// Optional notes about the appointment.
   final String notes;
 
-  /// Creates a new appointment instance.
   Appointment({
     required this.id,
     required this.title,
@@ -31,7 +21,6 @@ class Appointment extends BaseModel implements Persistable {
     this.notes = '',
   });
 
-  /// Creates an appointment from a JSON map.
   factory Appointment.fromJson(Map<String, dynamic> json) {
     try {
       final dateTime = DateTime.parse(json['date'] as String);
@@ -48,7 +37,6 @@ class Appointment extends BaseModel implements Persistable {
         notes: json['notes'] as String? ?? '',
       );
     } catch (e) {
-      // Fallback to default values if parsing fails
       return Appointment(
         id: json['id'] as String? ?? '',
         title: json['title'] as String? ?? '',
@@ -59,7 +47,6 @@ class Appointment extends BaseModel implements Persistable {
     }
   }
 
-  /// Converts the appointment to a JSON map.
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -71,9 +58,6 @@ class Appointment extends BaseModel implements Persistable {
     };
   }
 
-  /// Creates a copy of the appointment with updated fields.
-  ///
-  /// Any parameter that is null will use the current value.
   Appointment copyWith({
     String? id,
     String? title,
@@ -90,13 +74,11 @@ class Appointment extends BaseModel implements Persistable {
     );
   }
 
-  /// Returns a DateTime that combines the date and time of this appointment.
   DateTime get dateTime {
     return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 }
 
-/// Extension to convert DateTime to a date string key for event mapping.
 extension DateTimeExtension on DateTime {
   String get dateString {
     return "${year.toString().padLeft(4, '0')}-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}";

@@ -15,7 +15,6 @@ abstract class MedicationService {
     List<int> daysOfWeek, {
     String notes = '',
   });
-  // -------------------------
 
   Future<Medication> updateMedication(Medication medication);
   Future<void> deleteMedication(String id);
@@ -27,7 +26,6 @@ class MedicationServiceImpl implements MedicationService {
   final PersistenceService _persistenceService;
   int _nextId = 1;
 
-  /// Constructor with dependency injection
   MedicationServiceImpl(this._persistenceService) {
     _initNextId();
   }
@@ -90,7 +88,6 @@ class MedicationServiceImpl implements MedicationService {
     await _saveMedications(medications);
     return newMedication;
   }
-  // -------------------------
 
   Future<void> _saveNextId() async {
     await _persistenceService.saveData(_nextIdKey, _nextId.toString());

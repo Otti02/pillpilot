@@ -1,52 +1,41 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Primary colors
   static const Color primaryColor = Color(0xFF6750A4);
   static const Color backgroundColor = Color(0xFFFFFBFE);
   static const Color cardBackgroundColor = Colors.white;
 
-  // Dark mode colors
   static const Color darkBackgroundColor = Color(0xFF121212);
   static const Color darkCardBackgroundColor = Color(0xFF2A2A2A);
   static const Color darkPrimaryTextColor = Colors.white;
   static const Color darkSecondaryTextColor = Color(0xFFB3B3B3);
   static const Color darkBorderColor = Color(0xFF3A3A3A);
 
-  // Text colors
   static const Color primaryTextColor = Color(0xFF1C1B1F);
   static const Color secondaryTextColor = Color(0xFF49454F);
   static const Color disabledTextColor = Colors.grey;
 
-  // Border and divider colors
   static const Color borderColor = Color(0xFFE7E0EC);
   static const Color dividerColor = Color(0xFFE7E0EC);
 
-  // Status colors
   static const Color errorColor = Color(0xFFBA1A1A);
   static const Color successColor = Color(0xFF4CAF50);
   static const Color warningColor = Colors.orange;
 
-  // Icon colors
   static const Color iconColor = primaryColor;
-  static const Color iconBackgroundColor = Color(0xFFEADDFF); // Light purple
+  static const Color iconBackgroundColor = Color(0xFFEADDFF);
   static const Color medicationIconColor = Colors.blue;
   static const Color medicationIconBackgroundColor = Color(
     0xFFE6F2FF,
-  ); // Light blue
+  );
 
-  // Checkbox colors
   static const Color checkboxActiveColor = successColor;
-  static const Color checkboxInactiveColor = Color(0xFFCACACA); // Light grey
+  static const Color checkboxInactiveColor = Color(0xFFCACACA);
+  static const Color shadowColor = Color(0x1A000000);
 
-  // Shadow colors
-  static const Color shadowColor = Color(0x1A000000); // Black with 10% opacity
-
-  // Completed/disabled state colors
   static const Color completedTextColor = Colors.grey;
   static const Color completedColor = successColor;
 
-  // Design constants
   static const double defaultPadding = 16.0;
   static const double smallPadding = 8.0;
   static const double largePadding = 24.0;
@@ -90,7 +79,6 @@ class AppTheme {
     ),
     useMaterial3: true,
 
-    // Text theme
     textTheme: const TextTheme(
       titleLarge: TextStyle(
         fontSize: 24,
@@ -110,7 +98,6 @@ class AppTheme {
       bodyMedium: TextStyle(fontSize: 14, color: secondaryTextColor),
     ),
 
-    // Input decoration theme
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -126,7 +113,6 @@ class AppTheme {
       ),
     ),
 
-    // Button themes
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
@@ -144,14 +130,12 @@ class AppTheme {
       ),
     ),
 
-    // Bottom navigation bar theme
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       selectedItemColor: primaryColor,
       unselectedItemColor: disabledTextColor,
       type: BottomNavigationBarType.fixed,
     ),
 
-    // Card theme
     cardTheme: CardThemeData(
       color: cardBackgroundColor,
       elevation: 2,
@@ -178,7 +162,6 @@ class AppTheme {
     ),
     useMaterial3: true,
 
-    // Text theme
     textTheme: const TextTheme(
       titleLarge: TextStyle(
         fontSize: 24,
@@ -198,7 +181,6 @@ class AppTheme {
       bodyMedium: TextStyle(fontSize: 14, color: darkSecondaryTextColor),
     ),
 
-    // Input decoration theme
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -214,7 +196,6 @@ class AppTheme {
       ),
     ),
 
-    // Button themes
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
@@ -232,14 +213,12 @@ class AppTheme {
       ),
     ),
 
-    // Bottom navigation bar theme
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       selectedItemColor: primaryColor,
       unselectedItemColor: darkSecondaryTextColor,
       type: BottomNavigationBarType.fixed,
     ),
 
-    // Card theme
     cardTheme: CardThemeData(
       color: darkCardBackgroundColor,
       elevation: 2,
@@ -254,7 +233,6 @@ class AppTheme {
   );
 }
 
-// Simple theme provider
 class ThemeProvider extends ChangeNotifier {
   bool _isDarkMode = false;
 
@@ -268,7 +246,6 @@ class ThemeProvider extends ChangeNotifier {
   ThemeData get theme =>
       _isDarkMode ? AppTheme.darkThemeData : AppTheme.themeData;
 
-  // Helper methods to get colors based on current theme
   Color get backgroundColor =>
       _isDarkMode ? AppTheme.darkBackgroundColor : AppTheme.backgroundColor;
   Color get cardBackgroundColor =>

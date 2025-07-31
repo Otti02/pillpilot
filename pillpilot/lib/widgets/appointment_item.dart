@@ -14,7 +14,7 @@ class AppointmentItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       child: ListTile(
         leading: Icon(
-          Icons.event_available, // Ein passenderes Icon
+          Icons.event_available,
           color: AppTheme.primaryColor,
         ),
         title: Text(appointment.title),
