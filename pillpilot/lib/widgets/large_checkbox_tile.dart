@@ -25,7 +25,9 @@ class LargeCheckboxListTile extends StatelessWidget {
             onChanged(!value);
           },
           child: Padding(
-            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.01),
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.01,
+            ),
             child: Row(
               children: [
                 Expanded(

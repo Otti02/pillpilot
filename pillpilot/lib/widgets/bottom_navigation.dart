@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-
 class BottomNavigation extends StatefulWidget {
   final int currentIndex;
   final void Function(int) onTap;
@@ -26,18 +25,12 @@ class _BottomNavigationState extends State<BottomNavigation> {
       selectedItemColor: AppTheme.primaryColor,
       unselectedItemColor: AppTheme.disabledTextColor,
       items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'Home',
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
         BottomNavigationBarItem(
           icon: Icon(Icons.medication),
           label: 'Medikamente',
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.book),
-          label: 'Lexikon',
-        ),
+        BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Lexikon'),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
           label: 'Kalender',

@@ -66,10 +66,7 @@ class Appointment extends BaseModel implements Persistable {
       'id': id,
       'title': title,
       'date': date.toIso8601String(),
-      'time': {
-        'hour': time.hour,
-        'minute': time.minute,
-      },
+      'time': {'hour': time.hour, 'minute': time.minute},
       'notes': notes,
     };
   }
@@ -95,13 +92,7 @@ class Appointment extends BaseModel implements Persistable {
 
   /// Returns a DateTime that combines the date and time of this appointment.
   DateTime get dateTime {
-    return DateTime(
-      date.year,
-      date.month,
-      date.day,
-      time.hour,
-      time.minute,
-    );
+    return DateTime(date.year, date.month, date.day, time.hour, time.minute);
   }
 }
 

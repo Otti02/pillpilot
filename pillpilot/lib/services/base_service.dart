@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 abstract class PersistenceService {
   /// Initialize the persistence service
   Future<void> initialize();
-  
+
   Future<void> saveData(String key, dynamic data);
   Future<dynamic> getData(String key);
   Future<void> removeData(String key);

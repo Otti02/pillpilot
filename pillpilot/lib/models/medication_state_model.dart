@@ -2,9 +2,9 @@ import 'package:pillpilot/models/medication_model.dart';
 
 class MedicationModel {
   final List<Medication> medications;
-  
+
   final bool isLoading;
-  
+
   final String? error;
 
   MedicationModel({

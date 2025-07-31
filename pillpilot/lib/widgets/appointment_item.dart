@@ -6,11 +6,7 @@ class AppointmentItem extends StatelessWidget {
   final Appointment appointment;
   final VoidCallback? onTap;
 
-  const AppointmentItem({
-    super.key,
-    required this.appointment,
-    this.onTap,
-  });
+  const AppointmentItem({super.key, required this.appointment, this.onTap});
 
   @override
   Widget build(BuildContext context) {

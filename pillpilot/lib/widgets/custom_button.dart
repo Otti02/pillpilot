@@ -22,20 +22,22 @@ class CustomButton extends StatelessWidget {
     final ButtonStyle elevatedStyle = ElevatedButton.styleFrom(
       backgroundColor: color ?? AppTheme.primaryColor,
       foregroundColor: Colors.white,
-      minimumSize: Size(MediaQuery.of(context).size.width * 0.25, MediaQuery.of(context).size.height * 0.06),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+      minimumSize: Size(
+        MediaQuery.of(context).size.width * 0.25,
+        MediaQuery.of(context).size.height * 0.06,
       ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       elevation: 2,
     );
 
     final ButtonStyle outlinedStyle = OutlinedButton.styleFrom(
       foregroundColor: color ?? AppTheme.primaryColor,
-      minimumSize: Size(MediaQuery.of(context).size.width * 0.25, MediaQuery.of(context).size.height * 0.06),
-      side: BorderSide(color: color ?? AppTheme.primaryColor),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
+      minimumSize: Size(
+        MediaQuery.of(context).size.width * 0.25,
+        MediaQuery.of(context).size.height * 0.06,
       ),
+      side: BorderSide(color: color ?? AppTheme.primaryColor),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
     );
 
     if (isLoading) {
@@ -52,14 +54,14 @@ class CustomButton extends StatelessWidget {
 
     return isOutlined
         ? OutlinedButton(
-      onPressed: onPressed,
-      style: outlinedStyle,
-      child: Text(text),
-    )
+          onPressed: onPressed,
+          style: outlinedStyle,
+          child: Text(text),
+        )
         : ElevatedButton(
-      onPressed: onPressed,
-      style: elevatedStyle,
-      child: Text(text),
-    );
+          onPressed: onPressed,
+          style: elevatedStyle,
+          child: Text(text),
+        );
   }
 }

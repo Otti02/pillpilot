@@ -3,21 +3,25 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pillpilot/models/appointment_model.dart';
 import 'package:pillpilot/services/base_service.dart';
-import 'package:pillpilot/services/service_provider.dart';
 
 abstract class AppointmentService {
   Future<List<Appointment>> getAppointments();
 
   Future<Appointment> getAppointmentById(String id);
 
-  Future<Appointment> createAppointment(String title, DateTime date, TimeOfDay time, {String notes = ''});
+  Future<Appointment> createAppointment(
+    String title,
+    DateTime date,
+    TimeOfDay time, {
+    String notes = '',
+  });
 
   Future<Appointment> updateAppointment(Appointment appointment);
 
   Future<void> deleteAppointment(String id);
-  
+
   Future<List<Appointment>> getAppointmentsForDate(DateTime date);
-  
+
   Future<List<DateTime>> getDatesWithAppointments();
 }
 
@@ -50,9 +54,12 @@ class AppointmentServiceImpl implements AppointmentService {
       return [];
     }
 
-    final List<dynamic> appointmentsJson = jsonDecode(data as String) as List<dynamic>;
+    final List<dynamic> appointmentsJson =
+        jsonDecode(data as String) as List<dynamic>;
     return appointmentsJson
-        .map((dynamic json) => Appointment.fromJson(json as Map<String, dynamic>))
+        .map(
+          (dynamic json) => Appointment.fromJson(json as Map<String, dynamic>),
+        )
         .toList();
   }
 
@@ -67,7 +74,12 @@ class AppointmentServiceImpl implements AppointmentService {
   }
 
   @override
-  Future<Appointment> createAppointment(String title, DateTime date, TimeOfDay time, {String notes = ''}) async {
+  Future<Appointment> createAppointment(
+    String title,
+    DateTime date,
+    TimeOfDay time, {
+    String notes = '',
+  }) async {
     final appointments = await getAppointments();
 
     // Generate a new ID for the appointment
@@ -124,29 +136,32 @@ class AppointmentServiceImpl implements AppointmentService {
     appointments.removeAt(index);
     await _saveAppointments(appointments);
   }
-  
+
   @override
   Future<List<Appointment>> getAppointmentsForDate(DateTime date) async {
     final appointments = await getAppointments();
-    
+
     // Filter appointments for the specific date
-    return appointments.where((appointment) => 
-      appointment.date.year == date.year && 
-      appointment.date.month == date.month && 
-      appointment.date.day == date.day
-    ).toList();
+    return appointments
+        .where(
+          (appointment) =>
+              appointment.date.year == date.year &&
+              appointment.date.month == date.month &&
+              appointment.date.day == date.day,
+        )
+        .toList();
   }
-  
+
   @override
   Future<List<DateTime>> getDatesWithAppointments() async {
     final appointments = await getAppointments();
-    
+
     // Extract unique dates from appointments
     final Set<String> uniqueDateStrings = {};
     for (final appointment in appointments) {
       uniqueDateStrings.add(appointment.date.dateString);
     }
-    
+
     // Convert date strings back to DateTime objects
     return uniqueDateStrings.map((dateString) {
       final parts = dateString.split('-');
@@ -160,6 +175,9 @@ class AppointmentServiceImpl implements AppointmentService {
 
   Future<void> _saveAppointments(List<Appointment> appointments) async {
     final appointmentsJson = appointments.map((a) => a.toJson()).toList();
-    await _persistenceService.saveData(_appointmentsKey, jsonEncode(appointmentsJson));
+    await _persistenceService.saveData(
+      _appointmentsKey,
+      jsonEncode(appointmentsJson),
+    );
   }
 }

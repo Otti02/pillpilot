@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'dart:math';
 import '../controllers/appointment/appointment_controller.dart';
 import '../models/appointment_model.dart';
 import '../models/appointment_state_model.dart';
@@ -12,7 +11,6 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_calendar.dart';
 import '../widgets/appointment_details_dialog.dart';
 import '../widgets/edit_appointment_dialog.dart';
-
 
 class CalendarPage extends StatelessWidget {
   const CalendarPage({super.key});
@@ -42,8 +40,6 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
     controller.loadAppointmentsForDate(_selectedDate);
   }
 
-
-
   Future<void> _deleteAppointment(String id) async {
     try {
       final controller = BlocProvider.of<AppointmentController>(context);
@@ -51,44 +47,49 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
 
       if (!mounted) return;
       _loadAppointments();
-
     } catch (e) {
       if (!mounted) return;
     }
   }
 
   void _showAddAppointmentDialog(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
-      builder: (dialogContext) => _AddAppointmentDialog(
-        selectedDate: _selectedDate,
-        onAppointmentCreated: () {
-          _loadAppointments();
-        },
-      ),
+      builder:
+          (dialogContext) => _AddAppointmentDialog(
+            selectedDate: _selectedDate,
+            onAppointmentCreated: () {
+              _loadAppointments();
+            },
+          ),
     );
   }
 
   void _showAppointmentDetails(BuildContext context, Appointment appointment) {
-    showDialog(
+    showDialog<void>(
       context: context,
-      builder: (dialogContext) => AppointmentDetailsDialog(
-        appointment: appointment,
-        onDelete: () => _deleteAppointment(appointment.id),
-        onEdit: () => _showEditAppointmentDialog(context, appointment),
-      ),
+      builder:
+          (dialogContext) => AppointmentDetailsDialog(
+            appointment: appointment,
+            onDelete: () => _deleteAppointment(appointment.id),
+            onEdit: () => _showEditAppointmentDialog(context, appointment),
+          ),
     );
   }
 
-  void _showEditAppointmentDialog(BuildContext context, Appointment appointment) {
-    showDialog(
+  void _showEditAppointmentDialog(
+    BuildContext context,
+    Appointment appointment,
+  ) {
+    showDialog<void>(
       context: context,
-      builder: (dialogContext) => EditAppointmentDialog(
-        appointment: appointment,
-        onAppointmentUpdated: () {
-          _loadAppointments();
-        },
-      ),
+      builder:
+          (dialogContext) => EditAppointmentDialog(
+            appointment: appointment,
+            onAppointmentUpdated: () {
+              _loadAppointments();
+            },
+          ),
     );
   }
 
@@ -153,7 +154,10 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
     );
   }
 
-  Widget _buildAppointmentsList(BuildContext context, ThemeProvider themeProvider) {
+  Widget _buildAppointmentsList(
+    BuildContext context,
+    ThemeProvider themeProvider,
+  ) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -173,25 +177,24 @@ class _CalendarPageContentState extends State<_CalendarPageContent> {
                 if (model.isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
+
                 if (model.appointments.isEmpty) {
                   return Center(
                     child: Text(
                       'Keine Termine an diesem Tag',
-                      style: TextStyle(
-                        color: themeProvider.secondaryTextColor,
-                      ),
+                      style: TextStyle(color: themeProvider.secondaryTextColor),
                     ),
                   );
                 }
-                
+
                 return ListView.builder(
                   itemCount: model.appointments.length,
                   itemBuilder: (context, index) {
                     final appointment = model.appointments[index];
                     return AppointmentItem(
                       appointment: appointment,
-                      onTap: () => _showAppointmentDetails(context, appointment),
+                      onTap:
+                          () => _showAppointmentDetails(context, appointment),
                     );
                   },
                 );
@@ -250,16 +253,16 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
 
       Navigator.of(context).pop();
       widget.onAppointmentCreated();
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Termin erfolgreich erstellt')),
       );
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fehler: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Fehler: $e')));
     }
   }
 
@@ -290,9 +293,9 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
               initialEntryMode: TimePickerEntryMode.input,
               builder: (context, child) {
                 return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    alwaysUse24HourFormat: true,
-                  ),
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(alwaysUse24HourFormat: true),
                   child: child!,
                 );
               },
@@ -335,10 +338,7 @@ class _AddAppointmentDialogState extends State<_AddAppointmentDialog> {
               text: 'Abbrechen',
             ),
             const SizedBox(width: 8),
-            CustomButton(
-              onPressed: _addAppointment,
-              text: 'Speichern',
-            ),
+            CustomButton(onPressed: _addAppointment, text: 'Speichern'),
           ],
         ),
       ],

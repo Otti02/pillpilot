@@ -34,20 +34,26 @@ class Medication extends BaseModel implements Persistable {
     try {
       final parts = timeString.split(':');
       if (parts.length != 2) {
-        throw FormatException('Invalid time format. Expected HH:MM, got: $timeString');
+        throw FormatException(
+          'Invalid time format. Expected HH:MM, got: $timeString',
+        );
       }
-      
+
       final hour = int.tryParse(parts[0]);
       final minute = int.tryParse(parts[1]);
-      
+
       if (hour == null || minute == null) {
-        throw FormatException('Invalid time values. Expected numbers, got: $timeString');
+        throw FormatException(
+          'Invalid time values. Expected numbers, got: $timeString',
+        );
       }
-      
+
       if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
-        throw FormatException('Time out of range. Hour: 0-23, Minute: 0-59, got: $timeString');
+        throw FormatException(
+          'Time out of range. Hour: 0-23, Minute: 0-59, got: $timeString',
+        );
       }
-      
+
       return TimeOfDay(hour: hour, minute: minute);
     } catch (e) {
       // Fallback to default time if parsing fails
@@ -95,10 +101,7 @@ class Medication extends BaseModel implements Persistable {
       'id': id,
       'name': name,
       'dosage': dosage,
-      'time': {
-        'hour': time.hour,
-        'minute': time.minute,
-      },
+      'time': {'hour': time.hour, 'minute': time.minute},
       'daysOfWeek': daysOfWeek,
       'isCompleted': isCompleted,
       'notes': notes,

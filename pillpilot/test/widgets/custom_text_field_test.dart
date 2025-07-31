@@ -8,25 +8,22 @@ void main() {
   Widget makeTestableWidget(Widget child) {
     return ChangeNotifierProvider<ThemeProvider>(
       create: (_) => ThemeProvider(),
-      child: MaterialApp(
-        home: Scaffold(
-          body: child,
-        ),
-      ),
+      child: MaterialApp(home: Scaffold(body: child)),
     );
   }
 
   group('CustomTextField', () {
-    testWidgets('renders correctly with given label and hint', (WidgetTester tester) async {
+    testWidgets('renders correctly with given label and hint', (
+      WidgetTester tester,
+    ) async {
       // ARRANGE
       const labelText = 'Test Label';
       const hintText = 'Test Hint';
-      await tester.pumpWidget(makeTestableWidget(
-        const CustomTextField(
-          label: labelText,
-          hint: hintText,
+      await tester.pumpWidget(
+        makeTestableWidget(
+          const CustomTextField(label: labelText, hint: hintText),
         ),
-      ));
+      );
 
       // ASSERT
       expect(find.text(labelText), findsOneWidget);
@@ -34,14 +31,14 @@ void main() {
       expect(find.byType(TextField), findsOneWidget);
     });
 
-    testWidgets('does not show label when label is null', (WidgetTester tester) async {
+    testWidgets('does not show label when label is null', (
+      WidgetTester tester,
+    ) async {
       // ARRANGE
       const hintText = 'Test Hint';
-      await tester.pumpWidget(makeTestableWidget(
-        const CustomTextField(
-          hint: hintText,
-        ),
-      ));
+      await tester.pumpWidget(
+        makeTestableWidget(const CustomTextField(hint: hintText)),
+      );
 
       // ASSERT
       expect(find.text(hintText), findsOneWidget);
@@ -50,26 +47,26 @@ void main() {
       expect(find.byType(Text), findsOneWidget); // Only the hint text
     });
 
-    testWidgets('obscures text when obscureText is true', (WidgetTester tester) async {
+    testWidgets('obscures text when obscureText is true', (
+      WidgetTester tester,
+    ) async {
       // ARRANGE
-      await tester.pumpWidget(makeTestableWidget(
-        const CustomTextField(
-          obscureText: true,
-        ),
-      ));
+      await tester.pumpWidget(
+        makeTestableWidget(const CustomTextField(obscureText: true)),
+      );
 
       // ASSERT
       final textField = tester.widget<TextField>(find.byType(TextField));
       expect(textField.obscureText, isTrue);
     });
 
-    testWidgets('does not obscure text when obscureText is false', (WidgetTester tester) async {
+    testWidgets('does not obscure text when obscureText is false', (
+      WidgetTester tester,
+    ) async {
       // ARRANGE
-      await tester.pumpWidget(makeTestableWidget(
-        const CustomTextField(
-          obscureText: false,
-        ),
-      ));
+      await tester.pumpWidget(
+        makeTestableWidget(const CustomTextField(obscureText: false)),
+      );
 
       // ASSERT
       final textField = tester.widget<TextField>(find.byType(TextField));
@@ -79,11 +76,9 @@ void main() {
     testWidgets('uses provided controller', (WidgetTester tester) async {
       // ARRANGE
       final controller = TextEditingController(text: 'Initial Text');
-      await tester.pumpWidget(makeTestableWidget(
-        CustomTextField(
-          controller: controller,
-        ),
-      ));
+      await tester.pumpWidget(
+        makeTestableWidget(CustomTextField(controller: controller)),
+      );
 
       // ASSERT
       final textField = tester.widget<TextField>(find.byType(TextField));
@@ -91,16 +86,20 @@ void main() {
       expect(controller.text, 'Initial Text');
     });
 
-    testWidgets('calls onChanged when text changes', (WidgetTester tester) async {
+    testWidgets('calls onChanged when text changes', (
+      WidgetTester tester,
+    ) async {
       // ARRANGE
       String? changedText;
-      await tester.pumpWidget(makeTestableWidget(
-        CustomTextField(
-          onChanged: (value) {
-            changedText = value;
-          },
+      await tester.pumpWidget(
+        makeTestableWidget(
+          CustomTextField(
+            onChanged: (value) {
+              changedText = value;
+            },
+          ),
         ),
-      ));
+      );
 
       // ACT
       await tester.enterText(find.byType(TextField), 'New Text');

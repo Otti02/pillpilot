@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/appointment_model.dart';
 
-
 class AppointmentDetailsDialog extends StatelessWidget {
   final Appointment appointment;
   final VoidCallback onDelete;
@@ -92,4 +91,4 @@ class AppointmentDetailsDialog extends StatelessWidget {
       ),
     );
   }
-} 
+}

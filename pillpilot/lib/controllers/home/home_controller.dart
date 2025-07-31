@@ -1,30 +1,31 @@
 import '../../controllers/base_controller.dart';
-import '../../models/appointment_model.dart';
-import '../../models/medication_model.dart';
 import '../../models/home_state_model.dart';
 import '../../services/appointment_service.dart';
 import '../../services/medication_service.dart';
 import '../../services/service_provider.dart';
 import '../../services/base_service.dart';
 
-
 class HomeController extends BlocController<HomeState> {
   final MedicationService _medicationService;
   final AppointmentService _appointmentService;
 
-  HomeController({MedicationService? medicationService, AppointmentService? appointmentService})
-      : _medicationService = medicationService ?? ServiceProvider.instance.medicationService,
-        _appointmentService = appointmentService ?? ServiceProvider.instance.appointmentService,
-        super(HomeState.initial());
+  HomeController({
+    MedicationService? medicationService,
+    AppointmentService? appointmentService,
+  }) : _medicationService =
+           medicationService ?? ServiceProvider.instance.medicationService,
+       _appointmentService =
+           appointmentService ?? ServiceProvider.instance.appointmentService,
+       super(HomeState.initial());
 
   @override
   Future<void> initialize() async {
     emit(state.copyWith(isLoading: true));
-    
+
     // Ladevorgänge sequenziell ausführen, damit Fehler korrekt behandelt werden
     await loadMedications();
     await loadAppointments();
-    
+
     // Nur isLoading auf false setzen, error-Feld nicht überschreiben
     final currentError = state.error;
     emit(state.copyWith(isLoading: false, error: currentError));
@@ -34,13 +35,16 @@ class HomeController extends BlocController<HomeState> {
   void handleError(String message, [Object? error]) {
     String userMessage = message;
     if (error is NetworkException) {
-              userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
-      } else if (error is ValidationException) {
-        userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
-      } else if (error is AppException) {
-        userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
-      } else {
-        userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
+      userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
+    } else if (error is ValidationException) {
+      userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
+    } else if (error is AppException) {
+      userMessage =
+          error.message.isNotEmpty
+              ? error.message
+              : 'Ein unbekannter Fehler ist aufgetreten.';
+    } else {
+      userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
     }
     emit(state.copyWith(isLoading: false, error: userMessage));
   }
@@ -49,9 +53,12 @@ class HomeController extends BlocController<HomeState> {
     try {
       final todayWeekday = DateTime.now().weekday;
       final allMedications = await _medicationService.getMedications();
-      final todaysMedications = allMedications
-          .where((medication) => medication.daysOfWeek.contains(todayWeekday))
-          .toList();
+      final todaysMedications =
+          allMedications
+              .where(
+                (medication) => medication.daysOfWeek.contains(todayWeekday),
+              )
+              .toList();
       emit(state.copyWith(medications: todaysMedications));
     } catch (e) {
       handleError('Failed to load medications:  ${e.toString()}', e);
@@ -60,7 +67,9 @@ class HomeController extends BlocController<HomeState> {
 
   Future<void> loadAppointments() async {
     try {
-      final appointments = await _appointmentService.getAppointmentsForDate(DateTime.now());
+      final appointments = await _appointmentService.getAppointmentsForDate(
+        DateTime.now(),
+      );
       emit(state.copyWith(appointments: appointments));
     } catch (e) {
       handleError('Failed to load appointments:  ${e.toString()}', e);

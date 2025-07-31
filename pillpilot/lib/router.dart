@@ -53,10 +53,7 @@ class AppRouter {
           final location = state.uri.path;
           final currentIndex = _routeToIndex[location] ?? _homeIndex;
 
-          return MainScreen(
-            currentIndex: currentIndex,
-            child: child,
-          );
+          return MainScreen(currentIndex: currentIndex, child: child);
         },
         routes: [
           // Tab routes
@@ -98,22 +95,20 @@ class AppRouter {
   }) {
     router.go(
       '${AppRoute.widgetDetail}/$id',
-      extra: {
-        'title': title,
-        'examples': examples,
-      },
+      extra: {'title': title, 'examples': examples},
     );
   }
 
   void goToTab(int index) {
     // Find route by index
-    final route = _routeToIndex.entries
-        .firstWhere(
-          (entry) => entry.value == index,
-          orElse: () => MapEntry(AppRoute.home, _homeIndex),
-        )
-        .key;
-    
+    final route =
+        _routeToIndex.entries
+            .firstWhere(
+              (entry) => entry.value == index,
+              orElse: () => MapEntry(AppRoute.home, _homeIndex),
+            )
+            .key;
+
     navigateTo(route);
   }
 }

@@ -18,7 +18,7 @@ class LexiconPage extends StatelessWidget {
     if (controller.state.entries.isEmpty) {
       controller.loadEntries();
     }
-    
+
     return _LexiconPageContent();
   }
 }
@@ -54,7 +54,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
     if (_searchQuery.isEmpty) {
       return entries;
     }
-    
+
     return entries.where((entry) {
       return entry.name.toLowerCase().contains(_searchQuery) ||
           entry.type.toLowerCase().contains(_searchQuery) ||
@@ -65,7 +65,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
   void _navigateToEntryDetail(LexiconEntry entry) {
     Navigator.push(
       context,
-      MaterialPageRoute(
+      MaterialPageRoute<void>(
         builder: (context) => LexiconDetailPage(entry: entry),
       ),
     );
@@ -104,13 +104,23 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                         ),
                         child: TextField(
                           controller: _searchController,
-                          style: TextStyle(color: themeProvider.primaryTextColor),
+                          style: TextStyle(
+                            color: themeProvider.primaryTextColor,
+                          ),
                           decoration: InputDecoration(
                             hintText: 'Medikament / Supplement',
-                            hintStyle: TextStyle(color: themeProvider.secondaryTextColor),
-                            prefixIcon: Icon(Icons.search, color: AppTheme.primaryColor),
+                            hintStyle: TextStyle(
+                              color: themeProvider.secondaryTextColor,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: AppTheme.primaryColor,
+                            ),
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
                           ),
                         ),
                       ),
@@ -123,9 +133,9 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                       if (model.isLoading) {
                         return const Center(child: CircularProgressIndicator());
                       }
-                      
+
                       final filteredEntries = _filterEntries(model.entries);
-                      
+
                       if (filteredEntries.isEmpty) {
                         return Center(
                           child: Text(
@@ -137,7 +147,7 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                           ),
                         );
                       }
-                      
+
                       return ListView.builder(
                         itemCount: filteredEntries.length,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -176,7 +186,9 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                                         ),
                                         child: Center(
                                           child: Text(
-                                            entry.name.substring(0, 1).toUpperCase(),
+                                            entry.name
+                                                .substring(0, 1)
+                                                .toUpperCase(),
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,
@@ -189,22 +201,29 @@ class _LexiconPageContentState extends State<_LexiconPageContent> {
                                       // Entry info
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               entry.name,
                                               style: TextStyle(
-                                                fontSize: AppTheme.subtitleFontSize,
+                                                fontSize:
+                                                    AppTheme.subtitleFontSize,
                                                 fontWeight: FontWeight.w600,
-                                                color: themeProvider.primaryTextColor,
+                                                color:
+                                                    themeProvider
+                                                        .primaryTextColor,
                                               ),
                                             ),
                                             const SizedBox(height: 4),
                                             Text(
                                               entry.category,
                                               style: TextStyle(
-                                                fontSize: AppTheme.smallFontSize,
-                                                color: themeProvider.secondaryTextColor,
+                                                fontSize:
+                                                    AppTheme.smallFontSize,
+                                                color:
+                                                    themeProvider
+                                                        .secondaryTextColor,
                                               ),
                                             ),
                                           ],

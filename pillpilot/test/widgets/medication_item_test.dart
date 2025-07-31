@@ -18,22 +18,18 @@ void main() {
   Widget makeTestableWidget(Widget child) {
     return ChangeNotifierProvider<ThemeProvider>(
       create: (_) => ThemeProvider(),
-      child: MaterialApp(
-        home: Scaffold(
-          body: child,
-        ),
-      ),
+      child: MaterialApp(home: Scaffold(body: child)),
     );
   }
 
   group('MedicationItem', () {
-    testWidgets('renders medication details correctly', (WidgetTester tester) async {
+    testWidgets('renders medication details correctly', (
+      WidgetTester tester,
+    ) async {
       // ARRANGE
-      await tester.pumpWidget(makeTestableWidget(
-        MedicationItem(
-          medication: testMedication,
-        ),
-      ));
+      await tester.pumpWidget(
+        makeTestableWidget(MedicationItem(medication: testMedication)),
+      );
 
       // ASSERT
       expect(find.text('Ibuprofen'), findsOneWidget);
@@ -43,18 +39,22 @@ void main() {
       expect(find.byIcon(Icons.check), findsNothing);
     });
 
-    testWidgets('calls onToggle when checkbox area is tapped', (WidgetTester tester) async {
+    testWidgets('calls onToggle when checkbox area is tapped', (
+      WidgetTester tester,
+    ) async {
       // ARRANGE
       bool toggleCalled = false;
-      await tester.pumpWidget(makeTestableWidget(
-        MedicationItem(
-          medication: testMedication,
-          onToggle: () {
-            toggleCalled = true;
-          },
-          onDataChanged: () {},
+      await tester.pumpWidget(
+        makeTestableWidget(
+          MedicationItem(
+            medication: testMedication,
+            onToggle: () {
+              toggleCalled = true;
+            },
+            onDataChanged: () {},
+          ),
         ),
-      ));
+      );
 
       // ACT
       await tester.tap(find.byType(GestureDetector).last);
@@ -65,27 +65,34 @@ void main() {
     });
 
     group('Trailing Widget Tests', () {
-      testWidgets('shows trailing widget when provided', (WidgetTester tester) async {
+      testWidgets('shows trailing widget when provided', (
+        WidgetTester tester,
+      ) async {
         // ARRANGE
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: testMedication,
-            trailingWidget: const Icon(Icons.delete, color: Colors.red),
+        await tester.pumpWidget(
+          makeTestableWidget(
+            MedicationItem(
+              medication: testMedication,
+              trailingWidget: const Icon(Icons.delete, color: Colors.red),
+            ),
           ),
-        ));
+        );
 
         // ASSERT
         expect(find.byIcon(Icons.delete), findsOneWidget);
-        expect(find.byIcon(Icons.check), findsNothing); // Checkbox should not be shown
+        expect(
+          find.byIcon(Icons.check),
+          findsNothing,
+        ); // Checkbox should not be shown
       });
 
-      testWidgets('shows checkbox when no trailing widget is provided', (WidgetTester tester) async {
+      testWidgets('shows checkbox when no trailing widget is provided', (
+        WidgetTester tester,
+      ) async {
         // ARRANGE
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: testMedication,
-          ),
-        ));
+        await tester.pumpWidget(
+          makeTestableWidget(MedicationItem(medication: testMedication)),
+        );
 
         // ASSERT
         expect(find.byIcon(Icons.delete), findsNothing);
@@ -96,17 +103,19 @@ void main() {
       testWidgets('trailing widget is clickable', (WidgetTester tester) async {
         // ARRANGE
         bool deleteCalled = false;
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: testMedication,
-            trailingWidget: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                deleteCalled = true;
-              },
+        await tester.pumpWidget(
+          makeTestableWidget(
+            MedicationItem(
+              medication: testMedication,
+              trailingWidget: IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  deleteCalled = true;
+                },
+              ),
             ),
           ),
-        ));
+        );
 
         // ACT
         await tester.tap(find.byIcon(Icons.delete));
@@ -120,94 +129,127 @@ void main() {
     group('Completed Styling Tests', () {
       final completedMedication = testMedication.copyWith(isCompleted: true);
 
-      testWidgets('shows completed styling when medication is completed and showCompletedStyling is true', (WidgetTester tester) async {
-        // ARRANGE
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: completedMedication,
-            showCompletedStyling: true,
-          ),
-        ));
+      testWidgets(
+        'shows completed styling when medication is completed and showCompletedStyling is true',
+        (WidgetTester tester) async {
+          // ARRANGE
+          await tester.pumpWidget(
+            makeTestableWidget(
+              MedicationItem(
+                medication: completedMedication,
+                showCompletedStyling: true,
+              ),
+            ),
+          );
 
-        // ASSERT
-        expect(find.byIcon(Icons.check), findsOneWidget);
-        // The text should be styled with completed color (we can't directly test color, but we can verify the widget exists)
-        expect(find.text('Ibuprofen'), findsOneWidget);
-      });
+          // ASSERT
+          expect(find.byIcon(Icons.check), findsOneWidget);
+          // The text should be styled with completed color (we can't directly test color, but we can verify the widget exists)
+          expect(find.text('Ibuprofen'), findsOneWidget);
+        },
+      );
 
-      testWidgets('does not show completed styling when showCompletedStyling is false', (WidgetTester tester) async {
-        // ARRANGE
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: completedMedication,
-            showCompletedStyling: false,
-          ),
-        ));
+      testWidgets(
+        'does not show completed styling when showCompletedStyling is false',
+        (WidgetTester tester) async {
+          // ARRANGE
+          await tester.pumpWidget(
+            makeTestableWidget(
+              MedicationItem(
+                medication: completedMedication,
+                showCompletedStyling: false,
+              ),
+            ),
+          );
 
-        // ASSERT
-        expect(find.byIcon(Icons.check), findsNothing);
-        expect(find.text('Ibuprofen'), findsOneWidget);
-      });
+          // ASSERT
+          expect(find.byIcon(Icons.check), findsNothing);
+          expect(find.text('Ibuprofen'), findsOneWidget);
+        },
+      );
 
-      testWidgets('shows completed styling by default when medication is completed', (WidgetTester tester) async {
-        // ARRANGE
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: completedMedication,
-            // showCompletedStyling defaults to true
-          ),
-        ));
+      testWidgets(
+        'shows completed styling by default when medication is completed',
+        (WidgetTester tester) async {
+          // ARRANGE
+          await tester.pumpWidget(
+            makeTestableWidget(
+              MedicationItem(
+                medication: completedMedication,
+                // showCompletedStyling defaults to true
+              ),
+            ),
+          );
 
-        // ASSERT
-        expect(find.byIcon(Icons.check), findsOneWidget);
-      });
+          // ASSERT
+          expect(find.byIcon(Icons.check), findsOneWidget);
+        },
+      );
 
-      testWidgets('does not show completed styling when medication is not completed', (WidgetTester tester) async {
-        // ARRANGE
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: testMedication, // isCompleted: false
-            showCompletedStyling: true,
-          ),
-        ));
+      testWidgets(
+        'does not show completed styling when medication is not completed',
+        (WidgetTester tester) async {
+          // ARRANGE
+          await tester.pumpWidget(
+            makeTestableWidget(
+              MedicationItem(
+                medication: testMedication, // isCompleted: false
+                showCompletedStyling: true,
+              ),
+            ),
+          );
 
-        // ASSERT
-        expect(find.byIcon(Icons.check), findsNothing);
-      });
+          // ASSERT
+          expect(find.byIcon(Icons.check), findsNothing);
+        },
+      );
     });
 
     group('Combined Tests', () {
       final completedMedication = testMedication.copyWith(isCompleted: true);
 
-      testWidgets('trailing widget takes precedence over checkbox even when medication is completed', (WidgetTester tester) async {
-        // ARRANGE
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: completedMedication,
-            showCompletedStyling: true,
-            trailingWidget: const Icon(Icons.edit, color: Colors.blue),
-          ),
-        ));
+      testWidgets(
+        'trailing widget takes precedence over checkbox even when medication is completed',
+        (WidgetTester tester) async {
+          // ARRANGE
+          await tester.pumpWidget(
+            makeTestableWidget(
+              MedicationItem(
+                medication: completedMedication,
+                showCompletedStyling: true,
+                trailingWidget: const Icon(Icons.edit, color: Colors.blue),
+              ),
+            ),
+          );
 
-        // ASSERT
-        expect(find.byIcon(Icons.edit), findsOneWidget);
-        expect(find.byIcon(Icons.check), findsNothing); // Checkbox should not be shown
-      });
+          // ASSERT
+          expect(find.byIcon(Icons.edit), findsOneWidget);
+          expect(
+            find.byIcon(Icons.check),
+            findsNothing,
+          ); // Checkbox should not be shown
+        },
+      );
 
-      testWidgets('trailing widget works correctly with showCompletedStyling false', (WidgetTester tester) async {
-        // ARRANGE
-        await tester.pumpWidget(makeTestableWidget(
-          MedicationItem(
-            medication: completedMedication,
-            showCompletedStyling: false,
-            trailingWidget: const Icon(Icons.delete, color: Colors.red),
-          ),
-        ));
+      testWidgets(
+        'trailing widget works correctly with showCompletedStyling false',
+        (WidgetTester tester) async {
+          // ARRANGE
+          await tester.pumpWidget(
+            makeTestableWidget(
+              MedicationItem(
+                medication: completedMedication,
+                showCompletedStyling: false,
+                trailingWidget: const Icon(Icons.delete, color: Colors.red),
+              ),
+            ),
+          );
 
-        // ASSERT
-        expect(find.byIcon(Icons.delete), findsOneWidget);
-        expect(find.byIcon(Icons.check), findsNothing);
-      });
+          // ASSERT
+          expect(find.byIcon(Icons.delete), findsOneWidget);
+          expect(find.byIcon(Icons.check), findsNothing);
+        },
+      );
     });
   });
 }

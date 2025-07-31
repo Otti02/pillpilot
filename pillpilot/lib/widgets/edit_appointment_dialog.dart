@@ -58,23 +58,23 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
         time: _selectedTime,
         notes: _notesController.text,
       );
-      
+
       await controller.updateAppointment(updatedAppointment);
 
       if (!mounted) return;
 
       Navigator.of(context).pop();
       widget.onAppointmentUpdated();
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Termin erfolgreich aktualisiert')),
       );
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Fehler: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Fehler: $e')));
     }
   }
 
@@ -131,9 +131,9 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
               initialEntryMode: TimePickerEntryMode.input,
               builder: (context, child) {
                 return MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    alwaysUse24HourFormat: true,
-                  ),
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(alwaysUse24HourFormat: true),
                   child: child!,
                 );
               },
@@ -176,13 +176,10 @@ class _EditAppointmentDialogState extends State<EditAppointmentDialog> {
               text: 'Abbrechen',
             ),
             const SizedBox(width: 8),
-            CustomButton(
-              onPressed: _updateAppointment,
-              text: 'Speichern',
-            ),
+            CustomButton(onPressed: _updateAppointment, text: 'Speichern'),
           ],
         ),
       ],
     );
   }
-} 
+}

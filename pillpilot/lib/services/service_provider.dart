@@ -7,7 +7,7 @@ import 'notification_service.dart';
 /// Dependency Injection Container for managing service instances
 class ServiceProvider {
   static ServiceProvider? _instance;
-  
+
   // Services
   late final PersistenceService _persistenceService;
   late final MedicationService _medicationService;

@@ -11,8 +11,9 @@ class AppointmentController extends BlocController<AppointmentModel> {
   final AppointmentService appointmentService;
 
   AppointmentController({AppointmentService? appointmentService})
-      : appointmentService = appointmentService ?? ServiceProvider.instance.appointmentService,
-        super(AppointmentModel(appointments: []));
+    : appointmentService =
+          appointmentService ?? ServiceProvider.instance.appointmentService,
+      super(AppointmentModel(appointments: []));
 
   @override
   Future<void> initialize() async {
@@ -21,15 +22,14 @@ class AppointmentController extends BlocController<AppointmentModel> {
 
   @override
   void handleError(String message, [Object? error]) {
-    String userMessage = message;
     if (error is NetworkException) {
-              userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
-      } else if (error is ValidationException) {
-        userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
-      } else if (error is AppException) {
-        userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
-      } else {
-        userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
+      // userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
+    } else if (error is ValidationException) {
+      // userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
+    } else if (error is AppException) {
+      // userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
+    } else {
+      // userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
     }
     emit(state.copyWith(isLoading: false));
     // Optional: Fehler im State speichern, falls UI das anzeigen soll
@@ -49,7 +49,9 @@ class AppointmentController extends BlocController<AppointmentModel> {
   Future<void> loadAppointmentsForDate(DateTime date) async {
     try {
       emit(state.copyWith(isLoading: true));
-      final appointments = await appointmentService.getAppointmentsForDate(date);
+      final appointments = await appointmentService.getAppointmentsForDate(
+        date,
+      );
       emit(state.copyWith(appointments: appointments, isLoading: false));
     } catch (e) {
       handleError('Failed to load appointments for date: ${e.toString()}', e);
@@ -65,10 +67,20 @@ class AppointmentController extends BlocController<AppointmentModel> {
     }
   }
 
-  Future<Appointment> createAppointment(String title, DateTime date, TimeOfDay time, {String notes = ''}) async {
+  Future<Appointment> createAppointment(
+    String title,
+    DateTime date,
+    TimeOfDay time, {
+    String notes = '',
+  }) async {
     try {
       emit(state.copyWith(isLoading: true));
-      final appointment = await appointmentService.createAppointment(title, date, time, notes: notes);
+      final appointment = await appointmentService.createAppointment(
+        title,
+        date,
+        time,
+        notes: notes,
+      );
       await loadAppointments();
       return appointment;
     } catch (e) {
@@ -80,7 +92,9 @@ class AppointmentController extends BlocController<AppointmentModel> {
   Future<Appointment> updateAppointment(Appointment appointment) async {
     try {
       emit(state.copyWith(isLoading: true));
-      final updatedAppointment = await appointmentService.updateAppointment(appointment);
+      final updatedAppointment = await appointmentService.updateAppointment(
+        appointment,
+      );
       await loadAppointments();
       return updatedAppointment;
     } catch (e) {

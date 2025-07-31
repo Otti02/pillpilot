@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _textController;
   late AnimationController _fadeController;
   late AnimationController _pulseController;
-  
+
   late Animation<Color?> _backgroundColor;
   late Animation<double> _logoScale;
   late Animation<double> _logoRotation;
@@ -28,23 +28,23 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize animation controllers
     _backgroundController = AnimationController(
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-    
+
     _logoController = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    
+
     _textController = AnimationController(
       duration: const Duration(milliseconds: 1000),
       vsync: this,
     );
-    
+
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -59,50 +59,37 @@ class _SplashScreenState extends State<SplashScreen>
     _backgroundColor = ColorTween(
       begin: Colors.white,
       end: AppTheme.primaryColor,
-    ).animate(CurvedAnimation(
-      parent: _backgroundController,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _backgroundController, curve: Curves.easeInOut),
+    );
 
     _logoScale = Tween<double>(
       begin: 1.0, // Start from normal size (matching launch screen)
-      end: 1.2,   // Slightly larger for animation
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: Curves.elasticOut,
-    ));
+      end: 1.2, // Slightly larger for animation
+    ).animate(
+      CurvedAnimation(parent: _logoController, curve: Curves.elasticOut),
+    );
 
     _logoRotation = Tween<double>(
       begin: 0.0,
       end: 1.0, // 1.0 = 360 Grad (eine vollständige Umdrehung)
-    ).animate(CurvedAnimation(
-      parent: _logoController,
-      curve: Curves.easeInOut,
-    ));
+    ).animate(
+      CurvedAnimation(parent: _logoController, curve: Curves.easeInOut),
+    );
 
     _textOpacity = Tween<double>(
       begin: 0.0,
       end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeIn,
-    ));
+    ).animate(CurvedAnimation(parent: _textController, curve: Curves.easeIn));
 
     _fadeOpacity = Tween<double>(
       begin: 1.0,
       end: 0.0,
-    ).animate(CurvedAnimation(
-      parent: _fadeController,
-      curve: Curves.easeOut,
-    ));
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeOut));
 
-    _pulseScale = Tween<double>(
-      begin: 1.0,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseScale = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
 
     // Start animations
     _startAnimations();
@@ -111,25 +98,25 @@ class _SplashScreenState extends State<SplashScreen>
   void _startAnimations() async {
     // Start background transition first (seamless from launch screen)
     _backgroundController.forward();
-    
+
     // Start logo animation after a short delay
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future<void>.delayed(const Duration(milliseconds: 300));
     _logoController.forward();
-    
+
     // Start pulse animation after logo appears
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future<void>.delayed(const Duration(milliseconds: 800));
     _pulseController.repeat(reverse: true);
-    
+
     // Start text animation after background transition
-    await Future.delayed(const Duration(milliseconds: 400));
+    await Future<void>.delayed(const Duration(milliseconds: 400));
     _textController.forward();
-    
+
     // Wait for animations to complete, then fade out and navigate
-    await Future.delayed(const Duration(milliseconds: 1800));
+    await Future<void>.delayed(const Duration(milliseconds: 1800));
     _fadeController.forward();
-    
+
     // Navigate to main app
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future<void>.delayed(const Duration(milliseconds: 500));
     if (mounted) {
       AppRouter.instance.goToHome();
     }
@@ -161,7 +148,9 @@ class _SplashScreenState extends State<SplashScreen>
                   end: Alignment.bottomCenter,
                   colors: [
                     _backgroundColor.value ?? Colors.white,
-                    (_backgroundColor.value ?? Colors.white).withOpacity(0.9),
+                    (_backgroundColor.value ?? Colors.white).withValues(
+                      alpha: 0.9,
+                    ),
                   ],
                 ),
               ),
@@ -171,7 +160,10 @@ class _SplashScreenState extends State<SplashScreen>
                   children: [
                     // Animated App Icon with seamless transition
                     AnimatedBuilder(
-                      animation: Listenable.merge([_logoController, _pulseController]),
+                      animation: Listenable.merge([
+                        _logoController,
+                        _pulseController,
+                      ]),
                       builder: (context, child) {
                         return Transform.scale(
                           scale: _logoScale.value * _pulseScale.value,
@@ -185,7 +177,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 borderRadius: BorderRadius.circular(35),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
+                                    color: Colors.black.withValues(alpha: 0.2),
                                     blurRadius: 20,
                                     offset: const Offset(0, 10),
                                     spreadRadius: 1,
@@ -222,9 +214,9 @@ class _SplashScreenState extends State<SplashScreen>
                         );
                       },
                     ),
-                    
+
                     const SizedBox(height: 50),
-                    
+
                     // Animated App Name
                     AnimatedBuilder(
                       animation: _textController,
@@ -264,9 +256,9 @@ class _SplashScreenState extends State<SplashScreen>
                         );
                       },
                     ),
-                    
+
                     const SizedBox(height: 80),
-                    
+
                     // Loading indicator with fade in
                     AnimatedBuilder(
                       animation: _textController,
@@ -276,14 +268,16 @@ class _SplashScreenState extends State<SplashScreen>
                           child: Container(
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.15),
+                              color: Colors.white.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const SizedBox(
                               width: 24,
                               height: 24,
                               child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                                 strokeWidth: 2.5,
                               ),
                             ),
@@ -300,4 +294,4 @@ class _SplashScreenState extends State<SplashScreen>
       },
     );
   }
-} 
+}

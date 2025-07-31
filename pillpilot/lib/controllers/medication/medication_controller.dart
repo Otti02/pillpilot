@@ -17,9 +17,11 @@ class MedicationController extends BlocController<MedicationModel> {
   MedicationController({
     MedicationService? medicationService,
     NotificationService? notificationService,
-  })  : medicationService = medicationService ?? ServiceProvider.instance.medicationService,
-        _notificationService = notificationService ?? ServiceProvider.instance.notificationService,
-        super(MedicationModel(medications: []));
+  }) : medicationService =
+           medicationService ?? ServiceProvider.instance.medicationService,
+       _notificationService =
+           notificationService ?? ServiceProvider.instance.notificationService,
+       super(MedicationModel(medications: []));
 
   @override
   void handleError(String message, [Object? error]) {
@@ -29,7 +31,10 @@ class MedicationController extends BlocController<MedicationModel> {
     } else if (error is ValidationException) {
       userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
     } else if (error is AppException) {
-      userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
+      userMessage =
+          error.message.isNotEmpty
+              ? error.message
+              : 'Ein unbekannter Fehler ist aufgetreten.';
     } else {
       userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
     }
@@ -51,19 +56,18 @@ class MedicationController extends BlocController<MedicationModel> {
       for (var med in medications) {
         _notificationService.scheduleMedicationNotification(medication: med);
       }
-
     } catch (e) {
       handleError('Failed to load medications: ${e.toString()}', e);
     }
   }
 
   Future<Medication> createMedication(
-      String name,
-      String dosage,
-      TimeOfDay time,
-      List<int> daysOfWeek, {
-        String notes = '',
-      }) async {
+    String name,
+    String dosage,
+    TimeOfDay time,
+    List<int> daysOfWeek, {
+    String notes = '',
+  }) async {
     try {
       emit(state.copyWith(isLoading: true));
       final medication = await medicationService.createMedication(
@@ -74,7 +78,9 @@ class MedicationController extends BlocController<MedicationModel> {
         notes: notes,
       );
       await loadMedications();
-      _notificationService.scheduleMedicationNotification(medication: medication);
+      _notificationService.scheduleMedicationNotification(
+        medication: medication,
+      );
       return medication;
     } catch (e) {
       handleError('Failed to create medication: ${e.toString()}', e);
@@ -85,9 +91,13 @@ class MedicationController extends BlocController<MedicationModel> {
   Future<Medication> updateMedication(Medication medication) async {
     try {
       emit(state.copyWith(isLoading: true));
-      final updatedMedication = await medicationService.updateMedication(medication);
+      final updatedMedication = await medicationService.updateMedication(
+        medication,
+      );
       await loadMedications();
-      _notificationService.scheduleMedicationNotification(medication: updatedMedication);
+      _notificationService.scheduleMedicationNotification(
+        medication: updatedMedication,
+      );
       return updatedMedication;
     } catch (e) {
       handleError('Failed to update medication: ${e.toString()}', e);
@@ -121,11 +131,11 @@ class MedicationController extends BlocController<MedicationModel> {
 
   void _startMidnightResetTimer() {
     _midnightResetTimer?.cancel();
-    
+
     final now = DateTime.now();
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
     final timeUntilMidnight = tomorrow.difference(now);
-    
+
     _midnightResetTimer = Timer(timeUntilMidnight, () {
       _resetAllMedications();
       _startMidnightResetTimer(); // Schedule next reset
@@ -135,17 +145,21 @@ class MedicationController extends BlocController<MedicationModel> {
   Future<void> _resetAllMedications() async {
     try {
       final medications = await medicationService.getMedications();
-      final updatedMedications = medications.map((med) => med.copyWith(isCompleted: false)).toList();
-      
+      final updatedMedications =
+          medications.map((med) => med.copyWith(isCompleted: false)).toList();
+
       // Update all medications to reset their completion status
       for (final medication in updatedMedications) {
         await medicationService.updateMedication(medication);
       }
-      
+
       // Reload medications to update the UI
       await loadMedications();
     } catch (e) {
-      handleError('Failed to reset medications at midnight: ${e.toString()}', e);
+      handleError(
+        'Failed to reset medications at midnight: ${e.toString()}',
+        e,
+      );
     }
   }
 

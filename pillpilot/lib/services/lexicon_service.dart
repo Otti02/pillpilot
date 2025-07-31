@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import '../models/lexicon_entry_model.dart';
 import 'base_service.dart';
-import 'service_provider.dart';
 
 abstract class LexiconService {
   Future<List<LexiconEntry>> getLexiconEntries();
@@ -10,12 +9,12 @@ abstract class LexiconService {
   Future<LexiconEntry> getLexiconEntryById(String id);
 
   Future<LexiconEntry> createLexiconEntry(
-      String name,
-      String type,
-      String category,
-      String description,
-      String usageInfo,
-      );
+    String name,
+    String type,
+    String category,
+    String description,
+    String usageInfo,
+  );
 
   Future<LexiconEntry> updateLexiconEntry(LexiconEntry entry);
 
@@ -24,7 +23,6 @@ abstract class LexiconService {
 
 /// Implementation of the [LexiconService]
 class LexiconServiceImpl implements LexiconService {
-
   static const String _entriesKey = 'lexicon_entries';
 
   static const String _nextIdKey = 'next_lexicon_entry_id';
@@ -52,10 +50,15 @@ class LexiconServiceImpl implements LexiconService {
       return _createInitialEntries();
     }
 
-    final List<dynamic> entriesJson = jsonDecode(data as String) as List<dynamic>;
-    final entries = entriesJson
-        .map((dynamic json) => LexiconEntry.fromJson(json as Map<String, dynamic>))
-        .toList();
+    final List<dynamic> entriesJson =
+        jsonDecode(data as String) as List<dynamic>;
+    final entries =
+        entriesJson
+            .map(
+              (dynamic json) =>
+                  LexiconEntry.fromJson(json as Map<String, dynamic>),
+            )
+            .toList();
 
     if (entries.length < 18) {
       return _migrateToNewEntries(entries);
@@ -64,18 +67,23 @@ class LexiconServiceImpl implements LexiconService {
     return entries;
   }
 
-  Future<List<LexiconEntry>> _migrateToNewEntries(List<LexiconEntry> existingEntries) async {
+  Future<List<LexiconEntry>> _migrateToNewEntries(
+    List<LexiconEntry> existingEntries,
+  ) async {
     final allEntries = await _createInitialEntries();
 
-    final userEntries = existingEntries.where((entry) {
-      final id = int.tryParse(entry.id) ?? 0;
-      return id > 18;
-    }).toList();
+    final userEntries =
+        existingEntries.where((entry) {
+          final id = int.tryParse(entry.id) ?? 0;
+          return id > 18;
+        }).toList();
 
     final finalEntries = [...allEntries, ...userEntries];
 
     if (userEntries.isNotEmpty) {
-      final maxId = userEntries.map((e) => int.tryParse(e.id) ?? 0).reduce((a, b) => a > b ? a : b);
+      final maxId = userEntries
+          .map((e) => int.tryParse(e.id) ?? 0)
+          .reduce((a, b) => a > b ? a : b);
       if (maxId >= _nextId) {
         _nextId = maxId + 1;
         await _saveNextId();
@@ -95,56 +103,70 @@ class LexiconServiceImpl implements LexiconService {
         name: 'Ibuprofen',
         type: 'Schmerzmittel',
         category: 'Medikament',
-        description: 'Ibuprofen ist ein schmerzlinderndes, fiebersenkendes und entzündungshemmendes Medikament aus der Gruppe der nicht-steroidalen Antirheumatika (NSAR).',
-        usageInfo: 'Übliche Dosierung: 200-400mg alle 4-6 Stunden. Maximale Tagesdosis: 1200mg. Mit ausreichend Flüssigkeit einnehmen. Nicht länger als 3 Tage ohne ärztliche Rücksprache einnehmen.',
+        description:
+            'Ibuprofen ist ein schmerzlinderndes, fiebersenkendes und entzündungshemmendes Medikament aus der Gruppe der nicht-steroidalen Antirheumatika (NSAR).',
+        usageInfo:
+            'Übliche Dosierung: 200-400mg alle 4-6 Stunden. Maximale Tagesdosis: 1200mg. Mit ausreichend Flüssigkeit einnehmen. Nicht länger als 3 Tage ohne ärztliche Rücksprache einnehmen.',
       ),
       LexiconEntry(
         id: '2',
         name: 'Paracetamol',
         type: 'Schmerzmittel',
         category: 'Medikament',
-        description: 'Paracetamol ist ein schmerzlinderndes und fiebersenkendes Medikament, das bei leichten bis mäßigen Schmerzen und Fieber eingesetzt wird.',
-        usageInfo: 'Übliche Dosierung: 500-1000mg alle 4-6 Stunden. Maximale Tagesdosis: 4000mg. Nicht länger als 3 Tage ohne ärztliche Rücksprache einnehmen.',
+        description:
+            'Paracetamol ist ein schmerzlinderndes und fiebersenkendes Medikament, das bei leichten bis mäßigen Schmerzen und Fieber eingesetzt wird.',
+        usageInfo:
+            'Übliche Dosierung: 500-1000mg alle 4-6 Stunden. Maximale Tagesdosis: 4000mg. Nicht länger als 3 Tage ohne ärztliche Rücksprache einnehmen.',
       ),
       LexiconEntry(
         id: '3',
         name: 'ASS (Aspirin)',
         type: 'Schmerzmittel',
         category: 'Medikament',
-        description: 'Acetylsalicylsäure wirkt schmerzlindernd, fiebersenkend, entzündungshemmend und blutverdünnend.',
-        usageInfo: 'Übliche Dosierung: 500-1000mg alle 4-6 Stunden. Maximale Tagesdosis: 3000mg. Mit viel Flüssigkeit und nach dem Essen einnehmen. Nicht bei Kindern unter 12 Jahren.',
+        description:
+            'Acetylsalicylsäure wirkt schmerzlindernd, fiebersenkend, entzündungshemmend und blutverdünnend.',
+        usageInfo:
+            'Übliche Dosierung: 500-1000mg alle 4-6 Stunden. Maximale Tagesdosis: 3000mg. Mit viel Flüssigkeit und nach dem Essen einnehmen. Nicht bei Kindern unter 12 Jahren.',
       ),
       LexiconEntry(
         id: '4',
         name: 'Novalgin',
         type: 'Schmerzmittel',
         category: 'Medikament',
-        description: 'Novalgin (Metamizol) ist ein starkes Schmerzmittel mit fiebersenkender und krampflösender Wirkung.',
-        usageInfo: 'Übliche Dosierung: 500-1000mg bis zu 4x täglich. Maximale Tagesdosis: 4000mg. Mit ausreichend Flüssigkeit einnehmen. Nur nach ärztlicher Verschreibung anwenden.',
+        description:
+            'Novalgin (Metamizol) ist ein starkes Schmerzmittel mit fiebersenkender und krampflösender Wirkung.',
+        usageInfo:
+            'Übliche Dosierung: 500-1000mg bis zu 4x täglich. Maximale Tagesdosis: 4000mg. Mit ausreichend Flüssigkeit einnehmen. Nur nach ärztlicher Verschreibung anwenden.',
       ),
       LexiconEntry(
         id: '5',
         name: 'Omeprazol',
         type: 'Magenschutz',
         category: 'Medikament',
-        description: 'Omeprazol ist ein Protonenpumpenhemmer, der die Magensäureproduktion reduziert und bei Sodbrennen, Magenschleimhautentzündung und Magengeschwüren eingesetzt wird.',
-        usageInfo: 'Übliche Dosierung: 20-40mg einmal täglich vor dem Frühstück. Kapsel ganz schlucken, nicht zerkauen. Behandlungsdauer nach ärztlicher Anweisung.',
+        description:
+            'Omeprazol ist ein Protonenpumpenhemmer, der die Magensäureproduktion reduziert und bei Sodbrennen, Magenschleimhautentzündung und Magengeschwüren eingesetzt wird.',
+        usageInfo:
+            'Übliche Dosierung: 20-40mg einmal täglich vor dem Frühstück. Kapsel ganz schlucken, nicht zerkauen. Behandlungsdauer nach ärztlicher Anweisung.',
       ),
       LexiconEntry(
         id: '6',
         name: 'Cetirizin',
         type: 'Antihistaminikum',
         category: 'Medikament',
-        description: 'Cetirizin ist ein Antihistaminikum zur Behandlung von allergischen Reaktionen wie Heuschnupfen, Nesselsucht und allergischem Asthma.',
-        usageInfo: 'Übliche Dosierung: 10mg einmal täglich, vorzugsweise abends. Bei Kindern entsprechend reduziert. Mit ausreichend Flüssigkeit einnehmen.',
+        description:
+            'Cetirizin ist ein Antihistaminikum zur Behandlung von allergischen Reaktionen wie Heuschnupfen, Nesselsucht und allergischem Asthma.',
+        usageInfo:
+            'Übliche Dosierung: 10mg einmal täglich, vorzugsweise abends. Bei Kindern entsprechend reduziert. Mit ausreichend Flüssigkeit einnehmen.',
       ),
       LexiconEntry(
         id: '7',
         name: 'Diclofenac',
         type: 'Schmerzmittel',
         category: 'Medikament',
-        description: 'Diclofenac ist ein entzündungshemmendes Schmerzmittel aus der Gruppe der NSAR, besonders wirksam bei Gelenkschmerzen und Entzündungen.',
-        usageInfo: 'Übliche Dosierung: 25-50mg 2-3x täglich. Maximale Tagesdosis: 150mg. Mit dem Essen einnehmen. Nur kurzfristig ohne ärztliche Überwachung.',
+        description:
+            'Diclofenac ist ein entzündungshemmendes Schmerzmittel aus der Gruppe der NSAR, besonders wirksam bei Gelenkschmerzen und Entzündungen.',
+        usageInfo:
+            'Übliche Dosierung: 25-50mg 2-3x täglich. Maximale Tagesdosis: 150mg. Mit dem Essen einnehmen. Nur kurzfristig ohne ärztliche Überwachung.',
       ),
 
       // Nahrungsergänzungsmittel
@@ -153,88 +175,110 @@ class LexiconServiceImpl implements LexiconService {
         name: 'Vitamin D3',
         type: 'Vitamin',
         category: 'Nahrungsergänzung',
-        description: 'Vitamin D3 (Cholecalciferol) ist wichtig für die Knochengesundheit, das Immunsystem und die Muskelkraft. Wird hauptsächlich durch Sonnenlicht in der Haut gebildet.',
-        usageInfo: 'Übliche Dosierung: 800-2000 I.E. (20-50µg) täglich. Mit einer fetthaltigen Mahlzeit einnehmen für bessere Aufnahme. Regelmäßige Blutkontrollen empfehlenswert.',
+        description:
+            'Vitamin D3 (Cholecalciferol) ist wichtig für die Knochengesundheit, das Immunsystem und die Muskelkraft. Wird hauptsächlich durch Sonnenlicht in der Haut gebildet.',
+        usageInfo:
+            'Übliche Dosierung: 800-2000 I.E. (20-50µg) täglich. Mit einer fetthaltigen Mahlzeit einnehmen für bessere Aufnahme. Regelmäßige Blutkontrollen empfehlenswert.',
       ),
       LexiconEntry(
         id: '9',
         name: 'Vitamin B12',
         type: 'Vitamin',
         category: 'Nahrungsergänzung',
-        description: 'Vitamin B12 ist ein wasserlösliches Vitamin, das für die Blutbildung, Nervenfunktion und DNA-Synthese wichtig ist.',
-        usageInfo: 'Übliche Dosierung: 2,5-100µg täglich. Mit einer Mahlzeit einnehmen für bessere Aufnahme.',
+        description:
+            'Vitamin B12 ist ein wasserlösliches Vitamin, das für die Blutbildung, Nervenfunktion und DNA-Synthese wichtig ist.',
+        usageInfo:
+            'Übliche Dosierung: 2,5-100µg täglich. Mit einer Mahlzeit einnehmen für bessere Aufnahme.',
       ),
       LexiconEntry(
         id: '10',
         name: 'Omega-3',
         type: 'Fettsäure',
         category: 'Nahrungsergänzung',
-        description: 'Omega-3-Fettsäuren (EPA und DHA) sind essentielle Fettsäuren, die wichtig für Herz, Gehirn und Augen sind.',
-        usageInfo: 'Übliche Dosierung: 1000-2000mg täglich (mit mindestens 250mg EPA+DHA). Mit einer Mahlzeit einnehmen. Auf Qualität und Reinheit achten.',
+        description:
+            'Omega-3-Fettsäuren (EPA und DHA) sind essentielle Fettsäuren, die wichtig für Herz, Gehirn und Augen sind.',
+        usageInfo:
+            'Übliche Dosierung: 1000-2000mg täglich (mit mindestens 250mg EPA+DHA). Mit einer Mahlzeit einnehmen. Auf Qualität und Reinheit achten.',
       ),
       LexiconEntry(
         id: '11',
         name: 'Magnesium',
         type: 'Mineralstoff',
         category: 'Nahrungsergänzung',
-        description: 'Magnesium ist ein essentieller Mineralstoff für Muskelfunktion, Nervensystem, Energiestoffwechsel und Knochengesundheit.',
-        usageInfo: 'Übliche Dosierung: 200-400mg täglich. Aufgeteilt auf mehrere Dosen einnehmen. Mit ausreichend Flüssigkeit. Abends kann es entspannend wirken.',
+        description:
+            'Magnesium ist ein essentieller Mineralstoff für Muskelfunktion, Nervensystem, Energiestoffwechsel und Knochengesundheit.',
+        usageInfo:
+            'Übliche Dosierung: 200-400mg täglich. Aufgeteilt auf mehrere Dosen einnehmen. Mit ausreichend Flüssigkeit. Abends kann es entspannend wirken.',
       ),
       LexiconEntry(
         id: '12',
         name: 'Zink',
         type: 'Spurenelement',
         category: 'Nahrungsergänzung',
-        description: 'Zink ist ein essentielles Spurenelement für Immunsystem, Wundheilung, Haut, Haare und Nägel.',
-        usageInfo: 'Übliche Dosierung: 10-15mg täglich. Auf nüchternen Magen oder zwischen den Mahlzeiten einnehmen. Nicht zusammen mit Kalzium oder Eisen.',
+        description:
+            'Zink ist ein essentielles Spurenelement für Immunsystem, Wundheilung, Haut, Haare und Nägel.',
+        usageInfo:
+            'Übliche Dosierung: 10-15mg täglich. Auf nüchternen Magen oder zwischen den Mahlzeiten einnehmen. Nicht zusammen mit Kalzium oder Eisen.',
       ),
       LexiconEntry(
         id: '13',
         name: 'Vitamin C',
         type: 'Vitamin',
         category: 'Nahrungsergänzung',
-        description: 'Vitamin C (Ascorbinsäure) ist wichtig für das Immunsystem, die Kollagenbildung und wirkt als Antioxidans.',
-        usageInfo: 'Übliche Dosierung: 100-1000mg täglich. Aufgeteilt auf mehrere Dosen für bessere Verträglichkeit. Mit viel Flüssigkeit einnehmen.',
+        description:
+            'Vitamin C (Ascorbinsäure) ist wichtig für das Immunsystem, die Kollagenbildung und wirkt als Antioxidans.',
+        usageInfo:
+            'Übliche Dosierung: 100-1000mg täglich. Aufgeteilt auf mehrere Dosen für bessere Verträglichkeit. Mit viel Flüssigkeit einnehmen.',
       ),
       LexiconEntry(
         id: '14',
         name: 'Selen',
         type: 'Spurenelement',
         category: 'Nahrungsergänzung',
-        description: 'Selen ist ein essentielles Spurenelement, das als Antioxidans wirkt und für die Funktion des Immunsystems wichtig ist.',
-        usageInfo: 'Übliche Dosierung: 50-200µg täglich. Die Einnahme sollte nicht die empfohlene Tagesdosis überschreiten.',
+        description:
+            'Selen ist ein essentielles Spurenelement, das als Antioxidans wirkt und für die Funktion des Immunsystems wichtig ist.',
+        usageInfo:
+            'Übliche Dosierung: 50-200µg täglich. Die Einnahme sollte nicht die empfohlene Tagesdosis überschreiten.',
       ),
       LexiconEntry(
         id: '15',
         name: 'Folsäure',
         type: 'Vitamin',
         category: 'Nahrungsergänzung',
-        description: 'Folsäure (Vitamin B9) ist wichtig für die Zellteilung, Blutbildung und besonders in der Schwangerschaft für die Entwicklung des Kindes.',
-        usageInfo: 'Übliche Dosierung: 400-800µg täglich. Besonders wichtig vor und während der Schwangerschaft. Mit oder ohne Mahlzeit einnehmen.',
+        description:
+            'Folsäure (Vitamin B9) ist wichtig für die Zellteilung, Blutbildung und besonders in der Schwangerschaft für die Entwicklung des Kindes.',
+        usageInfo:
+            'Übliche Dosierung: 400-800µg täglich. Besonders wichtig vor und während der Schwangerschaft. Mit oder ohne Mahlzeit einnehmen.',
       ),
       LexiconEntry(
         id: '16',
         name: 'Kreatin',
         type: 'Aminosäure',
         category: 'Nahrungsergänzung',
-        description: 'Kreatin ist eine körpereigene Substanz, die zur Energieversorgung der Muskeln beiträgt und in der Sportnahrung verwendet wird.',
-        usageInfo: 'Übliche Dosierung: 3-5g täglich. Mit ausreichend Wasser einnehmen. Kann in Ladephasen (20g/Tag für 5-7 Tage) und Erhaltungsphasen (3-5g/Tag) eingenommen werden.',
+        description:
+            'Kreatin ist eine körpereigene Substanz, die zur Energieversorgung der Muskeln beiträgt und in der Sportnahrung verwendet wird.',
+        usageInfo:
+            'Übliche Dosierung: 3-5g täglich. Mit ausreichend Wasser einnehmen. Kann in Ladephasen (20g/Tag für 5-7 Tage) und Erhaltungsphasen (3-5g/Tag) eingenommen werden.',
       ),
       LexiconEntry(
         id: '17',
         name: 'Probiotika',
         type: 'Bakterienkulturen',
         category: 'Nahrungsergänzung',
-        description: 'Probiotika sind lebende Mikroorganismen, die die Darmflora unterstützen und sich positiv auf die Verdauung und das Immunsystem auswirken können.',
-        usageInfo: 'Übliche Dosierung: 1-10 Milliarden KBE täglich. Auf nüchternen Magen oder zu den Mahlzeiten. Kühl lagern, wenn erforderlich.',
+        description:
+            'Probiotika sind lebende Mikroorganismen, die die Darmflora unterstützen und sich positiv auf die Verdauung und das Immunsystem auswirken können.',
+        usageInfo:
+            'Übliche Dosierung: 1-10 Milliarden KBE täglich. Auf nüchternen Magen oder zu den Mahlzeiten. Kühl lagern, wenn erforderlich.',
       ),
       LexiconEntry(
         id: '18',
         name: 'Eisen',
         type: 'Spurenelement',
         category: 'Nahrungsergänzung',
-        description: 'Eisen ist essentiell für die Blutbildung, den Sauerstofftransport und die Energieproduktion im Körper.',
-        usageInfo: 'Übliche Dosierung: 10-20mg täglich. Auf nüchternen Magen mit Vitamin C für bessere Aufnahme. Nicht mit Kaffee, Tee oder Milchprodukten einnehmen.',
+        description:
+            'Eisen ist essentiell für die Blutbildung, den Sauerstofftransport und die Energieproduktion im Körper.',
+        usageInfo:
+            'Übliche Dosierung: 10-20mg täglich. Auf nüchternen Magen mit Vitamin C für bessere Aufnahme. Nicht mit Kaffee, Tee oder Milchprodukten einnehmen.',
       ),
     ];
 
@@ -250,7 +294,7 @@ class LexiconServiceImpl implements LexiconService {
   Future<LexiconEntry> getLexiconEntryById(String id) async {
     final entries = await getLexiconEntries();
     final entry = entries.firstWhere(
-          (e) => e.id == id,
+      (e) => e.id == id,
       orElse: () => throw Exception('Lexicon entry not found'),
     );
     return entry;
@@ -258,12 +302,12 @@ class LexiconServiceImpl implements LexiconService {
 
   @override
   Future<LexiconEntry> createLexiconEntry(
-      String name,
-      String type,
-      String category,
-      String description,
-      String usageInfo,
-      ) async {
+    String name,
+    String type,
+    String category,
+    String description,
+    String usageInfo,
+  ) async {
     final entries = await getLexiconEntries();
 
     final String id = _nextId.toString();

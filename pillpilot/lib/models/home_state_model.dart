@@ -39,4 +39,4 @@ class HomeState {
     isLoading: true,
     error: null,
   );
-} 
+}

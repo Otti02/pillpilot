@@ -3,14 +3,10 @@ import 'package:provider/provider.dart';
 import '../models/lexicon_entry_model.dart';
 import '../theme/app_theme.dart';
 
-
 class LexiconDetailPage extends StatelessWidget {
   final LexiconEntry entry;
 
-  const LexiconDetailPage({
-    super.key,
-    required this.entry,
-  });
+  const LexiconDetailPage({super.key, required this.entry});
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +44,12 @@ class LexiconDetailPage extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: themeProvider.isDarkMode 
-                          ? themeProvider.cardBackgroundColor
-                          : AppTheme.iconBackgroundColor.withOpacity(0.5),
+                      color:
+                          themeProvider.isDarkMode
+                              ? themeProvider.cardBackgroundColor
+                              : AppTheme.iconBackgroundColor.withValues(
+                                alpha: 0.5,
+                              ),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Column(
@@ -91,7 +90,7 @@ class LexiconDetailPage extends StatelessWidget {
   }
 
   Widget _buildInfoSection({
-    required String title, 
+    required String title,
     required String content,
     required ThemeProvider themeProvider,
   }) {
@@ -103,9 +102,10 @@ class LexiconDetailPage extends StatelessWidget {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: themeProvider.isDarkMode 
-                ? themeProvider.primaryTextColor
-                : themeProvider.primaryTextColor,
+            color:
+                themeProvider.isDarkMode
+                    ? themeProvider.primaryTextColor
+                    : themeProvider.primaryTextColor,
           ),
         ),
         const SizedBox(height: 8),
@@ -113,9 +113,10 @@ class LexiconDetailPage extends StatelessWidget {
           content,
           style: TextStyle(
             fontSize: 16,
-            color: themeProvider.isDarkMode 
-                ? themeProvider.primaryTextColor
-                : themeProvider.secondaryTextColor,
+            color:
+                themeProvider.isDarkMode
+                    ? themeProvider.primaryTextColor
+                    : themeProvider.secondaryTextColor,
             height: 1.5,
           ),
         ),

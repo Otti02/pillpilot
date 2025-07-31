@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 
-
 class CustomCalendar extends StatefulWidget {
   final DateTime? initialDate;
   final ValueChanged<DateTime>? onDateSelected;
 
-  const CustomCalendar({
-    super.key,
-    this.initialDate,
-    this.onDateSelected,
-  });
+  const CustomCalendar({super.key, this.initialDate, this.onDateSelected});
 
   @override
   State<CustomCalendar> createState() => _CustomCalendarState();
@@ -17,23 +12,18 @@ class CustomCalendar extends StatefulWidget {
 
 class _CustomCalendarState extends State<CustomCalendar> {
   late DateTime _selectedDate;
-  late DateTime _currentMonth;
 
   @override
   void initState() {
     super.initState();
     _selectedDate = widget.initialDate ?? DateTime.now();
-    _currentMonth = DateTime(_selectedDate.year, _selectedDate.month, 1);
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(height: 16),
-        _buildCalendarGrid(),
-      ],
+      children: [SizedBox(height: 16), _buildCalendarGrid()],
     );
   }
 
@@ -50,7 +40,6 @@ class _CustomCalendarState extends State<CustomCalendar> {
       },
     );
   }
-
 
   Future<DateTime?> showDatePickerDialog({
     required BuildContext context,

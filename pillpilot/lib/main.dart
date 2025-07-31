@@ -10,14 +10,12 @@ import 'controllers/appointment/appointment_controller.dart';
 import 'controllers/lexicon/lexicon_controller.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeTimeZones();
 
   // Initialize services
   await ServiceProvider.instance.initialize();
-
 
   runApp(const MyApp());
 }
@@ -32,20 +30,24 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<MedicationController>(
-          create: (context) => MedicationController(
-            medicationService: ServiceProvider.instance.medicationService,
-              notificationService: ServiceProvider.instance.notificationService,
-          )..initialize(),
+          create:
+              (context) => MedicationController(
+                medicationService: ServiceProvider.instance.medicationService,
+                notificationService:
+                    ServiceProvider.instance.notificationService,
+              )..initialize(),
         ),
         BlocProvider<AppointmentController>(
-          create: (context) => AppointmentController(
-            appointmentService: ServiceProvider.instance.appointmentService,
-          )..initialize(),
+          create:
+              (context) => AppointmentController(
+                appointmentService: ServiceProvider.instance.appointmentService,
+              )..initialize(),
         ),
         BlocProvider<LexiconController>(
-          create: (context) => LexiconController(
-            lexiconService: ServiceProvider.instance.lexiconService,
-          )..initialize(),
+          create:
+              (context) => LexiconController(
+                lexiconService: ServiceProvider.instance.lexiconService,
+              )..initialize(),
         ),
       ],
       child: ChangeNotifierProvider(
@@ -61,10 +63,7 @@ class MyApp extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
               ],
-              supportedLocales: const [
-                Locale('de', ''),
-                Locale('en', ''),
-              ],
+              supportedLocales: const [Locale('de', ''), Locale('en', '')],
               locale: const Locale('de'),
             );
           },

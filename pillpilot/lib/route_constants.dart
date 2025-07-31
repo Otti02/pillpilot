@@ -1,4 +1,3 @@
-
 class AppRoute {
   static const home = '/home';
   static const medications = '/medications';

@@ -10,11 +10,14 @@ import '../widgets/custom_button.dart'; // Import für den CustomButton
 import '../widgets/medication_item.dart';
 import 'medication_edit_page.dart';
 
-
-
-class MedicationsPage extends StatelessWidget {
+class MedicationsPage extends StatefulWidget {
   const MedicationsPage({super.key});
 
+  @override
+  State<MedicationsPage> createState() => _MedicationsPageState();
+}
+
+class _MedicationsPageState extends State<MedicationsPage> {
   String _getCurrentTime() {
     return DateFormat('HH:mm').format(DateTime.now());
   }
@@ -22,23 +25,24 @@ class MedicationsPage extends StatelessWidget {
   void _navigateToCreateMedication(BuildContext context) async {
     final result = await Navigator.push<bool>(
       context,
-      MaterialPageRoute<bool>(
-        builder: (context) => MedicationEditPage(),
-      ),
+      MaterialPageRoute<bool>(builder: (context) => MedicationEditPage()),
     );
-    if (result == true) {
+    if (result == true && mounted) {
       BlocProvider.of<MedicationController>(context).loadMedications();
     }
   }
 
-  void _navigateToEditMedication(BuildContext context, Medication medication) async {
+  void _navigateToEditMedication(
+    BuildContext context,
+    Medication medication,
+  ) async {
     final result = await Navigator.push<bool>(
       context,
       MaterialPageRoute<bool>(
         builder: (context) => MedicationEditPage(medication: medication),
       ),
     );
-    if (result == true) {
+    if (result == true && mounted) {
       BlocProvider.of<MedicationController>(context).loadMedications();
     }
   }
@@ -46,46 +50,47 @@ class MedicationsPage extends StatelessWidget {
   void _deleteMedication(BuildContext context, Medication medication) {
     showDialog<void>(
       context: context,
-      builder: (dialogContext) => Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          return AlertDialog(
-            title: Text(
-              'Medikament löschen',
-              style: TextStyle(color: themeProvider.primaryTextColor),
-            ),
-            content: Text(
-              'Möchtest du "${medication.name}" wirklich löschen?',
-              style: TextStyle(color: themeProvider.primaryTextColor),
-            ),
-            actions: [
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomButton(
-                      text: 'Abbrechen',
-                      isOutlined: true,
-                      onPressed: () => Navigator.of(dialogContext).pop(),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: CustomButton(
-                      text: 'Löschen',
-                      color: AppTheme.red,
-                      onPressed: () async {
-                        final medicationName = medication.name;
-                        Navigator.of(dialogContext).pop();
-                        await BlocProvider.of<MedicationController>(context)
-                            .deleteMedication(medication.id);
-                      },
-                    ),
+      builder:
+          (dialogContext) => Consumer<ThemeProvider>(
+            builder: (consumerContext, themeProvider, child) {
+              return AlertDialog(
+                title: Text(
+                  'Medikament löschen',
+                  style: TextStyle(color: themeProvider.primaryTextColor),
+                ),
+                content: Text(
+                  'Möchtest du "${medication.name}" wirklich löschen?',
+                  style: TextStyle(color: themeProvider.primaryTextColor),
+                ),
+                actions: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CustomButton(
+                          text: 'Abbrechen',
+                          isOutlined: true,
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: CustomButton(
+                          text: 'Löschen',
+                          color: AppTheme.red,
+                          onPressed: () async {
+                            Navigator.of(dialogContext).pop();
+                            await BlocProvider.of<MedicationController>(
+                              context,
+                            ).deleteMedication(medication.id);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ],
-          );
-        },
-      ),
+              );
+            },
+          ),
     );
   }
 
@@ -110,25 +115,25 @@ class MedicationsPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _getCurrentTime(), 
+                        _getCurrentTime(),
                         style: TextStyle(
-                          fontSize: AppTheme.mainTitleFontSize, 
+                          fontSize: AppTheme.mainTitleFontSize,
                           fontWeight: FontWeight.bold,
                           color: themeProvider.primaryTextColor,
                         ),
                       ),
                       Text(
-                        'Deine Medikamente', 
+                        'Deine Medikamente',
                         style: TextStyle(
-                          fontSize: AppTheme.sectionTitleFontSize, 
+                          fontSize: AppTheme.sectionTitleFontSize,
                           fontWeight: FontWeight.w600,
                           color: themeProvider.primaryTextColor,
                         ),
                       ),
                       Text(
-                        'Übersicht aller Medikamente', 
+                        'Übersicht aller Medikamente',
                         style: TextStyle(
-                          fontSize: AppTheme.subtitleFontSize, 
+                          fontSize: AppTheme.subtitleFontSize,
                           color: themeProvider.secondaryTextColor,
                         ),
                       ),
@@ -145,9 +150,9 @@ class MedicationsPage extends StatelessWidget {
                       if (model.medications.isEmpty) {
                         return Center(
                           child: Text(
-                            'Keine Medikamente vorhanden', 
+                            'Keine Medikamente vorhanden',
                             style: TextStyle(
-                              fontSize: AppTheme.subtitleFontSize, 
+                              fontSize: AppTheme.subtitleFontSize,
                               color: themeProvider.secondaryTextColor,
                             ),
                           ),
@@ -160,11 +165,19 @@ class MedicationsPage extends StatelessWidget {
                           final medication = model.medications[index];
                           return MedicationItem(
                             medication: medication,
-                            onTap: () => _navigateToEditMedication(context, medication),
+                            onTap:
+                                () => _navigateToEditMedication(
+                                  context,
+                                  medication,
+                                ),
                             showCompletedStyling: false,
                             trailingWidget: IconButton(
-                              icon: const Icon(Icons.delete, color: AppTheme.red),
-                              onPressed: () => _deleteMedication(context, medication),
+                              icon: const Icon(
+                                Icons.delete,
+                                color: AppTheme.red,
+                              ),
+                              onPressed:
+                                  () => _deleteMedication(context, medication),
                             ),
                           );
                         },

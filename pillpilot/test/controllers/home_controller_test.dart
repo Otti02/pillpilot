@@ -9,7 +9,6 @@ import 'package:pillpilot/models/appointment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:pillpilot/services/base_service.dart';
 
-
 @GenerateMocks([MedicationService, AppointmentService])
 import './home_controller_test.mocks.dart';
 
@@ -48,45 +47,60 @@ void main() {
     group('Happy Path Tests', () {
       test('initialize should load medications and appointments', () async {
         // ARRANGE
-        when(mockMedicationService.getMedications())
-            .thenAnswer((_) async => [testMedication]);
-        when(mockAppointmentService.getAppointmentsForDate(any))
-            .thenAnswer((_) async => [testAppointment]);
+        when(
+          mockMedicationService.getMedications(),
+        ).thenAnswer((_) async => [testMedication]);
+        when(
+          mockAppointmentService.getAppointmentsForDate(any),
+        ).thenAnswer((_) async => [testAppointment]);
 
         // ACT
         await homeController.initialize();
 
         // ASSERT
         expect(homeController.state.medications, isNotNull);
-        expect(homeController.state.medications!.length, 1);
+        expect(homeController.state.medications.length, 1);
         expect(homeController.state.appointments, isNotNull);
-        expect(homeController.state.appointments!.length, 1);
+        expect(homeController.state.appointments.length, 1);
       });
 
-      test('toggleMedicationCompletion should update medication and reload the list', () async {
-        // ARRANGE
-        when(mockMedicationService.getMedicationById('1'))
-            .thenAnswer((_) async => testMedication);
+      test(
+        'toggleMedicationCompletion should update medication and reload the list',
+        () async {
+          // ARRANGE
+          when(
+            mockMedicationService.getMedicationById('1'),
+          ).thenAnswer((_) async => testMedication);
 
-        when(mockMedicationService.updateMedication(any))
-            .thenAnswer((_) async => testMedication.copyWith(isCompleted: true));
+          when(
+            mockMedicationService.updateMedication(any),
+          ).thenAnswer((_) async => testMedication.copyWith(isCompleted: true));
 
-        when(mockMedicationService.getMedications()).thenAnswer((_) async => [
-          testMedication.copyWith(isCompleted: true),
-        ]);
+          when(mockMedicationService.getMedications()).thenAnswer(
+            (_) async => [testMedication.copyWith(isCompleted: true)],
+          );
 
-        // ACT
-        await homeController.toggleMedicationCompletion('1', true);
+          // ACT
+          await homeController.toggleMedicationCompletion('1', true);
 
-        // ASSERT
-        verify(mockMedicationService.updateMedication(
-          argThat(isA<Medication>().having((m) => m.isCompleted, 'isCompleted', true)),
-        )).called(1);
+          // ASSERT
+          verify(
+            mockMedicationService.updateMedication(
+              argThat(
+                isA<Medication>().having(
+                  (m) => m.isCompleted,
+                  'isCompleted',
+                  true,
+                ),
+              ),
+            ),
+          ).called(1);
 
-        expect(homeController.state.medications, isNotNull);
-        expect(homeController.state.medications!.length, 1);
-        expect(homeController.state.medications!.first.isCompleted, true);
-      });
+          expect(homeController.state.medications, isNotNull);
+          expect(homeController.state.medications.length, 1);
+          expect(homeController.state.medications.first.isCompleted, true);
+        },
+      );
 
       test('loadMedications should filter medications for today', () async {
         // ARRANGE
@@ -97,146 +111,182 @@ void main() {
           daysOfWeek: [today == 1 ? 2 : 1], // Different day
         );
 
-        when(mockMedicationService.getMedications())
-            .thenAnswer((_) async => [todayMedication, otherMedication]);
+        when(
+          mockMedicationService.getMedications(),
+        ).thenAnswer((_) async => [todayMedication, otherMedication]);
 
         // ACT
         await homeController.loadMedications();
 
         // ASSERT
         expect(homeController.state.medications, isNotNull);
-        expect(homeController.state.medications!.length, 1);
-        expect(homeController.state.medications!.first.id, '1');
+        expect(homeController.state.medications.length, 1);
+        expect(homeController.state.medications.first.id, '1');
       });
     });
 
     group('Error Handling Tests', () {
       test('loadMedications should handle network errors', () async {
         // ARRANGE
-        when(mockMedicationService.getMedications())
-            .thenThrow(NetworkException('No connection'));
+        when(
+          mockMedicationService.getMedications(),
+        ).thenThrow(NetworkException('No connection'));
 
         // ACT
         await homeController.loadMedications();
 
         // ASSERT
-        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Internetverbindung.');
+        expect(
+          homeController.state.error,
+          'Bitte überprüfen Sie Ihre Internetverbindung.',
+        );
       });
 
       test('loadMedications should handle validation errors', () async {
         // ARRANGE
-        when(mockMedicationService.getMedications())
-            .thenThrow(ValidationException('Invalid data'));
+        when(
+          mockMedicationService.getMedications(),
+        ).thenThrow(ValidationException('Invalid data'));
 
         // ACT
         await homeController.loadMedications();
 
         // ASSERT
-        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Eingaben.');
+        expect(
+          homeController.state.error,
+          'Bitte überprüfen Sie Ihre Eingaben.',
+        );
       });
 
       test('loadMedications should handle unknown errors', () async {
         // ARRANGE
-        when(mockMedicationService.getMedications())
-            .thenThrow(Exception('Unknown'));
+        when(
+          mockMedicationService.getMedications(),
+        ).thenThrow(Exception('Unknown'));
 
         // ACT
         await homeController.loadMedications();
 
         // ASSERT
-        expect(homeController.state.error, 'Ein unbekannter Fehler ist aufgetreten.');
+        expect(
+          homeController.state.error,
+          'Ein unbekannter Fehler ist aufgetreten.',
+        );
       });
 
       test('loadAppointments should handle network errors', () async {
         // ARRANGE
-        when(mockAppointmentService.getAppointmentsForDate(any))
-            .thenThrow(NetworkException('No connection'));
+        when(
+          mockAppointmentService.getAppointmentsForDate(any),
+        ).thenThrow(NetworkException('No connection'));
 
         // ACT
         await homeController.loadAppointments();
 
         // ASSERT
-        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Internetverbindung.');
+        expect(
+          homeController.state.error,
+          'Bitte überprüfen Sie Ihre Internetverbindung.',
+        );
       });
 
       test('loadAppointments should handle validation errors', () async {
         // ARRANGE
-        when(mockAppointmentService.getAppointmentsForDate(any))
-            .thenThrow(ValidationException('Invalid data'));
+        when(
+          mockAppointmentService.getAppointmentsForDate(any),
+        ).thenThrow(ValidationException('Invalid data'));
 
         // ACT
         await homeController.loadAppointments();
 
         // ASSERT
-        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Eingaben.');
+        expect(
+          homeController.state.error,
+          'Bitte überprüfen Sie Ihre Eingaben.',
+        );
       });
 
       test('loadAppointments should handle unknown errors', () async {
         // ARRANGE
-        when(mockAppointmentService.getAppointmentsForDate(any))
-            .thenThrow(Exception('Unknown'));
+        when(
+          mockAppointmentService.getAppointmentsForDate(any),
+        ).thenThrow(Exception('Unknown'));
 
         // ACT
         await homeController.loadAppointments();
 
         // ASSERT
-        expect(homeController.state.error, 'Ein unbekannter Fehler ist aufgetreten.');
+        expect(
+          homeController.state.error,
+          'Ein unbekannter Fehler ist aufgetreten.',
+        );
       });
 
       test('toggleMedicationCompletion should handle service errors', () async {
         // ARRANGE
-        when(mockMedicationService.getMedicationById('1'))
-            .thenThrow(Exception('Medication not found'));
+        when(
+          mockMedicationService.getMedicationById('1'),
+        ).thenThrow(Exception('Medication not found'));
 
         // ACT
         await homeController.toggleMedicationCompletion('1', true);
 
         // ASSERT
-        expect(homeController.state.error, 'Ein unbekannter Fehler ist aufgetreten.');
+        expect(
+          homeController.state.error,
+          'Ein unbekannter Fehler ist aufgetreten.',
+        );
       });
 
       test('initialize should handle partial failures gracefully', () async {
         // ARRANGE
-        when(mockMedicationService.getMedications())
-            .thenAnswer((_) async => [testMedication]);
-        when(mockAppointmentService.getAppointmentsForDate(any))
-            .thenThrow(NetworkException('No connection'));
+        when(
+          mockMedicationService.getMedications(),
+        ).thenAnswer((_) async => [testMedication]);
+        when(
+          mockAppointmentService.getAppointmentsForDate(any),
+        ).thenThrow(NetworkException('No connection'));
 
         // ACT
         await homeController.initialize();
 
         // ASSERT
         expect(homeController.state.medications, isNotNull);
-        expect(homeController.state.medications!.length, 1);
-        expect(homeController.state.error, 'Bitte überprüfen Sie Ihre Internetverbindung.');
+        expect(homeController.state.medications.length, 1);
+        expect(
+          homeController.state.error,
+          'Bitte überprüfen Sie Ihre Internetverbindung.',
+        );
       });
     });
 
     group('Edge Cases', () {
       test('loadMedications should handle empty medication list', () async {
         // ARRANGE
-        when(mockMedicationService.getMedications())
-            .thenAnswer((_) async => <Medication>[]);
+        when(
+          mockMedicationService.getMedications(),
+        ).thenAnswer((_) async => <Medication>[]);
 
         // ACT
         await homeController.loadMedications();
 
         // ASSERT
         expect(homeController.state.medications, isNotNull);
-        expect(homeController.state.medications!.length, 0);
+        expect(homeController.state.medications.length, 0);
       });
 
       test('loadAppointments should handle empty appointment list', () async {
         // ARRANGE
-        when(mockAppointmentService.getAppointmentsForDate(any))
-            .thenAnswer((_) async => <Appointment>[]);
+        when(
+          mockAppointmentService.getAppointmentsForDate(any),
+        ).thenAnswer((_) async => <Appointment>[]);
 
         // ACT
         await homeController.loadAppointments();
 
         // ASSERT
         expect(homeController.state.appointments, isNotNull);
-        expect(homeController.state.appointments!.length, 0);
+        expect(homeController.state.appointments.length, 0);
       });
     });
   });

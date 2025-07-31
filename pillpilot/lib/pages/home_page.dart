@@ -11,7 +11,6 @@ import '../models/appointment_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/home_state_model.dart';
 import '../controllers/appointment/appointment_controller.dart';
-import '../widgets/custom_button.dart';
 import '../widgets/appointment_details_dialog.dart';
 import '../widgets/edit_appointment_dialog.dart';
 
@@ -70,32 +69,36 @@ class _HomePageState extends State<HomePage> {
 
       if (!mounted) return;
       _reloadData();
-
     } catch (e) {
       if (!mounted) return;
     }
   }
 
   void _showAppointmentDetails(Appointment appointment) {
-    showDialog(
+    showDialog<void>(
       context: context,
-      builder: (dialogContext) => AppointmentDetailsDialog(
-        appointment: appointment,
-        onDelete: () => _deleteAppointment(appointment.id),
-        onEdit: () => _showEditAppointmentDialog(context, appointment),
-      ),
+      builder:
+          (dialogContext) => AppointmentDetailsDialog(
+            appointment: appointment,
+            onDelete: () => _deleteAppointment(appointment.id),
+            onEdit: () => _showEditAppointmentDialog(context, appointment),
+          ),
     );
   }
 
-  void _showEditAppointmentDialog(BuildContext context, Appointment appointment) {
-    showDialog(
+  void _showEditAppointmentDialog(
+    BuildContext context,
+    Appointment appointment,
+  ) {
+    showDialog<void>(
       context: context,
-      builder: (dialogContext) => EditAppointmentDialog(
-        appointment: appointment,
-        onAppointmentUpdated: () {
-          _reloadData();
-        },
-      ),
+      builder:
+          (dialogContext) => EditAppointmentDialog(
+            appointment: appointment,
+            onAppointmentUpdated: () {
+              _reloadData();
+            },
+          ),
     );
   }
 
@@ -108,136 +111,156 @@ class _HomePageState extends State<HomePage> {
           builder: (context, themeProvider, child) {
             return Scaffold(
               backgroundColor: themeProvider.backgroundColor,
-          body: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(AppTheme.defaultPadding),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              body: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(AppTheme.defaultPadding),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _getCurrentTime(),
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: themeProvider.primaryTextColor,
-                                  ),
-                                ),
-                                Text(
-                                  'Deine Einnahmen Heute',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: themeProvider.primaryTextColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // Theme toggle switch
-                          Consumer<ThemeProvider>(
-                            builder: (context, themeProvider, child) {
-                              return Row(
-                                children: [
-                                  Icon(
-                                    themeProvider.isDarkMode 
-                                        ? Icons.dark_mode 
-                                        : Icons.light_mode,
-                                    color: AppTheme.primaryColor,
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: AppTheme.smallPadding),
-                                  Switch(
-                                    value: themeProvider.isDarkMode,
-                                    onChanged: (value) {
-                                      themeProvider.toggleTheme();
-                                    },
-                                    activeColor: AppTheme.primaryColor,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      if (state.welcomeMessage.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: AppTheme.smallPadding),
-                          child: Text(
-                            state.welcomeMessage,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: themeProvider.secondaryTextColor,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: state.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              state.medications.isEmpty
-                                  ? _buildEmptyState('Keine Medikamente vorhanden')
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: state.medications.length,
-                                      itemBuilder: (context, index) {
-                                        final medication = state.medications[index];
-                                        return MedicationItem(
-                                          medication: medication,
-                                          onToggle: () => _toggleMedicationCompletion(medication),
-                                          onDataChanged: _reloadData,
-                                        );
-                                      },
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _getCurrentTime(),
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        color: themeProvider.primaryTextColor,
+                                      ),
                                     ),
-                              const SizedBox(height: AppTheme.largePadding),
-                              _buildSectionTitle('Heutige Termine'),
-                              state.appointments.isEmpty
-                                  ? _buildEmptyState('Keine Termine für heute')
-                                  : ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: state.appointments.length,
-                                      itemBuilder: (context, index) {
-                                        final appointment = state.appointments[index];
-                                        return AppointmentItem(
-                                          appointment: appointment,
-                                          onTap: () => _showAppointmentDetails(appointment),
-                                        );
-                                      },
+                                    Text(
+                                      'Deine Einnahmen Heute',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: themeProvider.primaryTextColor,
+                                      ),
                                     ),
+                                  ],
+                                ),
+                              ),
+                              // Theme toggle switch
+                              Consumer<ThemeProvider>(
+                                builder: (context, themeProvider, child) {
+                                  return Row(
+                                    children: [
+                                      Icon(
+                                        themeProvider.isDarkMode
+                                            ? Icons.dark_mode
+                                            : Icons.light_mode,
+                                        color: AppTheme.primaryColor,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: AppTheme.smallPadding),
+                                      Switch(
+                                        value: themeProvider.isDarkMode,
+                                        onChanged: (value) {
+                                          themeProvider.toggleTheme();
+                                        },
+                                        activeColor: AppTheme.primaryColor,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
                             ],
                           ),
-                        ),
-                ),
-                if (state.error != null)
-                  Padding(
-                    padding: const EdgeInsets.all(AppTheme.defaultPadding),
-                    child: Text(
-                      state.error!,
-                      style: TextStyle(color: AppTheme.red),
+                          if (state.welcomeMessage.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                top: AppTheme.smallPadding,
+                              ),
+                              child: Text(
+                                state.welcomeMessage,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: themeProvider.secondaryTextColor,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-              ],
-            ),
-          ),
-        );
+                    Expanded(
+                      child:
+                          state.isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    state.medications.isEmpty
+                                        ? _buildEmptyState(
+                                          'Keine Medikamente vorhanden',
+                                        )
+                                        : ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: state.medications.length,
+                                          itemBuilder: (context, index) {
+                                            final medication =
+                                                state.medications[index];
+                                            return MedicationItem(
+                                              medication: medication,
+                                              onToggle:
+                                                  () =>
+                                                      _toggleMedicationCompletion(
+                                                        medication,
+                                                      ),
+                                              onDataChanged: _reloadData,
+                                            );
+                                          },
+                                        ),
+                                    const SizedBox(
+                                      height: AppTheme.largePadding,
+                                    ),
+                                    _buildSectionTitle('Heutige Termine'),
+                                    state.appointments.isEmpty
+                                        ? _buildEmptyState(
+                                          'Keine Termine für heute',
+                                        )
+                                        : ListView.builder(
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: state.appointments.length,
+                                          itemBuilder: (context, index) {
+                                            final appointment =
+                                                state.appointments[index];
+                                            return AppointmentItem(
+                                              appointment: appointment,
+                                              onTap:
+                                                  () => _showAppointmentDetails(
+                                                    appointment,
+                                                  ),
+                                            );
+                                          },
+                                        ),
+                                  ],
+                                ),
+                              ),
+                    ),
+                    if (state.error != null)
+                      Padding(
+                        padding: const EdgeInsets.all(AppTheme.defaultPadding),
+                        child: Text(
+                          state.error!,
+                          style: TextStyle(color: AppTheme.red),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
           },
         );
       },
@@ -248,7 +271,9 @@ class _HomePageState extends State<HomePage> {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppTheme.defaultPadding),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.defaultPadding,
+          ),
           child: Text(
             title,
             style: TextStyle(
@@ -267,10 +292,15 @@ class _HomePageState extends State<HomePage> {
       builder: (context, themeProvider, child) {
         return Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.defaultPadding),
+            padding: const EdgeInsets.symmetric(
+              vertical: AppTheme.defaultPadding,
+            ),
             child: Text(
               message,
-              style: TextStyle(fontSize: 16, color: themeProvider.secondaryTextColor),
+              style: TextStyle(
+                fontSize: 16,
+                color: themeProvider.secondaryTextColor,
+              ),
             ),
           ),
         );

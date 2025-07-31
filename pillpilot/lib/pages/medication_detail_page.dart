@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../models/medication_state_model.dart';
 import '../services/service_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -71,7 +68,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
     if (days.length == 7) return 'Täglich';
     if (days.isEmpty) return 'Keine Tage ausgewählt';
 
-    final dayMap = AppTheme.weekdays;
+    const dayMap = AppTheme.weekdays;
     days.sort();
     return days.map((d) => dayMap[d] ?? '').join(', ');
   }
@@ -97,15 +94,38 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDetailCard('Name', widget.medication.name, themeProvider),
+                  _buildDetailCard(
+                    'Name',
+                    widget.medication.name,
+                    themeProvider,
+                  ),
                   const SizedBox(height: 16),
-                  _buildDetailCard('Dosierung', widget.medication.dosage, themeProvider),
+                  _buildDetailCard(
+                    'Dosierung',
+                    widget.medication.dosage,
+                    themeProvider,
+                  ),
                   const SizedBox(height: 16),
-                  _buildDetailCard('Uhrzeit', widget.medication.time.format(context), themeProvider),
+                  _buildDetailCard(
+                    'Uhrzeit',
+                    widget.medication.time.format(context),
+                    themeProvider,
+                  ),
                   const SizedBox(height: 16),
-                  _buildDetailCard('Einnahmetage', _formatDaysOfWeek(widget.medication.daysOfWeek), themeProvider),
+                  _buildDetailCard(
+                    'Einnahmetage',
+                    _formatDaysOfWeek(widget.medication.daysOfWeek),
+                    themeProvider,
+                  ),
                   const SizedBox(height: 16),
-                                      _buildDetailCard('Notizen', widget.medication.notes.isNotEmpty ? widget.medication.notes : 'Keine Notizen vorhanden.', themeProvider, isNote: true),
+                  _buildDetailCard(
+                    'Notizen',
+                    widget.medication.notes.isNotEmpty
+                        ? widget.medication.notes
+                        : 'Keine Notizen vorhanden.',
+                    themeProvider,
+                    isNote: true,
+                  ),
                   const SizedBox(height: 32),
                   LargeCheckboxListTile(
                     title: 'Erinnerungen aktivieren',
@@ -156,7 +176,12 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
     );
   }
 
-  Widget _buildDetailCard(String title, String value, ThemeProvider themeProvider, {bool isNote = false}) {
+  Widget _buildDetailCard(
+    String title,
+    String value,
+    ThemeProvider themeProvider, {
+    bool isNote = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -174,7 +199,10 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
           style: TextStyle(
             fontSize: 18,
             color: themeProvider.primaryTextColor,
-                            fontStyle: isNote && value == 'Keine Notizen vorhanden.' ? FontStyle.italic : FontStyle.normal,
+            fontStyle:
+                isNote && value == 'Keine Notizen vorhanden.'
+                    ? FontStyle.italic
+                    : FontStyle.normal,
           ),
         ),
       ],
@@ -182,7 +210,7 @@ class _MedicationDetailPageState extends State<MedicationDetailPage> {
   }
 
   Future<void> _navigateToEditMedication() async {
-    final result = await Navigator.push<bool>(
+    await Navigator.push<bool>(
       context,
       MaterialPageRoute<bool>(
         builder: (context) => MedicationEditPage(medication: widget.medication),

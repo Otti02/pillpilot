@@ -10,20 +10,20 @@ class LexiconController extends BlocController<LexiconModel> {
   final LexiconService lexiconService;
 
   LexiconController({LexiconService? lexiconService})
-      : lexiconService = lexiconService ?? ServiceProvider.instance.lexiconService,
-        super(LexiconModel(entries: []));
+    : lexiconService =
+          lexiconService ?? ServiceProvider.instance.lexiconService,
+      super(LexiconModel(entries: []));
 
   @override
   void handleError(String message, [Object? error]) {
-    String userMessage = message;
     if (error is NetworkException) {
-      userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
+      // userMessage = 'Bitte überprüfen Sie Ihre Internetverbindung.';
     } else if (error is ValidationException) {
-      userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
+      // userMessage = 'Bitte überprüfen Sie Ihre Eingaben.';
     } else if (error is AppException) {
-      userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
+      // userMessage = error.message.isNotEmpty ? error.message : 'Ein unbekannter Fehler ist aufgetreten.';
     } else {
-      userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
+      // userMessage = 'Ein unbekannter Fehler ist aufgetreten.';
     }
     emit(state.copyWith(isLoading: false));
     // Optional: Fehler im State speichern, falls UI das anzeigen soll

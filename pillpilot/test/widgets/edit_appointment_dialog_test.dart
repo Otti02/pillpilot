@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +8,6 @@ import 'package:pillpilot/models/appointment_model.dart';
 
 import 'package:pillpilot/theme/app_theme.dart';
 import 'package:pillpilot/controllers/appointment/appointment_controller.dart';
-import 'package:pillpilot/models/appointment_state_model.dart';
 
 import 'edit_appointment_dialog_test.mocks.dart';
 
@@ -54,49 +52,71 @@ void main() {
       );
     }
 
-    testWidgets('should display dialog title correctly', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget(
-        appointment: testAppointment,
-        onAppointmentUpdated: () {},
-      ));
+    testWidgets('should display dialog title correctly', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          appointment: testAppointment,
+          onAppointmentUpdated: () {},
+        ),
+      );
 
       expect(find.text('Termin bearbeiten'), findsOneWidget);
     });
 
-    testWidgets('should pre-fill form fields with appointment data', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget(
-        appointment: testAppointment,
-        onAppointmentUpdated: () {},
-      ));
+    testWidgets('should pre-fill form fields with appointment data', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          appointment: testAppointment,
+          onAppointmentUpdated: () {},
+        ),
+      );
 
       // Verify title field is pre-filled
       final titleField = find.byType(TextField).first;
-      expect(tester.widget<TextField>(titleField).controller?.text, equals('Test Termin'));
+      expect(
+        tester.widget<TextField>(titleField).controller?.text,
+        equals('Test Termin'),
+      );
 
       // Verify notes field is pre-filled
       final notesField = find.byType(TextField).last;
-      expect(tester.widget<TextField>(notesField).controller?.text, equals('Test Notizen'));
+      expect(
+        tester.widget<TextField>(notesField).controller?.text,
+        equals('Test Notizen'),
+      );
 
       // Verify date is displayed correctly
       expect(find.text('15.01.2024'), findsOneWidget);
     });
 
-    testWidgets('should have save and cancel buttons', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget(
-        appointment: testAppointment,
-        onAppointmentUpdated: () {},
-      ));
+    testWidgets('should have save and cancel buttons', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          appointment: testAppointment,
+          onAppointmentUpdated: () {},
+        ),
+      );
 
       // Verify buttons are present
       expect(find.text('Speichern'), findsOneWidget);
       expect(find.text('Abbrechen'), findsOneWidget);
     });
 
-    testWidgets('should close dialog when cancel button is tapped', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget(
-        appointment: testAppointment,
-        onAppointmentUpdated: () {},
-      ));
+    testWidgets('should close dialog when cancel button is tapped', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          appointment: testAppointment,
+          onAppointmentUpdated: () {},
+        ),
+      );
 
       // Tap the cancel button
       final cancelButton = find.text('Abbrechen');
@@ -107,11 +127,15 @@ void main() {
       expect(find.byType(EditAppointmentDialog), findsNothing);
     });
 
-    testWidgets('should show date picker when date field is tapped', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget(
-        appointment: testAppointment,
-        onAppointmentUpdated: () {},
-      ));
+    testWidgets('should show date picker when date field is tapped', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          appointment: testAppointment,
+          onAppointmentUpdated: () {},
+        ),
+      );
 
       // Find and tap the date field
       final dateField = find.text('15.01.2024');
@@ -122,11 +146,15 @@ void main() {
       expect(find.byType(CalendarDatePicker), findsOneWidget);
     });
 
-    testWidgets('should show time picker when time field is tapped', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget(
-        appointment: testAppointment,
-        onAppointmentUpdated: () {},
-      ));
+    testWidgets('should show time picker when time field is tapped', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          appointment: testAppointment,
+          onAppointmentUpdated: () {},
+        ),
+      );
 
       // Find and tap the time field by looking for the time label
       final timeField = find.textContaining('Uhrzeit');
@@ -137,13 +165,15 @@ void main() {
       expect(find.byType(TimePickerDialog), findsOneWidget);
     });
 
-
-
-    testWidgets('should have correct form field labels', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget(
-        appointment: testAppointment,
-        onAppointmentUpdated: () {},
-      ));
+    testWidgets('should have correct form field labels', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          appointment: testAppointment,
+          onAppointmentUpdated: () {},
+        ),
+      );
 
       // Verify all form field labels are present
       expect(find.text('Titel'), findsOneWidget);
@@ -152,15 +182,19 @@ void main() {
       expect(find.text('Notizen'), findsOneWidget);
     });
 
-    testWidgets('should have correct button labels', (WidgetTester tester) async {
-      await tester.pumpWidget(createTestWidget(
-        appointment: testAppointment,
-        onAppointmentUpdated: () {},
-      ));
+    testWidgets('should have correct button labels', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(
+        createTestWidget(
+          appointment: testAppointment,
+          onAppointmentUpdated: () {},
+        ),
+      );
 
       // Verify button labels are present
       expect(find.text('Abbrechen'), findsOneWidget);
       expect(find.text('Speichern'), findsOneWidget);
     });
   });
-} 
+}

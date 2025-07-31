@@ -3,19 +3,18 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pillpilot/models/medication_model.dart';
 import 'package:pillpilot/services/base_service.dart';
-import 'package:pillpilot/services/service_provider.dart';
 
 abstract class MedicationService {
   Future<List<Medication>> getMedications();
   Future<Medication> getMedicationById(String id);
 
   Future<Medication> createMedication(
-      String name,
-      String dosage,
-      TimeOfDay time,
-      List<int> daysOfWeek, {
-        String notes = '',
-      });
+    String name,
+    String dosage,
+    TimeOfDay time,
+    List<int> daysOfWeek, {
+    String notes = '',
+  });
   // -------------------------
 
   Future<Medication> updateMedication(Medication medication);
@@ -46,9 +45,12 @@ class MedicationServiceImpl implements MedicationService {
     if (data == null) {
       return [];
     }
-    final List<dynamic> medicationsJson = jsonDecode(data as String) as List<dynamic>;
+    final List<dynamic> medicationsJson =
+        jsonDecode(data as String) as List<dynamic>;
     return medicationsJson
-        .map((dynamic json) => Medication.fromJson(json as Map<String, dynamic>))
+        .map(
+          (dynamic json) => Medication.fromJson(json as Map<String, dynamic>),
+        )
         .toList();
   }
 
@@ -56,7 +58,7 @@ class MedicationServiceImpl implements MedicationService {
   Future<Medication> getMedicationById(String id) async {
     final medications = await getMedications();
     final medication = medications.firstWhere(
-          (m) => m.id == id,
+      (m) => m.id == id,
       orElse: () => throw Exception('Medication not found'),
     );
     return medication;
@@ -64,12 +66,12 @@ class MedicationServiceImpl implements MedicationService {
 
   @override
   Future<Medication> createMedication(
-      String name,
-      String dosage,
-      TimeOfDay time,
-      List<int> daysOfWeek, {
-        String notes = '',
-      }) async {
+    String name,
+    String dosage,
+    TimeOfDay time,
+    List<int> daysOfWeek, {
+    String notes = '',
+  }) async {
     final medications = await getMedications();
     final String id = _nextId.toString();
     _nextId++;
@@ -119,6 +121,9 @@ class MedicationServiceImpl implements MedicationService {
 
   Future<void> _saveMedications(List<Medication> medications) async {
     final medicationsJson = medications.map((m) => m.toJson()).toList();
-    await _persistenceService.saveData(_medicationsKey, jsonEncode(medicationsJson));
+    await _persistenceService.saveData(
+      _medicationsKey,
+      jsonEncode(medicationsJson),
+    );
   }
 }

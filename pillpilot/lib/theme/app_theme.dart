@@ -31,7 +31,9 @@ class AppTheme {
   static const Color iconColor = primaryColor;
   static const Color iconBackgroundColor = Color(0xFFEADDFF); // Light purple
   static const Color medicationIconColor = Colors.blue;
-  static const Color medicationIconBackgroundColor = Color(0xFFE6F2FF); // Light blue
+  static const Color medicationIconBackgroundColor = Color(
+    0xFFE6F2FF,
+  ); // Light blue
 
   // Checkbox colors
   static const Color checkboxActiveColor = successColor;
@@ -84,7 +86,6 @@ class AppTheme {
       primary: primaryColor,
       secondary: primaryColor,
       error: errorColor,
-      background: backgroundColor,
       surface: cardBackgroundColor,
     ),
     useMaterial3: true,
@@ -106,10 +107,7 @@ class AppTheme {
         fontWeight: FontWeight.normal,
         color: primaryTextColor,
       ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: secondaryTextColor,
-      ),
+      bodyMedium: TextStyle(fontSize: 14, color: secondaryTextColor),
     ),
 
     // Input decoration theme
@@ -133,9 +131,7 @@ class AppTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       ),
     ),
@@ -143,9 +139,7 @@ class AppTheme {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       ),
     ),
@@ -161,17 +155,13 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: cardBackgroundColor,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
 
     dialogTheme: DialogTheme(
       backgroundColor: cardBackgroundColor,
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
     ),
   );
 
@@ -184,7 +174,6 @@ class AppTheme {
       primary: primaryColor,
       secondary: primaryColor,
       error: errorColor,
-      background: darkBackgroundColor,
       surface: darkCardBackgroundColor,
     ),
     useMaterial3: true,
@@ -206,10 +195,7 @@ class AppTheme {
         fontWeight: FontWeight.normal,
         color: darkPrimaryTextColor,
       ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        color: darkSecondaryTextColor,
-      ),
+      bodyMedium: TextStyle(fontSize: 14, color: darkSecondaryTextColor),
     ),
 
     // Input decoration theme
@@ -233,9 +219,7 @@ class AppTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
       ),
     ),
@@ -243,9 +227,7 @@ class AppTheme {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: primaryColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       ),
     ),
@@ -261,17 +243,13 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: darkCardBackgroundColor,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
 
     dialogTheme: DialogTheme(
       backgroundColor: darkCardBackgroundColor,
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
     ),
   );
 }
@@ -287,12 +265,22 @@ class ThemeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  ThemeData get theme => _isDarkMode ? AppTheme.darkThemeData : AppTheme.themeData;
+  ThemeData get theme =>
+      _isDarkMode ? AppTheme.darkThemeData : AppTheme.themeData;
 
   // Helper methods to get colors based on current theme
-  Color get backgroundColor => _isDarkMode ? AppTheme.darkBackgroundColor : AppTheme.backgroundColor;
-  Color get cardBackgroundColor => _isDarkMode ? AppTheme.darkCardBackgroundColor : AppTheme.cardBackgroundColor;
-  Color get primaryTextColor => _isDarkMode ? AppTheme.darkPrimaryTextColor : AppTheme.primaryTextColor;
-  Color get secondaryTextColor => _isDarkMode ? AppTheme.darkSecondaryTextColor : AppTheme.secondaryTextColor;
-  Color get borderColor => _isDarkMode ? AppTheme.darkBorderColor : AppTheme.borderColor;
+  Color get backgroundColor =>
+      _isDarkMode ? AppTheme.darkBackgroundColor : AppTheme.backgroundColor;
+  Color get cardBackgroundColor =>
+      _isDarkMode
+          ? AppTheme.darkCardBackgroundColor
+          : AppTheme.cardBackgroundColor;
+  Color get primaryTextColor =>
+      _isDarkMode ? AppTheme.darkPrimaryTextColor : AppTheme.primaryTextColor;
+  Color get secondaryTextColor =>
+      _isDarkMode
+          ? AppTheme.darkSecondaryTextColor
+          : AppTheme.secondaryTextColor;
+  Color get borderColor =>
+      _isDarkMode ? AppTheme.darkBorderColor : AppTheme.borderColor;
 }
