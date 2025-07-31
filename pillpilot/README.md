@@ -1,4 +1,4 @@
-# PillPilot - Medication Management App
+# PillPilot - Medication Management App v 1.0
 
 ## Abstract
 
